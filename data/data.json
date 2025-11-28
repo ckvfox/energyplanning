@@ -1,0 +1,31 @@
+{
+  "consumption": {
+    "base_per_sqm": {
+      "reihenhaus": 110,
+      "freistehend": 140
+    },
+    "per_person": 800
+  },
+
+  "insulation_factors": {
+    "gut": 0.8,
+    "normal": 1.0,
+    "schlecht": 1.25
+  },
+
+  "aircon": {
+    "extra_kwh": 450
+  },
+
+  "heatpump": {
+    "heating_share": 0.7,
+    "cop_with_floor": 4.0,
+    "cop_without_floor": 3.0,
+    "cost_per_kw": 1800
+  },
+
+  "pv": {
+    "yield_per_kwp": 950,
+    "cost_per_kwp": 1400
+  }
+}
