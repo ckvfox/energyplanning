@@ -17,6 +17,17 @@ function formatNumber(value, digits = 1) {
     });
 }
 
+function calculateBreakEvenDynamic(investCost, annualSaving, inflationRate) {
+    let sum = 0;
+    let years = 0;
+    while (sum < investCost && years < 40) {
+        const adjustedSaving = annualSaving * Math.pow(1 + inflationRate, years);
+        sum += adjustedSaving;
+        years++;
+    }
+    return years;
+}
+
 async function loadSubsidies() {
     try {
         const res = await fetch('data/subsidies.json');
@@ -194,6 +205,8 @@ async function calculateAll() {
             { label: 'PV + Speicher', includeBattery: true, includeHeatpump: false },
             { label: 'PV + Speicher + Waermepumpe', includeBattery: true, includeHeatpump: true }
         ].map((scenario) => {
+            const includesAircon = hasAircon;
+            const includesWallbox = hasWallbox;
             const annualConsumption = modernBaseElectric + (scenario.includeHeatpump ? heatpumpElectric : 0);
             const gasUse = scenario.includeHeatpump ? 0 : heatingDemand;
 
@@ -216,7 +229,9 @@ async function calculateAll() {
             const batteryCost = batteryRecommended * data.battery.cost_per_kwh;
             const heatpumpCost = scenario.includeHeatpump ? heatpumpPower * data.heatpump.cost_per_kw : 0;
             const extrasCost = airconCost + wallboxCost;
-            const totalCost = pvCost + batteryCost + heatpumpCost + extrasCost;
+            let totalCost = pvCost + batteryCost + heatpumpCost + extrasCost;
+            if (includesWallbox) totalCost += data.costs?.wallbox_cost ?? 0;
+            if (includesAircon) totalCost += data.costs?.aircon_cost ?? 0;
 
             const extrasLabel = hasAircon || hasWallbox
                 ? `${hasAircon ? `Klimaanlage ${formatNumber(airconCost, 0)} EUR` : ''}${hasAircon && hasWallbox ? ', ' : ''}${hasWallbox ? `Wallbox ${formatNumber(wallboxCost, 0)} EUR` : ''}`
@@ -228,7 +243,9 @@ async function calculateAll() {
             const gridElectric = Math.max(annualConsumption - selfUse, 0);
             const annualCost = gridElectric * elPrice + gasUse * gasPrice - feedIn * feedInTariff;
             const savings = baselineCost - annualCost;
-            const paybackYears = savings > 0 ? totalCost / savings : null;
+            const breakEvenDynamic = savings > 0
+                ? calculateBreakEvenDynamic(totalCost, savings, data.price_inflation_rate)
+                : null;
 
             return {
                 label: scenario.label,
@@ -249,7 +266,9 @@ async function calculateAll() {
                 feedIn,
                 gridElectric,
                 savings,
-                paybackYears
+                breakEvenDynamic,
+                includesAircon,
+                includesWallbox
             };
         });
 
@@ -275,7 +294,9 @@ async function calculateAll() {
                     <p>Speicher-Empfehlung: ${s.batteryRecommended ? formatNumber(s.batteryRecommended, 1) + ' kWh' : 'kein Speicher'}</p>
                     <p>Waermepumpe: ${s.heatpumpPower ? `${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)` : 'keine WP'}</p>
                     <p>Kosten: PV (2025 Marktpreis ~1.850-2.400 EUR/kWp) ${formatNumber(s.pvCost, 0)} EUR, Speicher (ca. 650-750 EUR/kWh) ${formatNumber(s.batteryCost, 0)} EUR, Waermepumpe ${formatNumber(s.heatpumpCost, 0)} EUR, ${s.extrasLabel}, Gesamt ${formatNumber(s.totalCost, 0)} EUR</p>
-                    <p>Betriebskosten mit PV/WP: ${formatNumber(s.annualCost, 0)} EUR/a | Einsparung ggue. heute: ${formatNumber(s.savings, 0)} EUR/a${s.paybackYears ? ` | Break-even: ca. ${formatNumber(s.paybackYears, 1)} Jahre` : ''}</p>
+                    ${s.includesWallbox ? `<p>+ Wallbox: ${formatNumber(data.costs?.wallbox_cost ?? 0, 0)} EUR</p>` : ''}
+                    ${s.includesAircon ? `<p>+ Klimaanlage: ${formatNumber(data.costs?.aircon_cost ?? 0, 0)} EUR</p>` : ''}
+                    <p>Betriebskosten mit PV/WP: ${formatNumber(s.annualCost, 0)} EUR/a | Einsparung ggue. heute: ${formatNumber(s.savings, 0)} EUR/a${s.breakEvenDynamic ? ` | Break-even (mit Energiepreissteigerung): ca. ${formatNumber(s.breakEvenDynamic, 1)} Jahre` : ''}</p>
                 </div>
             `).join('')}
             <div class="notice-box">

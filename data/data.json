@@ -35,6 +35,10 @@
     "recommended_factor_max": 0.8,
     "cost_per_kwh": 700
   },
+  "costs": {
+    "wallbox_cost": 1200,
+    "aircon_cost": 3000
+  },
   "aircon": {
     "cost_per_unit": 2800
   },
@@ -51,5 +55,6 @@
     "electricity_eur_per_kwh": 0.35,
     "gas_eur_per_kwh": 0.12,
     "feed_in_eur_per_kwh": 0.08
-  }
+  },
+  "price_inflation_rate": 0.02
 }
