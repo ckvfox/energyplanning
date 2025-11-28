@@ -1,9 +1,18 @@
 /* Basis-Layout */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: Arial, sans-serif;
     background: #f5f7fa;
     margin: 0;
-    padding: 20px;
+    padding: clamp(12px, 4vw, 20px);
     color: #333;
 }
 
@@ -27,6 +36,7 @@ h1 {
 
 .intro {
     max-width: 700px;
+    width: min(100%, 540px);
     margin: 0 auto 20px;
     padding: 16px 18px;
     background: #eef5ff;
@@ -41,9 +51,9 @@ h1 {
 /* Formular-Container */
 form {
     max-width: 500px;
-    width: 90%;
+    width: min(100%, 520px);
     margin: 0 auto;
-    padding: 20px;
+    padding: 18px;
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -86,6 +96,13 @@ button:hover {
     border-top: 1px solid #e0e0e0;
 }
 
+.hint {
+    margin: 8px 0 14px;
+    font-size: 13px;
+    font-weight: normal;
+    color: #555;
+}
+
 .button-row {
     display: flex;
     gap: 10px;
@@ -101,7 +118,7 @@ button:hover {
 /* Ergebnisbereich */
 #result {
     max-width: 700px;
-    width: 90%;
+    width: min(100%, 540px);
     margin: 30px auto;
     padding: 20px;
     background: #ffffff;
@@ -178,6 +195,18 @@ button:hover {
         flex-direction: column;
     }
     .intro, form, #result {
-        width: 95%;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    form {
+        padding: 16px;
+    }
+    button {
+        font-size: 15px;
     }
 }
