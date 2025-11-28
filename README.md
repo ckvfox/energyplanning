@@ -71,9 +71,6 @@ Die Berechnungen nutzen konservative Orientierungswerte:
 └─ data/
 └─ data.json
 
-yaml
-Code kopieren
-
 ---
 
 ## 🗺️ Roadmap
