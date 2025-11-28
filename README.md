@@ -62,14 +62,15 @@ Die Berechnungen nutzen konservative Orientierungswerte:
 ## 📂 Projektstruktur
 
 /
-├── index.html
-├── style.css
-│
-├── scripts/
-│     └── script.js
-│
-└── data/
-      └── data.json
+|-- index.html
+|-- style.css
+|
+|-- scripts/
+|   |-- script.js
+|
+|-- data/
+    |-- data.json
+
 
 ---
 
