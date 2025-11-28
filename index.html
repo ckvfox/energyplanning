@@ -3,21 +3,38 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Einfache Web-App zur energetischen Modernisierung: Verbrauch abschaetzen, PV/Speicher/Waermepumpe dimensionieren, Kosten, Break-even und Foerderhinweise anzeigen." />
+    <meta name="keywords" content="Photovoltaik, Speicher, Waermepumpe, energetische Modernisierung, Energieverbrauch, Foerderung, Amortisation" />
+    <meta property="og:title" content="Energetische Modernisierung planen" />
+    <meta property="og:description" content="Berechne Verbrauch, PV, Speicher und Waermepumpe sowie ungefaehre Kosten und Foerderhinweise direkt im Browser." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="images/logo.png" />
     <title>Energiemodernisierungs-Rechner</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Energetische Modernisierung planen</h1>
+    <header class="hero">
+        <img src="images/logo.png" alt="Logo" class="logo" />
+        <h1>Energetische Modernisierung</h1>
+    </header>
+
+    <section class="intro">
+        <h2>🌱 Warum energetische Modernisierung sinnvoll ist</h2>
+        <p>Eine energetische Modernisierung ist heute wichtiger denn je. Sie hilft nicht nur dabei, Energie zu sparen und Kosten zu senken, sondern schafft langfristig mehr Unabhaengigkeit und Sicherheit fuer Haushalte. Durch moderne Technologien wie Photovoltaik, Waermepumpen und effiziente Daemmung koennen Haeuser ihren Energiebedarf erheblich senken — oft um mehr als die Haelfte.</p>
+        <p>Gleichzeitig wird ein wertvoller Beitrag zum Klimaschutz geleistet: Jede Kilowattstunde, die nicht aus fossilen Quellen stammt, reduziert CO2-Emissionen und macht Deutschland ein Stueck energieautarker. Wer heute modernisiert, investiert nicht nur in sein Haus, sondern in eine nachhaltige Zukunft, stabile Energiekosten und hoeheren Wohnkomfort.</p>
+        <p>Dieses Tool unterstuetzt dich dabei, in wenigen Eingaben eine erste Orientierung zu bekommen — verstaendlich, unverbindlich und individuell fuer dein Zuhause.</p>
+    </section>
 
     <form id="modernizationForm">
         <label>Haustyp:
             <select id="houseType">
                 <option value="reihenhaus">Reihenhaus</option>
+                <option value="doppelhaus">Doppelhaushaelfte</option>
                 <option value="freistehend">Freistehendes Haus</option>
             </select>
         </label>
 
-        <label>Wohnfläche (m²):
+        <label>Wohnflaeche (m2):
             <select id="area" required>
                 <option value="100" selected>100</option>
                 <option value="110">110</option>
@@ -44,19 +61,15 @@
             </select>
         </label>
 
-        <label>Alter des Hauses (JJJJ):
-            <input type="number" id="houseAge" min="1900" required />
-        </label>
-
         <label>Isolierung:
             <select id="insulation">
-                <option value="gut">Gut</option>
-                <option value="normal" selected>Normal</option>
-                <option value="schlecht">Schlecht</option>
+                <option value="gut">gut - Neubau / gut saniert</option>
+                <option value="normal" selected>normal - typisch 80er-2000er</option>
+                <option value="schlecht">schlecht - 60er/70er unsaniert</option>
             </select>
         </label>
 
-        <label>Fußbodenheizung vorhanden?
+        <label>Fussbodenheizung vorhanden?
             <select id="floorHeating">
                 <option value="ja">Ja</option>
                 <option value="nein" selected>Nein</option>
@@ -77,32 +90,50 @@
             </select>
         </label>
 
-        <label>Bundesland:
-            <select id="bundesland">
-                <option value="">Bitte wählen</option>
-                <option value="BW">Baden-Württemberg</option>
-                <option value="BY">Bayern</option>
-                <option value="BE">Berlin</option>
-                <option value="BB">Brandenburg</option>
-                <option value="HB">Bremen</option>
-                <option value="HH">Hamburg</option>
-                <option value="HE">Hessen</option>
-                <option value="MV">Mecklenburg-Vorpommern</option>
-                <option value="NI">Niedersachsen</option>
-                <option value="NW">Nordrhein-Westfalen</option>
-                <option value="RP">Rheinland-Pfalz</option>
-                <option value="SL">Saarland</option>
-                <option value="SN">Sachsen</option>
-                <option value="ST">Sachsen-Anhalt</option>
-                <option value="SH">Schleswig-Holstein</option>
-                <option value="TH">Thüringen</option>
-            </select>
-        </label>
+        <div class="optional-block">
+            <h3>Optionale Angaben fuer Foerderprogramme</h3>
+            <label>Alter des Hauses (JJJJ):
+                <input type="number" id="houseAge" min="1900" />
+            </label>
 
-        <button type="button" id="calcBtn">Berechnen</button>
+            <label>Bundesland:
+                <select id="bundesland">
+                    <option value="">Bitte waehlen</option>
+                    <option value="BW">Baden-Wuerttemberg</option>
+                    <option value="BY">Bayern</option>
+                    <option value="BE">Berlin</option>
+                    <option value="BB">Brandenburg</option>
+                    <option value="HB">Bremen</option>
+                    <option value="HH">Hamburg</option>
+                    <option value="HE">Hessen</option>
+                    <option value="MV">Mecklenburg-Vorpommern</option>
+                    <option value="NI">Niedersachsen</option>
+                    <option value="NW">Nordrhein-Westfalen</option>
+                    <option value="RP">Rheinland-Pfalz</option>
+                    <option value="SL">Saarland</option>
+                    <option value="SN">Sachsen</option>
+                    <option value="ST">Sachsen-Anhalt</option>
+                    <option value="SH">Schleswig-Holstein</option>
+                    <option value="TH">Thueringen</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="button-row">
+            <button type="button" id="calcBtn">Berechnen</button>
+            <button type="button" id="resetBtn">Reset</button>
+        </div>
     </form>
 
     <div id="result"></div>
+    <div id="subsidyBox" class="subsidy-box" style="display:none;">
+        <h3>Foerderprogramme (unverbindlicher Hinweis)</h3>
+        <div id="subsidyContent"></div>
+    </div>
+
+    <div class="legal-links">
+        <a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a>
+    </div>
 
     <script src="scripts/script.js"></script>
 </body>

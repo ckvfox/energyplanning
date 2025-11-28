@@ -8,13 +8,40 @@ body {
 }
 
 h1 {
-    text-align: center;
-    margin-bottom: 30px;
+    margin: 0;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.intro {
+    max-width: 700px;
+    margin: 0 auto 20px;
+    padding: 16px 18px;
+    background: #eef5ff;
+    border: 1px solid #d7e3ff;
+    border-radius: 10px;
+}
+
+.intro h2 {
+    margin-top: 0;
 }
 
 /* Formular-Container */
 form {
     max-width: 500px;
+    width: 90%;
     margin: 0 auto;
     padding: 20px;
     background: #ffffff;
@@ -53,9 +80,28 @@ button:hover {
     background: #005fcc;
 }
 
+.optional-block {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.button-row button {
+    flex: 1;
+    width: auto;
+    margin-top: 0;
+}
+
 /* Ergebnisbereich */
 #result {
-    max-width: 600px;
+    max-width: 700px;
+    width: 90%;
     margin: 30px auto;
     padding: 20px;
     background: #ffffff;
@@ -63,4 +109,75 @@ button:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     font-size: 16px;
     line-height: 1.5;
+}
+
+.subsidy-box {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f8f9fb;
+}
+
+.legal-links {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.legal-links a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.legal-links a:hover {
+    text-decoration: underline;
+}
+
+.subsidy {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.subsidy-entry {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.subsidy-static ul {
+    margin: 8px 0 0 18px;
+}
+
+.subsidy a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.subsidy a:hover {
+    text-decoration: underline;
+}
+
+.notice-box {
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #ffd8a8;
+    background: #fff4e6;
+    border-radius: 6px;
+}
+
+@media (max-width: 640px) {
+    .hero {
+        flex-direction: column;
+    }
+    .button-row {
+        flex-direction: column;
+    }
+    .intro, form, #result {
+        width: 95%;
+    }
 }

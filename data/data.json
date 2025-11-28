@@ -4,8 +4,21 @@
     "aircon_extra": 450,
     "wallbox_extra": 1800,
     "heating_per_sqm": {
-      "reihenhaus": 120,
-      "freistehend": 150
+      "reihenhaus": {
+        "gut": 80,
+        "normal": 110,
+        "schlecht": 140
+      },
+      "doppelhaus": {
+        "gut": 90,
+        "normal": 120,
+        "schlecht": 150
+      },
+      "freistehend": {
+        "gut": 100,
+        "normal": 130,
+        "schlecht": 170
+      }
     }
   },
   "insulation_factors": {
@@ -15,17 +28,22 @@
   },
   "pv": {
     "yield_per_kwp": 950,
-    "cost_per_kwp": 1400
+    "cost_per_kwp": 2000
   },
   "battery": {
     "recommended_factor_min": 0.6,
     "recommended_factor_max": 0.8,
-    "cost_per_kwh": 900
+    "cost_per_kwh": 700
   },
   "heatpump": {
     "cop_floor": 4.0,
     "cop_no_floor": 3.0,
     "cost_per_kw": 1800,
     "full_load_hours": 2000
+  },
+  "prices": {
+    "electricity_eur_per_kwh": 0.35,
+    "gas_eur_per_kwh": 0.12,
+    "feed_in_eur_per_kwh": 0.08
   }
 }
