@@ -35,6 +35,12 @@
     "recommended_factor_max": 0.8,
     "cost_per_kwh": 700
   },
+  "aircon": {
+    "cost_per_unit": 2800
+  },
+  "wallbox": {
+    "cost_per_unit": 1300
+  },
   "heatpump": {
     "cop_floor": 4.0,
     "cop_no_floor": 3.0,

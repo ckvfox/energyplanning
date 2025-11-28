@@ -158,6 +158,8 @@ async function calculateAll() {
         const elPrice = data.prices.electricity_eur_per_kwh;
         const gasPrice = data.prices.gas_eur_per_kwh;
         const feedInTariff = data.prices.feed_in_eur_per_kwh;
+        const airconCost = hasAircon ? data.aircon?.cost_per_unit || 0 : 0;
+        const wallboxCost = hasWallbox ? data.wallbox?.cost_per_unit || 0 : 0;
 
         if (!area || !people) {
             resultEl.innerHTML = '<p>Bitte alle Pflichtfelder ausfuellen.</p>';
@@ -213,7 +215,12 @@ async function calculateAll() {
             const pvCost = pvKwp * data.pv.cost_per_kwp;
             const batteryCost = batteryRecommended * data.battery.cost_per_kwh;
             const heatpumpCost = scenario.includeHeatpump ? heatpumpPower * data.heatpump.cost_per_kw : 0;
-            const totalCost = pvCost + batteryCost + heatpumpCost;
+            const extrasCost = airconCost + wallboxCost;
+            const totalCost = pvCost + batteryCost + heatpumpCost + extrasCost;
+
+            const extrasLabel = hasAircon || hasWallbox
+                ? `${hasAircon ? `Klimaanlage ${formatNumber(airconCost, 0)} EUR` : ''}${hasAircon && hasWallbox ? ', ' : ''}${hasWallbox ? `Wallbox ${formatNumber(wallboxCost, 0)} EUR` : ''}`
+                : 'Klimaanlage/Wallbox nicht ausgewaehlt';
 
             // Betriebskosten (mit PV, Einspeiseverguetung)
             const selfUse = Math.min(annualConsumption, pvGeneration * 0.7);
@@ -234,6 +241,9 @@ async function calculateAll() {
                 pvCost,
                 batteryCost,
                 heatpumpCost,
+                airconCost,
+                wallboxCost,
+                extrasLabel,
                 totalCost,
                 annualCost,
                 feedIn,
@@ -264,7 +274,7 @@ async function calculateAll() {
                     <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp</p>
                     <p>Speicher-Empfehlung: ${s.batteryRecommended ? formatNumber(s.batteryRecommended, 1) + ' kWh' : 'kein Speicher'}</p>
                     <p>Waermepumpe: ${s.heatpumpPower ? `${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)` : 'keine WP'}</p>
-                    <p>Kosten: PV (2025 Marktpreis ~1.850-2.400 EUR/kWp) ${formatNumber(s.pvCost, 0)} EUR, Speicher (ca. 650-750 EUR/kWh) ${formatNumber(s.batteryCost, 0)} EUR, Waermepumpe ${formatNumber(s.heatpumpCost, 0)} EUR, Gesamt ${formatNumber(s.totalCost, 0)} EUR</p>
+                    <p>Kosten: PV (2025 Marktpreis ~1.850-2.400 EUR/kWp) ${formatNumber(s.pvCost, 0)} EUR, Speicher (ca. 650-750 EUR/kWh) ${formatNumber(s.batteryCost, 0)} EUR, Waermepumpe ${formatNumber(s.heatpumpCost, 0)} EUR, ${s.extrasLabel}, Gesamt ${formatNumber(s.totalCost, 0)} EUR</p>
                     <p>Betriebskosten mit PV/WP: ${formatNumber(s.annualCost, 0)} EUR/a | Einsparung ggue. heute: ${formatNumber(s.savings, 0)} EUR/a${s.paybackYears ? ` | Break-even: ca. ${formatNumber(s.paybackYears, 1)} Jahre` : ''}</p>
                 </div>
             `).join('')}
