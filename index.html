@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Energiemodernisierungs‑Rechner</title>
+    <title>Energiemodernisierungs-Rechner</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -18,17 +18,40 @@
         </label>
 
         <label>Wohnfläche (m²):
-            <input type="number" id="area" required />
+            <select id="area" required>
+                <option value="100" selected>100</option>
+                <option value="110">110</option>
+                <option value="120">120</option>
+                <option value="130">130</option>
+                <option value="140">140</option>
+                <option value="150">150</option>
+                <option value="160">160</option>
+                <option value="170">170</option>
+                <option value="180">180</option>
+                <option value="190">190</option>
+                <option value="200">200</option>
+            </select>
         </label>
 
         <label>Personen im Haushalt:
-            <input type="number" id="people" required />
+            <select id="people" required>
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+        </label>
+
+        <label>Alter des Hauses (JJJJ):
+            <input type="number" id="houseAge" min="1900" required />
         </label>
 
         <label>Isolierung:
             <select id="insulation">
                 <option value="gut">Gut</option>
-                <option value="normal">Normal</option>
+                <option value="normal" selected>Normal</option>
                 <option value="schlecht">Schlecht</option>
             </select>
         </label>
@@ -36,7 +59,7 @@
         <label>Fußbodenheizung vorhanden?
             <select id="floorHeating">
                 <option value="ja">Ja</option>
-                <option value="nein">Nein</option>
+                <option value="nein" selected>Nein</option>
             </select>
         </label>
 
@@ -47,24 +70,31 @@
             </select>
         </label>
 
+        <label>Wallbox:
+            <select id="wallbox">
+                <option value="nein" selected>Nein</option>
+                <option value="ja">Ja</option>
+            </select>
+        </label>
+
         <label>Bundesland:
             <select id="bundesland">
                 <option value="">Bitte wählen</option>
-                <option value="BW">Baden‑Württemberg</option>
+                <option value="BW">Baden-Württemberg</option>
                 <option value="BY">Bayern</option>
                 <option value="BE">Berlin</option>
                 <option value="BB">Brandenburg</option>
                 <option value="HB">Bremen</option>
                 <option value="HH">Hamburg</option>
                 <option value="HE">Hessen</option>
-                <option value="MV">Mecklenburg‑Vorpommern</option>
+                <option value="MV">Mecklenburg-Vorpommern</option>
                 <option value="NI">Niedersachsen</option>
-                <option value="NW">Nordrhein‑Westfalen</option>
-                <option value="RP">Rheinland‑Pfalz</option>
+                <option value="NW">Nordrhein-Westfalen</option>
+                <option value="RP">Rheinland-Pfalz</option>
                 <option value="SL">Saarland</option>
                 <option value="SN">Sachsen</option>
-                <option value="ST">Sachsen‑Anhalt</option>
-                <option value="SH">Schleswig‑Holstein</option>
+                <option value="ST">Sachsen-Anhalt</option>
+                <option value="SH">Schleswig-Holstein</option>
                 <option value="TH">Thüringen</option>
             </select>
         </label>
@@ -74,6 +104,6 @@
 
     <div id="result"></div>
 
-    <script src="script.js"></script>
+    <script src="scripts/script.js"></script>
 </body>
 </html>
