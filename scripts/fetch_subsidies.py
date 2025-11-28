@@ -15,6 +15,9 @@ from dotenv import load_dotenv
 import openai
 from openai import OpenAI
 
+from prompts import SUBSIDY_SYSTEM_PROMPT
+from fetch_subsidy_prices import update_price_data
+
 ROOT = Path(__file__).resolve().parent.parent
 SUBSIDY_PATH = ROOT / "data" / "subsidies.json"
 
@@ -30,15 +33,6 @@ MEASURES = [
     "heating_optimization",
     "building_envelope",
 ]
-
-SYSTEM_PROMPT = (
-    "Antworte nur mit real existierenden Foerderprogrammen in Deutschland. "
-    "Wenn du dir unsicher bist, gib ein leeres Array [] zurueck. "
-    "Formatiere die Ausgabe exakt als JSON-Array mit Objekten: "
-    "title, type (Bund/Land/Kommune), description (max. 2 Saetze), "
-    "link (offizielle Seite), last_checked (heutiges Datum, ISO-Format)."
-)
-
 
 def load_existing() -> Dict[str, Dict[str, List[Dict[str, Any]]]]:
     if SUBSIDY_PATH.exists():
@@ -91,7 +85,7 @@ def fetch_for(client: OpenAI, bundesland: str, measure: str) -> List[Dict[str, A
         response = client.responses.create(
             model="gpt-4.1-mini",
             input=[
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": SUBSIDY_SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt},
             ],
         )
@@ -143,6 +137,10 @@ def main() -> None:
 
     SUBSIDY_PATH.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"[DONE] subsidies.json aktualisiert: {SUBSIDY_PATH}")
+
+    price_changed = update_price_data(client)
+    if price_changed:
+        print("[DONE] data.json (Preisannahmen) aktualisiert.")
 
 
 if __name__ == "__main__":
