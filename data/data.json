@@ -51,6 +51,15 @@
     "cost_per_kw": 1800,
     "full_load_hours": 2000
   },
+  "co2": {
+    "electricity_factor": 0.4,
+    "gas_factor": 0.24
+  },
+  "co2_equivalents": {
+    "tree_kg_per_year": 12,
+    "flight_kg_mallorca": 400,
+    "car_kg_per_1000km": 180
+  },
   "prices": {
     "electricity_eur_per_kwh": 0.35,
     "gas_eur_per_kwh": 0.12,

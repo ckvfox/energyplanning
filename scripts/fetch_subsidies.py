@@ -47,9 +47,16 @@ def validate_entries(raw: Any) -> List[Dict[str, Any]]:
     for item in raw:
         if not isinstance(item, dict):
             continue
-        if not all(k in item for k in ("title", "type", "description", "link", "last_checked")):
+        if not all(k in item for k in ("title", "type", "description")):
             continue
-        valid.append(item)
+        valid.append(
+            {
+                "title": item.get("title", ""),
+                "type": item.get("type", ""),
+                "description": item.get("description", ""),
+                "source_level": item.get("source_level", ""),
+            }
+        )
     return valid
 
 
@@ -66,7 +73,7 @@ def parse_response(text: str, bundesland: str, measure: str) -> List[Dict[str, A
                 return validate_entries(parsed)
             except Exception:
                 pass
-        print(f"[WARN] Parsing-Fehler bei {bundesland}/{measure}: {exc}. Antwort (gekürzt): {text[:200]!r}")
+        print(f"[WARN] Parsing-Fehler bei {bundesland}/{measure}: {exc}. Antwort (gekuerzt): {text[:200]!r}")
         return []
 
 
@@ -77,8 +84,8 @@ def fetch_for(client: OpenAI, bundesland: str, measure: str) -> List[Dict[str, A
         f"und die Massnahme {measure} (z.B. Photovoltaik, Waermepumpe, Batteriespeicher, "
         f"Heizungsoptimierung, Daemmung/Fenster) im Bereich Wohngebaeude.\n"
         "Antworte als JSON-Array von Objekten mit Feldern: title, type (Bund/Land/Kommune), "
-        "description (max. 2 Saetze), link (offizielle Seite), last_checked "
-        f"(heutiges Datum, ISO-Format, z.B. {today}).\n"
+        "description (max. 2 Saetze), source_level (bund/land/kommune). "
+        "Erstelle KEINE Links oder Deep-Links. "
         "Wenn du keine sicheren Programme kennst, antworte mit []."
     )
     try:
@@ -131,7 +138,27 @@ def main() -> None:
             data[state] = {m: [] for m in MEASURES}
         for measure in MEASURES:
             entries = fetch_for(client, state, measure)
-            data[state][measure] = entries
+            cleaned_entries: List[Dict[str, Any]] = []
+            for entry in entries:
+                entry_type = (entry.get("type") or "").strip()
+                type_lower = entry_type.lower()
+                if type_lower == "bund":
+                    link_portal = "https://www.energiewechsel.de"
+                elif type_lower == "land":
+                    link_portal = "https://www.foerderdatenbank.de"
+                else:
+                    link_portal = "https://www.co2online.de/foerdermittel/foerdermittel-check/"
+
+                cleaned_entries.append(
+                    {
+                        "title": entry.get("title", ""),
+                        "type": entry_type,
+                        "description": entry.get("description", ""),
+                        "link_portal": link_portal,
+                    }
+                )
+
+            data[state][measure] = cleaned_entries
             status = f"{len(entries)} Eintraege" if entries else "keine Eintraege"
             print(f"  - {measure}: {status}")
 

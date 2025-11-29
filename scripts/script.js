@@ -28,6 +28,37 @@ function calculateBreakEvenDynamic(investCost, annualSaving, inflationRate) {
     return years;
 }
 
+function calculateCO2Today(householdElectric, heatingDemand, data) {
+    return householdElectric * data.co2.electricity_factor
+        + heatingDemand * data.co2.gas_factor;
+}
+
+function calculateCO2After(annualConsumption, heatingDemand, scenario, data) {
+    const electricityCO2 = annualConsumption * data.co2.electricity_factor;
+    const gasCO2 = scenario.includeHeatpump ? 0 : heatingDemand * data.co2.gas_factor;
+    return electricityCO2 + gasCO2;
+}
+
+function calculateCO2Equivalents(totalSaving20yr, data) {
+    const trees = totalSaving20yr / (data.co2_equivalents.tree_kg_per_year * 20);
+    const flights = totalSaving20yr / data.co2_equivalents.flight_kg_mallorca;
+    const carKm = (totalSaving20yr / data.co2_equivalents.car_kg_per_1000km) * 1000;
+
+    return {
+        trees,
+        flights,
+        carKm
+    };
+}
+
+function calculateCO2SavingsOverYears(initialSaving, inflationRate, years = 20) {
+    let total = 0;
+    for (let n = 0; n < years; n++) {
+        total += initialSaving * Math.pow(1 + inflationRate, n);
+    }
+    return total;
+}
+
 async function loadSubsidies() {
     try {
         const res = await fetch('data/subsidies.json');
@@ -82,7 +113,7 @@ async function determineSubsidies(houseAge, bundesland, userSelections) {
                         <div class="subsidy-entry">
                             <strong>${item.title}</strong> (${item.type})
                             <p>${item.description}</p>
-                            <a href="${item.link}" target="_blank" rel="noopener noreferrer">Zum Programm</a>
+                            <a href="${item.link_portal}" target="_blank" rel="noopener noreferrer">Zum Foerderportal</a>
                         </div>
                     `);
                 });
@@ -169,8 +200,10 @@ async function calculateAll() {
         const elPrice = data.prices.electricity_eur_per_kwh;
         const gasPrice = data.prices.gas_eur_per_kwh;
         const feedInTariff = data.prices.feed_in_eur_per_kwh;
-        const airconCost = hasAircon ? data.aircon?.cost_per_unit || 0 : 0;
-        const wallboxCost = hasWallbox ? data.wallbox?.cost_per_unit || 0 : 0;
+        const airconUnitCost = data.costs?.aircon_cost ?? data.aircon?.cost_per_unit ?? 0;
+        const wallboxUnitCost = data.costs?.wallbox_cost ?? data.wallbox?.cost_per_unit ?? 0;
+        const airconCost = hasAircon ? airconUnitCost : 0;
+        const wallboxCost = hasWallbox ? wallboxUnitCost : 0;
 
         if (!area || !people) {
             resultEl.innerHTML = '<p>Bitte alle Pflichtfelder ausfuellen.</p>';
@@ -199,6 +232,8 @@ async function calculateAll() {
         // Modernisierungs-Verbrauch (mit optionalen Zusatzlasten)
         const modernBaseElectric = householdElectric + airconExtra + wallboxExtra;
 
+        const co2Today = calculateCO2Today(householdElectric, heatingDemand, data);
+
         // Drei Szenarien
         const scenarios = [
             { label: 'Nur Photovoltaik', includeBattery: false, includeHeatpump: false },
@@ -211,8 +246,23 @@ async function calculateAll() {
             const gasUse = scenario.includeHeatpump ? 0 : heatingDemand;
 
             // PV sizing mit 75 % Zielabdeckung, Mindestgroesse 4 kWp
-            const pvKwpRaw = (0.75 * annualConsumption) / data.pv.yield_per_kwp;
-            const pvKwp = Math.max(4, pvKwpRaw);
+            const includePv = true;
+            let coverageFactor = 0.75;
+            if (includePv && scenario.includeBattery && !scenario.includeHeatpump) {
+                coverageFactor = 1.0;
+            }
+            if (includePv && scenario.includeBattery && scenario.includeHeatpump) {
+                coverageFactor = 1.1;
+            }
+
+            let pvKwp = (coverageFactor * annualConsumption) / data.pv.yield_per_kwp;
+            if (includePv && scenario.includeBattery && !scenario.includeHeatpump) {
+                pvKwp = Math.max(pvKwp, 5);
+            }
+            if (includePv && scenario.includeBattery && scenario.includeHeatpump) {
+                pvKwp = Math.max(pvKwp, 8);
+            }
+            pvKwp = Math.max(4, pvKwp);
             const pvGeneration = pvKwp * data.pv.yield_per_kwp;
 
             // Speicher sizing (6-14 kWh Clamp)
@@ -229,9 +279,7 @@ async function calculateAll() {
             const batteryCost = batteryRecommended * data.battery.cost_per_kwh;
             const heatpumpCost = scenario.includeHeatpump ? heatpumpPower * data.heatpump.cost_per_kw : 0;
             const extrasCost = airconCost + wallboxCost;
-            let totalCost = pvCost + batteryCost + heatpumpCost + extrasCost;
-            if (includesWallbox) totalCost += data.costs?.wallbox_cost ?? 0;
-            if (includesAircon) totalCost += data.costs?.aircon_cost ?? 0;
+            const totalCost = pvCost + batteryCost + heatpumpCost + extrasCost;
 
             const extrasLabel = hasAircon || hasWallbox
                 ? `${hasAircon ? `Klimaanlage ${formatNumber(airconCost, 0)} EUR` : ''}${hasAircon && hasWallbox ? ', ' : ''}${hasWallbox ? `Wallbox ${formatNumber(wallboxCost, 0)} EUR` : ''}`
@@ -243,9 +291,18 @@ async function calculateAll() {
             const gridElectric = Math.max(annualConsumption - selfUse, 0);
             const annualCost = gridElectric * elPrice + gasUse * gasPrice - feedIn * feedInTariff;
             const savings = baselineCost - annualCost;
+            const breakEvenInvestment = Math.max(0, totalCost - extrasCost);
             const breakEvenDynamic = savings > 0
-                ? calculateBreakEvenDynamic(totalCost, savings, data.price_inflation_rate)
+                ? calculateBreakEvenDynamic(breakEvenInvestment, savings, data.price_inflation_rate)
                 : null;
+
+            // CO₂ nachher: nur Netzstrombezug zählt, nicht Gesamtstrom
+            const gridImport = gridElectric;
+            const gasNew = scenario.includeHeatpump ? 0 : heatingDemand;
+            const co2_after = calculateCO2After(gridImport, gasNew, scenario, data);
+            const co2_saving = co2Today - co2_after;
+            const co2_saving_20yr = calculateCO2SavingsOverYears(co2_saving, data.price_inflation_rate, 20);
+            const equivalents = calculateCO2Equivalents(co2_saving_20yr, data);
 
             return {
                 label: scenario.label,
@@ -265,10 +322,16 @@ async function calculateAll() {
                 annualCost,
                 feedIn,
                 gridElectric,
+                gridImportKwh: gridImport,
                 savings,
                 breakEvenDynamic,
                 includesAircon,
-                includesWallbox
+                includesWallbox,
+                co2_today: co2Today,
+                co2_after,
+                co2_saving,
+                co2_saving_20yr,
+                co2_equivalents: equivalents
             };
         });
 
@@ -294,8 +357,29 @@ async function calculateAll() {
                     <p>Speicher-Empfehlung: ${s.batteryRecommended ? formatNumber(s.batteryRecommended, 1) + ' kWh' : 'kein Speicher'}</p>
                     <p>Waermepumpe: ${s.heatpumpPower ? `${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)` : 'keine WP'}</p>
                     <p>Kosten: PV (2025 Marktpreis ~1.850-2.400 EUR/kWp) ${formatNumber(s.pvCost, 0)} EUR, Speicher (ca. 650-750 EUR/kWh) ${formatNumber(s.batteryCost, 0)} EUR, Waermepumpe ${formatNumber(s.heatpumpCost, 0)} EUR, ${s.extrasLabel}, Gesamt ${formatNumber(s.totalCost, 0)} EUR</p>
-                    ${s.includesWallbox ? `<p>+ Wallbox: ${formatNumber(data.costs?.wallbox_cost ?? 0, 0)} EUR</p>` : ''}
-                    ${s.includesAircon ? `<p>+ Klimaanlage: ${formatNumber(data.costs?.aircon_cost ?? 0, 0)} EUR</p>` : ''}
+                    ${(() => {
+                        const eq = s.co2_equivalents || {};
+                        const co2ValuesValid = [s.co2_today, s.co2_after, s.co2_saving, s.co2_saving_20yr, eq.trees, eq.flights, eq.carKm]
+                            .every((v) => Number.isFinite(v));
+                        if (!co2ValuesValid) return '';
+                        const treesRounded = Math.round(eq.trees);
+                        const flightsRounded = Math.round(eq.flights);
+                        const carKmRounded = Math.round(eq.carKm);
+                        return `
+                            <div class="co2-box">
+                                <h4>🌍 CO₂-Bilanz</h4>
+                                <p>Heute: ${formatNumber(s.co2_today, 0)} kg CO₂/a</p>
+                                <p>Nachher: ${formatNumber(s.co2_after, 0)} kg CO₂/a</p>
+                                <p><strong>Einsparung: ${formatNumber(s.co2_saving, 0)} kg CO₂/a</strong></p>
+                                <p>20-Jahres-Einsparung (mit Energiepreissteigerung): ${formatNumber(s.co2_saving_20yr, 0)} kg</p>
+                                <hr>
+                                <p>≈ ${treesRounded} Bäume</p>
+                                <p>≈ ${formatNumber(flightsRounded, 0)} Mallorca-Flüge (Hin- und Rückflug)</p>
+                                <p>≈ ${formatNumber(carKmRounded, 0)} km Autofahren (Verbrenner)</p>
+                                <p class="note">Hinweis: Die CO₂-Emissionen aus der Herstellung der Photovoltaikanlage werden nicht berücksichtigt, was die Bilanz geringfügig verändern würde.</p>
+                            </div>
+                        `;
+                    })()}
                     <p>Betriebskosten mit PV/WP: ${formatNumber(s.annualCost, 0)} EUR/a | Einsparung ggue. heute: ${formatNumber(s.savings, 0)} EUR/a${s.breakEvenDynamic ? ` | Break-even (mit Energiepreissteigerung): ca. ${formatNumber(s.breakEvenDynamic, 1)} Jahre` : ''}</p>
                 </div>
             `).join('')}
