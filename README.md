@@ -44,7 +44,6 @@ Das Skript liest `.env` automatisch, wenn vorhanden. Ergebnis wird in `data/subs
 - Waermepumpe: COP je nach Fussbodenheizung, Leistung aus Heizwaerme / Vollbenutzungsstunden
 
 ## Bekannte Hinweise
-- Browser-Konsole-Fehler aus `content_script.js` stammen von Extensions, nicht vom Projekt.
 - Foerderdaten koennen unvollstaendig sein; leere Kategorien bedeuten, dass keine sicheren Programme geliefert wurden.
 
 ## Lizenz
