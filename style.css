@@ -1,3 +1,10 @@
+/* Versteckt PDF-Export-Button und Subsidy-Box initial */
+#exportPdfBtn {
+    display: none;
+}
+#subsidyBox {
+    display: none;
+}
 /* Basis-Layout */
 * {
     box-sizing: border-box;
@@ -15,6 +22,22 @@ body {
     padding: clamp(12px, 4vw, 20px);
     color: #333;
 }
+.page, .content-card, .form-card, p, li, h1, h2, h3, h4, h5 {
+    hyphens: auto;
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+.page {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.content-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 16px;
+    margin: 0 auto 20px;
+}
 
 h1 {
     margin: 0;
@@ -22,33 +45,51 @@ h1 {
 
 .hero {
     display: flex;
-    align-items: center;
-    gap: 12px;
     justify-content: center;
     margin-bottom: 16px;
 }
 
-.logo {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-}
-
 .intro {
-    max-width: 700px;
-    width: min(100%, 540px);
+    max-width: 900px;
+    width: min(100%, 900px);
     margin: 0 auto 20px;
-    padding: 16px 18px;
+    padding: 18px 20px;
     background: #eef5ff;
     border: 1px solid #d7e3ff;
     border-radius: 10px;
+    text-align: left;
+}
+
+.intro-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.intro-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    display: inline-block;
 }
 
 .intro h2 {
     margin-top: 0;
 }
+.intro h1 {
+    word-break: break-word;
+}
 
 /* Formular-Container */
+.form-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 16px;
+    margin: 0 auto 20px;
+    max-width: 900px;
+}
 form {
     max-width: 500px;
     width: min(100%, 520px);
@@ -73,6 +114,17 @@ input, select {
     border-radius: 6px;
     font-size: 14px;
 }
+.optional-box {
+    margin-top: 18px;
+    padding: 14px;
+    background: #f5f7fb;
+    border: 1px dashed #d0d7e2;
+    border-radius: 10px;
+}
+.optional-box h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
 
 button {
     width: 100%;
@@ -88,6 +140,24 @@ button {
 
 button:hover {
     background: #005fcc;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px 14px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+
+.actions button {
+    flex: 1;
+    min-width: 160px;
 }
 
 .optional-block {
@@ -129,10 +199,12 @@ button:hover {
 }
 
 .subsidy-box {
-    margin-top: 20px;
-    padding: 15px;
+    width: 100%;
+    max-width: none;
+    margin: 20px 0;
+    padding: 16px;
     border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #f8f9fb;
 }
 
@@ -160,10 +232,11 @@ button:hover {
 
 .subsidy-entry {
     margin: 10px 0;
-    padding: 10px;
+    padding: 12px 14px;
     border: 1px solid #e0e0e0;
-    border-radius: 6px;
+    border-radius: 8px;
     background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
 .subsidy-static ul {
@@ -214,6 +287,370 @@ button:hover {
     }
 }
 
+.autarkie-box {
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.autarkie-bar {
+    height: 14px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.autarkie-fill {
+    height: 14px;
+    border-radius: 6px 0 0 6px;
+    transition: width 0.5s ease;
+}
+
+.autarkie-fill.theoretical {
+    background: #4caf50;
+}
+
+.autarkie-fill.realistic {
+    background: #81c784;
+}
+
+/* Info-Kasten */
+.autarkie-info {
+    background: #f4f8ff;
+    border-left: 4px solid #2196f3;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    border-radius: 6px;
+    color: #1a1a1a;
+}
+
+/* Container */
+.autarkie-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Balken */
+.autarkie-bar {
+    height: 14px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.autarkie-fill {
+    height: 14px;
+    border-radius: 6px 0 0 6px;
+    transition: width 0.5s ease;
+}
+
+/* Einzelne Balkenfarben */
+.autarkie-fill.strom {
+    background: linear-gradient(90deg, #ff6b6b, #ffd93b, #6bcf5d);
+}
+
+.autarkie-fill.heizung {
+    background: linear-gradient(90deg, #ff8a65, #ffd54f, #81c784);
+}
+
+.autarkie-fill.haushalt {
+    background: linear-gradient(90deg, #64b5f6, #4dd0e1, #81c784);
+}
+
+.chart-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.chart-area canvas {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+.chart-area #yearChart {
+    height: 320px;
+    max-height: 340px;
+}
+.chart-area #dayChart {
+    height: 240px;
+    max-height: 260px;
+}
+
+.site-footer {
+    margin: 20px auto 0;
+    padding: 12px 16px 24px;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+}
+.site-footer .footer-links {
+    display: inline-flex;
+    gap: 16px;
+}
+.site-footer a {
+    color: #1d4ed8;
+    text-decoration: none;
+}
+.site-footer a:hover {
+    text-decoration: underline;
+}
+
+.zaehler-info {
+    background: #fff5e6;
+    border-left: 4px solid #ff9800;
+    padding: 10px 14px;
+    margin-top: 20px;
+    font-size: 13px;
+    border-radius: 6px;
+    color: #1a1a1a;
+}
+
+.scenario-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 25px auto 10px;
+    max-width: 900px;
+    padding: 0 14px;
+}
+
+.scenario-switch.hidden {
+    display: none;
+}
+
+.scenario-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: #e6f0ff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #000;
+}
+
+.scenario-btn.active {
+    background: #0066ff;
+    color: white;
+    border-color: #0050cc;
+}
+
+.scenario-btn:hover {
+    background: #d7e8ff;
+}
+
+.scenario-btn:disabled {
+    background: #dce8ff;
+    color: #000;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+.day-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: #e6f0ff;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #000;
+}
+
+.day-btn.active {
+    background: #0066ff;
+    color: white;
+    border-color: #0050cc;
+}
+
+.day-btn:hover {
+    background: #d7e8ff;
+}
+
+.day-btn:disabled {
+    background: #dce8ff;
+    color: #000;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px auto 12px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #2563eb;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.25s ease;
+    width: auto;
+}
+
+.pdf-btn:hover {
+    background: #1e40af;
+}
+
+.export-btn {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    border: none;
+}
+
+.export-btn:hover {
+    background: #1e4fc7;
+}
+
+/* PDF-spezifisch – Charts kleiner rendern */
+.pdf-chart {
+    width: 100%;
+    max-width: 850px;
+}
+
+
+.pdf-mode {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff;
+}
+
+#pdf-export-area {
+    background: #ffffff !important;
+    padding: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+#pdf-export-area .chart-container {
+    page-break-inside: avoid;
+    margin-bottom: 24px;
+}
+
+#pdf-export-area * {
+    color: #000 !important;
+}
+
+.pdf-mode .chart-container {
+    page-break-inside: avoid !important;
+    margin-bottom: 12px;
+}
+
+.day-toggle {
+    display: flex;
+    gap: 12px;
+    margin: 15px auto;
+    max-width: 900px;
+    padding: 0 14px;
+}
+
+.day-toggle.hidden {
+    display: none;
+}
+
+.day-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.day-btn.active {
+    background: #0066ff;
+    color: white;
+    border-color: #0050cc;
+}
+
+.autarkie-card {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e8f5e9 100%);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.autarkie-card h5 {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.autarkie-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+}
+
+.autarkie-icon {
+    font-size: 1rem;
+}
+
+.autarkie-label {
+    flex: 1;
+}
+
+.autarkie-value {
+    font-weight: 600;
+    min-width: 3rem;
+    text-align: right;
+}
+
+.autarkie-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: #eef2f7;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.autarkie-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.autarkie-fill.strom {
+    background: linear-gradient(90deg, #ffcc33, #ff9800);
+}
+
+.autarkie-fill.heizung {
+    background: linear-gradient(90deg, #ff7043, #e53935);
+}
+
+.autarkie-fill.haushalt {
+    background: linear-gradient(90deg, #4caf50, #2e7d32);
+}
+
+.autarkie-info,
+.zaehler-info {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #f7f9fb;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.autarkie-info strong,
+.zaehler-info strong {
+    font-weight: 600;
+}
+
 @media (max-width: 480px) {
     body {
         padding: 10px;
@@ -224,4 +661,40 @@ button:hover {
     button {
         font-size: 15px;
     }
+}
+
+.export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px auto;
+    padding: 10px 16px;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    border: none;
+    font-size: 14px;
+}
+.export-btn:hover {
+    background: #1e4fc7;
+}
+
+/* Better contrast for inactive/disabled switches */
+.scenario-btn {
+    background: #e6f0ff;
+    color: #000;
+}
+.scenario-btn:disabled {
+    background: #dce8ff;
+    color: #000;
+}
+.day-btn {
+    background: #e6f0ff;
+    color: #000;
+}
+.day-btn:disabled {
+    background: #dce8ff;
+    color: #000;
 }

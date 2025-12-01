@@ -1,144 +1,213 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Einfache Web-App zur energetischen Modernisierung: Verbrauch abschaetzen, PV/Speicher/Waermepumpe dimensionieren, Kosten, Break-even und Foerderhinweise anzeigen." />
-    <meta name="keywords" content="Photovoltaik, Speicher, Waermepumpe, energetische Modernisierung, Energieverbrauch, Foerderung, Amortisation" />
-    <meta property="og:title" content="Energetische Modernisierung planen" />
-    <meta property="og:description" content="Berechne Verbrauch, PV, Speicher und Waermepumpe sowie ungefaehre Kosten und Foerderhinweise direkt im Browser." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="images/logo.png" />
-    <title>Energiemodernisierungs-Rechner</title>
-    <link rel="stylesheet" href="style.css" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Kostenloser Online-Rechner für energetische Modernisierung: Photovoltaik, Stromspeicher, Wärmepumpe, Autarkie, CO₂-Einsparung, Kosten, Amortisation & Fördermöglichkeiten. Für Einfamilienhaus, Doppelhaus, Reihenhaus.">
+        <meta name="keywords" content="Energie, Modernisierung, Photovoltaik, Wärmepumpe, Stromspeicher, Förderung, Autarkie, CO2, Kosten, Amortisation, Haus, Sanierung, Rechner, Deutschland">
+        <meta name="author" content="ckvfox">
+        <meta property="og:title" content="Energetische Modernisierung – Rechner für PV, Speicher, Wärmepumpe & Förderung">
+        <meta property="og:description" content="Online-Rechner für energetische Modernisierung: PV, Speicher, Wärmepumpe, Kosten, CO₂, Förderung. Sofortige Ergebnisse für Ihr Haus.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://github.com/ckvfox/energyplanning">
+        <meta property="og:image" content="images/logo.png">
+        <title>Energetische Modernisierung – Rechner für PV, Speicher, Wärmepumpe & Förderung</title>
+        <link rel="canonical" href="https://github.com/ckvfox/energyplanning">
+        <link rel="stylesheet" href="style.css">
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Energetische Modernisierung Rechner",
+            "description": "Online-Rechner für energetische Modernisierung: PV, Speicher, Wärmepumpe, Kosten, CO₂, Förderung.",
+            "applicationCategory": "CalculatorApplication",
+            "operatingSystem": "All",
+            "url": "https://github.com/ckvfox/energyplanning",
+            "image": "images/logo.png",
+            "author": {
+                "@type": "Person",
+                "name": "ckvfox"
+            }
+        }
+        </script>
+    <style>
+      /* Pagebreak-Regeln für PDF */
+      .pdf-pagebreak { page-break-before: always; }
+      .pdf-hide { display: none !important; }
+      .export-container { width: 100%; }
+
+      /* PDF-Kopf */
+      .pdf-header {
+          text-align: center;
+          padding: 20px 0 10px;
+          border-bottom: 1px solid #ccc;
+          margin-bottom: 20px;
+      }
+      .pdf-header img {
+          height: 40px;
+          margin-bottom: 10px;
+      }
+    </style>
 </head>
 <body>
-    <header class="hero">
-        <img src="images/logo.png" alt="Logo" class="logo" />
-        <h1>Energetische Modernisierung</h1>
-    </header>
+    <div class="page">
+        <header class="hero">
+            <div class="intro">
+                <div class="intro-title">
+                    <img src="images/logo.png" class="intro-logo" alt="Logo Energetische Modernisierung Rechner">
+                    <h1>Energetische Modernisierung – Rechner für PV, Speicher, Wärmepumpe & Förderung</h1>
+                </div>
+                <p>Erhalte eine fundierte Einschätzung für Photovoltaik, Stromspeicher und Wärmepumpe – inklusive Autarkie, CO₂-Einsparung, Kosten, Amortisation und Fördermöglichkeiten.</p>
+                <p>Eine energetische Modernisierung ist heute wichtiger denn je. Sie hilft nicht nur, Energieverbrauch und Kosten zu reduzieren, sondern erhöht auch deine Unabhängigkeit von schwankenden Energiepreisen. Moderne Technologien wie Photovoltaik, Speicher und Wärmepumpen können den Bedarf eines Hauses deutlich senken — oft um mehr als die Hälfte.</p>
+                <p>Gleichzeitig leistest du einen aktiven Beitrag zum Klimaschutz: Jede Kilowattstunde, die nicht aus fossilen Quellen stammt, spart CO₂ und macht dich langfristig energieautarker.</p>
+                <p>Unser Rechner liefert dir eine erste, unverbindliche Einschätzung, basierend auf deinem Gebäude und deinen Plänen — verständlich aufbereitet und individuell für dein Zuhause.</p>
+            </div>
+        </header>
 
-    <section class="intro">
-        <h2>🌱 Warum energetische Modernisierung sinnvoll ist</h2>
-        <p>Eine energetische Modernisierung ist heute wichtiger denn je. Sie hilft nicht nur dabei, Energie zu sparen und Kosten zu senken, sondern schafft langfristig mehr Unabhaengigkeit und Sicherheit fuer Haushalte. Durch moderne Technologien wie Photovoltaik, Waermepumpen und effiziente Daemmung koennen Haeuser ihren Energiebedarf erheblich senken — oft um mehr als die Haelfte.</p>
-        <p>Gleichzeitig wird ein wertvoller Beitrag zum Klimaschutz geleistet: Jede Kilowattstunde, die nicht aus fossilen Quellen stammt, reduziert CO2-Emissionen und macht Deutschland ein Stueck energieautarker. Wer heute modernisiert, investiert nicht nur in sein Haus, sondern in eine nachhaltige Zukunft, stabile Energiekosten und hoeheren Wohnkomfort.</p>
-        <p>Dieses Tool unterstuetzt dich dabei, in wenigen Eingaben eine erste Orientierung zu bekommen — verstaendlich, unverbindlich und individuell fuer dein Zuhause.</p>
-    </section>
+        <main>
+            <section class="form-card">
+                <h2>Eingabedaten</h2>
+                <div class="form-grid">
+                <label>Haustyp
+                    <select id="houseType">
+                        <option value="reihenhaus">Reihenhaus</option>
+                        <option value="doppelhaus">Doppelhaus</option>
+                        <option value="einfamilienhaus">Einfamilienhaus</option>
+                    </select>
+                </label>
+                <label>Wohnfläche (m²)
+                    <select id="area">
+                        <option value="100">100</option>
+                        <option value="110">110</option>
+                        <option value="120">120</option>
+                        <option value="130">130</option>
+                        <option value="140">140</option>
+                        <option value="150">150</option>
+                        <option value="160">160</option>
+                        <option value="170">170</option>
+                        <option value="180">180</option>
+                        <option value="190">190</option>
+                        <option value="200">200</option>
+                    </select>
+                </label>
+                <label>Personen im Haushalt
+                    <select id="people">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </label>
+                <label>Isolierung
+                    <select id="insulation">
+                        <option value="gut">gut – Neubau / gut saniert</option>
+                        <option value="normal" selected>normal – typisch 80er–2000er</option>
+                        <option value="schlecht">schlecht – 60er/70er unsaniert</option>
+                    </select>
+                </label>
+                <label>Fußbodenheizung
+                    <select id="floorHeating">
+                        <option value="Nein" selected>Nein</option>
+                        <option value="Ja">Ja</option>
+                    </select>
+                </label>
+                <label>Klimaanlage geplant
+                    <select id="aircon">
+                        <option value="Nein" selected>Nein</option>
+                        <option value="Ja">Ja</option>
+                    </select>
+                </label>
+                <label>Wallbox geplant
+                    <select id="wallbox">
+                        <option value="Nein" selected>Nein</option>
+                        <option value="Ja">Ja</option>
+                    </select>
+                </label>
+                </div>
+                <div class="optional-box">
+                    <h3>Angaben optional zur Ermittlung von Förderprogrammen</h3>
+                    <div class="form-grid">
+                        <label>Bundesland
+                            <select id="bundesland">
+                                <option value="">bitte wählen</option>
+                                <option value="BW">Baden-Württemberg</option>
+                                <option value="BY">Bayern</option>
+                                <option value="BE">Berlin</option>
+                                <option value="BB">Brandenburg</option>
+                                <option value="HB">Bremen</option>
+                                <option value="HH">Hamburg</option>
+                                <option value="HE">Hessen</option>
+                                <option value="MV">Mecklenburg-Vorpommern</option>
+                                <option value="NI">Niedersachsen</option>
+                                <option value="NW">Nordrhein-Westfalen</option>
+                                <option value="RP">Rheinland-Pfalz</option>
+                                <option value="SL">Saarland</option>
+                                <option value="SN">Sachsen</option>
+                                <option value="ST">Sachsen-Anhalt</option>
+                                <option value="SH">Schleswig-Holstein</option>
+                                <option value="TH">Thüringen</option>
+                            </select>
+                        </label>
+                        <label>Baujahr
+                            <input type="number" id="houseAge" placeholder="z.B. 1995">
+                        </label>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button id="calcBtn" class="primary">Berechnen</button>
+                    <button id="resetBtn" type="button">Zurücksetzen</button>
+                </div>
+            </section>
 
-    <form id="modernizationForm">
-        <label>Haustyp:
-            <select id="houseType">
-                <option value="reihenhaus">Reihenhaus</option>
-                <option value="doppelhaus">Doppelhaushaelfte</option>
-                <option value="freistehend">Freistehendes Haus</option>
-            </select>
-        </label>
+            <div id="pdf-wrapper">
+            <div class="content-card">
+                <div id="results"></div>
+                <button id="exportPdfBtn" class="export-btn">📄 Ergebnis als PDF herunterladen</button>
+            </div>
 
-        <label>Wohnflaeche (m2):
-            <select id="area" required>
-                <option value="100" selected>100</option>
-                <option value="110">110</option>
-                <option value="120">120</option>
-                <option value="130">130</option>
-                <option value="140">140</option>
-                <option value="150">150</option>
-                <option value="160">160</option>
-                <option value="170">170</option>
-                <option value="180">180</option>
-                <option value="190">190</option>
-                <option value="200">200</option>
-            </select>
-        </label>
+            <div class="content-card">
+                <div id="scenario-switch" class="scenario-switch hidden">
+                  <span>Diagramm anzeigen für:</span>
+                  <button data-scenario="0" class="scenario-btn active">Nur PV</button>
+                  <button data-scenario="1" class="scenario-btn">PV + Speicher</button>
+                  <button data-scenario="2" class="scenario-btn">PV + Speicher + WP</button>
+                </div>
 
-        <label>Personen im Haushalt:
-            <select id="people" required>
-                <option value="1">1</option>
-                <option value="2" selected>2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-            </select>
-        </label>
+                <div class="chart-container">
+                    <div class="chart-area">
+                        <canvas id="yearChart"></canvas>
+                        <div id="day-toggle" class="day-toggle hidden">
+                          <button data-season="summer" class="day-btn active">Sommer</button>
+                          <button data-season="winter" class="day-btn">Winter</button>
+                        </div>
+                        <canvas id="dayChart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-        <label>Isolierung:
-            <select id="insulation">
-                <option value="gut">gut - Neubau / gut saniert</option>
-                <option value="normal" selected>normal - typisch 80er-2000er</option>
-                <option value="schlecht">schlecht - 60er/70er unsaniert</option>
-            </select>
-        </label>
-
-        <label>Fussbodenheizung vorhanden?
-            <select id="floorHeating">
-                <option value="ja">Ja</option>
-                <option value="nein" selected>Nein</option>
-            </select>
-        </label>
-
-        <label>Klimaanlage geplant?
-            <select id="aircon">
-                <option value="nein">Nein</option>
-                <option value="ja">Ja</option>
-            </select>
-        </label>
-
-        <label>Wallbox geplant?:
-            <select id="wallbox">
-                <option value="nein" selected>Nein</option>
-                <option value="ja">Ja</option>
-            </select>
-        </label>
-
-        <div class="optional-block">
-            <h3>Optionale Angaben fuer Foerderprogramme</h3>
-            <p class="hint">Hausalter wird genutzt, um Foerderhinweise (z. B. BEG) passender einzuschaetzen.</p>
-            <label>Alter des Hauses (JJJJ):
-                <input type="number" id="houseAge" min="1900" />
-            </label>
-
-            <label>Bundesland:
-                <select id="bundesland">
-                    <option value="">Bitte waehlen</option>
-                    <option value="BW">Baden-Wuerttemberg</option>
-                    <option value="BY">Bayern</option>
-                    <option value="BE">Berlin</option>
-                    <option value="BB">Brandenburg</option>
-                    <option value="HB">Bremen</option>
-                    <option value="HH">Hamburg</option>
-                    <option value="HE">Hessen</option>
-                    <option value="MV">Mecklenburg-Vorpommern</option>
-                    <option value="NI">Niedersachsen</option>
-                    <option value="NW">Nordrhein-Westfalen</option>
-                    <option value="RP">Rheinland-Pfalz</option>
-                    <option value="SL">Saarland</option>
-                    <option value="SN">Sachsen</option>
-                    <option value="ST">Sachsen-Anhalt</option>
-                    <option value="SH">Schleswig-Holstein</option>
-                    <option value="TH">Thueringen</option>
-                </select>
-            </label>
-        </div>
-
-        <div class="button-row">
-            <button type="button" id="calcBtn">Berechnen</button>
-            <button type="button" id="resetBtn">Reset</button>
-        </div>
-    </form>
-
-    <div id="result"></div>
-    <div id="subsidyBox" class="subsidy-box" style="display:none;">
-        <h3>Foerderprogramme (unverbindlicher Hinweis)</h3>
-        <p class="note">
-            Die angezeigten Foerderprogramme sind beispielhafte Hinweise. Links fuehren zu offiziellen Foerderportalen (Foerderdatenbank.de, Energiewechsel.de, co2online), da viele Programme keine direkten, stabilen Webseiten besitzen.
-        </p>
-        <div id="subsidyContent"></div>
+            <div id="subsidyBox" class="subsidy-box content-card">
+                <h3>Förderprogramme (unverbindlicher Hinweis)</h3>
+                <p class="note">
+                    Die angezeigten Förderprogramme sind beispielhafte Hinweise. Links führen zu offiziellen Förderportalen (Foerderdatenbank.de, Energiewechsel.de, co2online), da viele Programme keine direkten, stabilen Webseiten besitzen.
+                </p>
+                <div id="subsidyContent"></div>
+            </div>
+            </div>
+        </main>
+        <footer class="site-footer">
+            <div class="footer-links">
+                <a href="impressum.html">Impressum</a>
+                <a href="datenschutz.html">Datenschutz</a>
+            </div>
+        </footer>
     </div>
 
-    <div class="legal-links">
-        <a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="scripts/script.js"></script>
 </body>
 </html>

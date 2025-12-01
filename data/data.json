@@ -46,8 +46,10 @@
     "cost_per_unit": 1300
   },
   "heatpump": {
-    "cop_floor": 4.0,
-    "cop_no_floor": 3.0,
+    "base_cop": 3.0,
+    "factor_good": 1.2,
+    "factor_bad": 0.9,
+    "factor_fbh": 1.15,
     "cost_per_kw": 1800,
     "full_load_hours": 2000
   },
@@ -64,6 +66,10 @@
     "electricity_eur_per_kwh": 0.35,
     "gas_eur_per_kwh": 0.12,
     "feed_in_eur_per_kwh": 0.08
+  },
+  "inflation": {
+    "electricity_rate": 0.02,
+    "gas_rate": 0.03
   },
   "price_inflation_rate": 0.02
 }

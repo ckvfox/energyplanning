@@ -10,13 +10,14 @@ Ein leichter, lokaler Web-Rechner zur ersten Orientierung fuer Strom- und Waerme
 - Vollstaendig clientseitig, keine Server- oder Tracking-Calls
 
 ## Projektstruktur
-- `index.html` – UI, Intro, Formulareingaben, Ergebnisbereiche
-- `style.css` – Styling, responsive Layout
+- `index.html` – UI, Intro, Formulareingaben, Ergebnisbereiche, SEO-Optimierung
+- `style.css` – Styling, responsive Layout, Accessibility
 - `scripts/script.js` – Berechnungen, Szenarien, Foerderanzeige
 - `data/data.json` – Verbrauchs- und Kostenannahmen
 - `data/subsidies.json` – Foerderprogramme (pro Bundesland/Kategorie)
 - `scripts/fetch_subsidies.py` – OpenAI-basierter Updater fuer subsidies.json
 - `.github/workflows/fetch_subsidies.yml` – Woechentlicher/Manueller Update-Job
+- `requirements.txt` – Python-Abhängigkeiten für Förderdaten-Update
 
 ## Nutzung (lokal)
 ```bash
@@ -24,6 +25,26 @@ python -m http.server 8000
 # Dann http://localhost:8000 im Browser oeffnen
 ```
 Alle Berechnungen laufen im Browser, kein Backend noetig.
+
+## Empfohlene Dateien für GitHub
+- `README.md` (dieses Dokument)
+- `requirements.txt` (für Python-Skripte)
+- `.gitignore` (z.B. für .env, __pycache__)
+- Optional: `LICENSE` (z.B. MIT)
+
+## SEO & Accessibility
+- Meta-Description, Keywords, Open Graph, strukturierte Daten (JSON-LD)
+- Barrierefreiheit: Alt-Texte, semantische Überschriften, Kontrast, responsive
+- Keine Tracking- oder Cookie-Banner, keine externen Fonts
+
+## Deployment-Tipp
+Für GitHub Pages: `index.html` im Root, relative Pfade für Assets, keine serverseitigen Abhängigkeiten.
+
+## Optimierungsempfehlungen
+- SEO: Title, Description, strukturierte Daten, Alt-Texte, Canonical-Link
+- Accessibility: ARIA-Labels, Fokus-Indikatoren, ausreichender Kontrast
+- Performance: Minimale Abhängigkeiten, keine unnötigen Skripte
+- Wartbarkeit: Styles auslagern, keine Inline-Styles
 
 ## Foerderdaten aktualisieren
 ```bash
