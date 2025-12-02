@@ -698,3 +698,82 @@ button:hover {
     background: #dce8ff;
     color: #000;
 }
+
+.input-error {
+    border: 1px solid #d32f2f !important;
+    box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.15);
+}
+
+.verbrauch-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.cost-block {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+.verbrauch-edit {
+    margin-top: 12px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background: #f8faff;
+}
+
+.verbrauch-edit label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.verbrauch-edit input {
+    width: 180px;
+    padding: 6px 8px;
+    margin-left: 8px;
+}
+
+.verbrauch-hinweis {
+    margin-top: 12px;
+    background: #eef6ff;
+    border-left: 4px solid #4c9aff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.hinweis-icon {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+#btn_reset_defaults {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: #e8e8e8;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#btn_reset_defaults:hover {
+    background: #dcdcdc;
+}
+
+.verbrauch-edit label input {
+    width: 180px;
+}
+
+#btn_reset_defaults.primary {
+    background: #007bff;
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+#btn_reset_defaults.primary:hover {
+    background: #005fcc;
+}

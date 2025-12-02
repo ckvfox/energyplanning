@@ -1,15 +1,20 @@
-async function loadData() {
-
-    const response = await fetch('data/data.json');
-
+async function fetchJson(url, friendlyName = 'Daten') {
+    const response = await fetch(url);
+    const text = await response.text();
+    const snippet = text.slice(0, 200).replace(/\s+/g, ' ').trim();
     if (!response.ok) {
-
-        throw new Error('Daten konnten nicht geladen werden');
-
+        throw new Error(`${friendlyName} konnten nicht geladen werden (${response.status} ${response.statusText}). Antwort: ${snippet || 'leer'}`);
     }
+    try {
+        return JSON.parse(text);
+    } catch (err) {
+        throw new Error(`${friendlyName} ungültig (${err.message}). Antwort beginnt mit: ${snippet || 'leer'}`);
+    }
+}
 
-    return response.json();
-
+async function loadData() {
+    const dataUrl = new URL('data/data.json', document.baseURI).toString();
+    return fetchJson(dataUrl, 'Stammdaten');
 }
 
 
@@ -504,11 +509,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadSubsidies() {
     try {
-        const res = await fetch('data/subsidies.json');
-        if (!res.ok) {
-            return {};
-        }
-        return await res.json();
+        const subsidiesUrl = new URL('data/subsidies.json', document.baseURI).toString();
+        return await fetchJson(subsidiesUrl, 'Förderdaten');
     } catch (err) {
         console.error('Fehler beim Laden der Förderdaten', err);
         return {};
@@ -728,11 +730,56 @@ async function showSubsidies(houseAgeValue, bundesland) {
 
 
 
+function validateConsumptions() {
+    const labels = {
+        input_stromverbrauch: 'Haushaltsstrom',
+        input_heizwaerme: 'Heizwärmebedarf',
+        input_preis_strom: 'Strompreis',
+        input_preis_gas: 'Gaspreis',
+        input_dachflaeche: 'bebaubare Dachfläche'
+    };
+    const ids = [
+        { id: 'input_stromverbrauch', min: 500, max: 15000 },
+        { id: 'input_heizwaerme', min: 2000, max: 40000 },
+        { id: 'input_preis_strom', min: 0.10, max: 1.00 },
+        { id: 'input_preis_gas', min: 0.05, max: 0.50 },
+        { id: 'input_dachflaeche', min: 20, max: 200 }
+    ];
+    for (const f of ids) {
+        const el = document.getElementById(f.id);
+        if (!el) continue;
+        el.classList.remove('input-error');
+        const v = Number(el.value);
+        if (Number.isNaN(v) || v < f.min || v > f.max) {
+            el.classList.add('input-error');
+            const label = labels[f.id] || f.id;
+            alert(`Bitte gib einen realistischen Wert für "${label}" ein (${f.min} – ${f.max}).`);
+            el.focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 async function calculateAll() {
 
     const resultEl = document.getElementById('results');
 
     try {
+
+        // Vorhandene manuelle Eingaben merken (falls Nutzer sie schon überschrieben hat)
+        const prevStromEl = document.getElementById('input_stromverbrauch');
+        const prevHeizEl = document.getElementById('input_heizwaerme');
+        const prevPreisStromEl = document.getElementById('input_preis_strom');
+        const prevPreisGasEl = document.getElementById('input_preis_gas');
+        const prevDachEl = document.getElementById('input_dachflaeche');
+        const prevValues = {
+            strom: prevStromEl && prevStromEl.dataset.userEdited === 'true' ? Number(prevStromEl.value) : null,
+            heiz: prevHeizEl && prevHeizEl.dataset.userEdited === 'true' ? Number(prevHeizEl.value) : null,
+            preisStrom: prevPreisStromEl && prevPreisStromEl.dataset.userEdited === 'true' ? Number(prevPreisStromEl.value) : null,
+            preisGas: prevPreisGasEl && prevPreisGasEl.dataset.userEdited === 'true' ? Number(prevPreisGasEl.value) : null,
+            dach: prevDachEl && prevDachEl.dataset.userEdited === 'true' ? Number(prevDachEl.value) : null
+        };
 
         const data = await loadData();
         chartScenarioIndex = 0;
@@ -742,6 +789,28 @@ async function calculateAll() {
         // Eingaben aus dem Formular
 
         const houseType = document.getElementById('houseType').value;
+
+        // Realistische Dachflächen je Haustyp
+        const dachDefaults = {
+            reihenhaus: 50,
+            doppelhaus: 70,
+            einfamilienhaus: 100
+        };
+
+        const dachEl = document.getElementById('input_dachflaeche');
+        const roofEdited = dachEl?.dataset.userEdited === 'true';
+        let userDach = Number(dachEl?.value);
+        // Standard je Haustyp nutzen, solange keine manuelle Überschreibung
+        if (!roofEdited) {
+            userDach = dachDefaults[houseType];
+        }
+        if (!Number.isFinite(userDach) || userDach < 20 || userDach > 200) {
+            userDach = dachDefaults[houseType];
+            if (dachEl) dachEl.removeAttribute('data-user-edited');
+        }
+        if (dachEl) {
+            dachEl.value = userDach;
+        }
 
         const area = Number(document.getElementById('area').value);
 
@@ -762,11 +831,34 @@ async function calculateAll() {
         const wallboxValue = (document.getElementById('wallbox')?.value || '').toLowerCase();
         const hasWallbox = wallboxValue === 'ja';
 
-        const elPrice = data.prices.electricity_eur_per_kwh;
-
-        const gasPrice = data.prices.gas_eur_per_kwh;
-
         const feedInTariff = data.prices.feed_in_eur_per_kwh;
+
+        // Neue überschreibbare Eingaben
+        // Heizwärmebedarf (Dämmung bereits enthalten)
+        const heatingKey = houseType === 'einfamilienhaus' ? 'freistehend' : houseType;
+        const heatingPerSqm = data.consumption.heating_per_sqm[heatingKey]?.[insulation]
+            ?? data.consumption.heating_per_sqm.reihenhaus?.[insulation]
+            ?? 0;
+
+        // Haushaltsstrom (Status quo: ohne Zusatzlasten)
+        const householdElectricDefault = people * data.consumption.per_person;
+        const heatingDemandDefault = area * heatingPerSqm;
+        const householdElectric = Number.isFinite(prevValues.strom) ? prevValues.strom : householdElectricDefault;
+        const heatingDemand = Number.isFinite(prevValues.heiz) ? prevValues.heiz : heatingDemandDefault;
+
+        const elPriceDefault = data.prices.electricity_eur_per_kwh;
+        const gasPriceDefault = data.prices.gas_eur_per_kwh;
+        const elPrice = Number.isFinite(prevValues.preisStrom) ? prevValues.preisStrom : elPriceDefault;
+        const gasPrice = Number.isFinite(prevValues.preisGas) ? prevValues.preisGas : gasPriceDefault;
+        const roofDefault = dachDefaults[houseType];
+        let roofArea = Number.isFinite(prevValues.dach) ? prevValues.dach : userDach;
+        if (!Number.isFinite(roofArea) || roofArea < 20 || roofArea > 200) {
+            roofArea = roofDefault;
+            if (dachEl) dachEl.removeAttribute('data-user-edited');
+        }
+        if (dachEl) {
+            dachEl.value = roofArea;
+        }
 
         const airconUnitCost = data.costs?.aircon_cost ?? data.aircon?.cost_per_unit ?? 0;
         const wallboxUnitCost = data.costs?.wallbox_cost ?? data.wallbox?.cost_per_unit ?? 0;
@@ -785,15 +877,8 @@ async function calculateAll() {
 
 
         // Haushaltsstrom (Status quo: ohne Zusatzlasten)
-
-        const householdElectric = people * data.consumption.per_person;
-
         const airconExtra = hasAircon ? data.consumption.aircon_extra : 0;
         const wallboxExtra = hasWallbox ? data.consumption.wallbox_extra : 0;
-
-        // Heizwärmebedarf (Dämmung bereits enthalten)
-        const heatingPerSqm = data.consumption.heating_per_sqm[houseType]?.[insulation] ?? 0;
-        const heatingDemand = area * heatingPerSqm;
 
         // Wärmepumpenstrom und Leistung
         let cop = data.heatpump.base_cop;
@@ -845,6 +930,15 @@ async function calculateAll() {
                 pvKwpCandidate = Math.max(Math.ceil(totalElectricDemand / 800), 6);
             }
             let pvKwp = Math.ceil(pvKwpCandidate * 10) / 10;
+            // PV limitieren: Dachfläche / 5 m² pro kWp
+            const maxKwpFromRoof = Math.floor(roofArea / 5);
+
+            // Realistische Haustypbegrenzung (12/15/20)
+            const pvLimits = { reihenhaus: 12, doppelhaus: 15, einfamilienhaus: 20 };
+            const maxKwpHouse = pvLimits[houseType] ?? 15;
+
+            // Finaler erlaubter Wert
+            pvKwp = Math.min(pvKwp, maxKwpFromRoof, maxKwpHouse);
             const pvGeneration = pvKwp * data.pv.yield_per_kwp;
 
 
@@ -907,6 +1001,7 @@ async function calculateAll() {
                 wallboxCost,
                 extrasLabel,
                 totalCost,
+                pvHint: `Hinweis: Die PV-Empfehlung basiert auf der angenommenen Dachfläche (${roofArea} m²) und typischen Hausgrenzen (${maxKwpHouse} kWp).`,
                 gridImportTheoretical,
                 storageKwh,
                 includesAircon,
@@ -998,25 +1093,70 @@ async function calculateAll() {
         const autarkyScenario = scenarios[chartScenarioIndex] || scenarios[scenarios.length - 1];
         let baseHtml = `
             <h2>Ergebnis</h2>
-            <h3>Unterstellte Verbräuche (Status quo)</h3>
-            <p>Haushalt: ${formatNumber(householdElectric, 0)} kWh/a</p>
-            <p>Heizwärmebedarf: ${formatNumber(heatingDemand, 0)} kWh/a (Dämmzustand bereits eingerechnet)</p>
+            <div class="verbrauch-edit">
+                <h3>Unterstellte Verbräuche / Rahmendaten</h3>
+
+                <label>Haushaltsstrom (kWh/a)
+                    <input id="input_stromverbrauch" type="number" min="500" max="15000" value="${Math.round(householdElectric)}">
+                </label>
+
+                <label>Heizwärmebedarf (kWh/a)
+                    <input id="input_heizwaerme" type="number" min="2000" max="40000" value="${Math.round(heatingDemand)}">
+                </label>
+
+                <label>Strompreis (€/kWh)
+                    <input id="input_preis_strom" type="number" step="0.01" min="0.10" max="1.00" value="${elPrice.toFixed(2)}">
+                </label>
+
+                <label>Gaspreis (€/kWh)
+                    <input id="input_preis_gas" type="number" step="0.01" min="0.05" max="0.50" value="${gasPrice.toFixed(2)}">
+                </label>
+
+                <label>Realistische bebaubare Dachfläche (m²)
+                    <input id="input_dachflaeche" type="number" min="20" max="200" value="${roofArea ?? ''}">
+                </label>
+
+                <div class="verbrauch-hinweis">
+                    <span class="hinweis-icon">ℹ️</span>
+                    Falls Sie Ihre eigenen Energieverbrauchs- oder Dachflächenwerte kennen, tragen Sie diese ein.
+                    Alle Berechnungen nutzen automatisch diese Eingaben.
+                </div>
+
+                <div class="verbrauch-actions">
+                    <button id="btn_recalc_results" class="primary" type="button">Berechnen</button>
+                    <button id="btn_reset_defaults" class="primary" type="button">Zurücksetzen</button>
+                </div>
+            </div>
+            <p style="margin-top:8px; font-size:13px; color:#555;">
+            Hinweis: Die Standardwerte für Verbrauch, Energiepreise und Dachfläche passen sich automatisch an die Eingaben (Haustyp, Fläche, Personen, Dämmung) an. Eigene Werte können Sie jederzeit überschreiben.
+            </p>
             <p>Heutige jährliche Energiekosten (Strom ${formatNumber(elPrice, 2)} EUR/kWh, Gas ${formatNumber(gasPrice, 2)} EUR/kWh): ${formatNumber(baselineCost, 0)} EUR/a</p>
 
             <h3>Annahmen nach Modernisierung</h3>
             <p>Haushalt (inkl. ggf. Klima/Wallbox): ${formatNumber(modernBaseElectric, 0)} kWh/a${hasAircon ? `, davon Klima +${formatNumber(airconExtra, 0)} kWh/a` : ''}${hasWallbox ? `, Wallbox +${formatNumber(wallboxExtra, 0)} kWh/a` : ''}</p>
-            <p>Heizwärmebedarf bleibt: ${formatNumber(heatingDemand, 0)} kWh/a; Wärmepumpen-Strom (falls WP): ${formatNumber(heatpumpElectric, 0)} kWh/a, WP-Leistung: ${formatNumber(heatpumpPower, 1)} kW</p>
+            <p>Heizwärmebedarf bleibt: ${formatNumber(heatingDemand, 0)} kWh/a;</p>
+            <p>Wärmepumpen-Strom (falls WP): ${formatNumber(heatpumpElectric, 0)} kWh/a,</p>
+            <p>WP-Leistung: ${formatNumber(heatpumpPower, 1)} kW</p>
 
             <h3>Szenarien (${hasAircon ? 'mit Klimaanlage' : 'ohne Klimaanlage'}, ${hasWallbox ? 'mit Wallbox' : 'ohne Wallbox'})</h3>
             ${scenarios.map((s) => `
                 <div class="scenario scenario-block">
                     <h4>${s.label}</h4>
                     <p>Gesamtstrombedarf: ${formatNumber(s.annualConsumption, 0)} kWh/a</p>
-                    <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a, Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a, Einspeisung: ${formatNumber(s.feedIn, 0)} kWh/a (Tarif ${formatNumber(feedInTariff, 2)} EUR/kWh)</p>
+                    <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a</p>
+                    <p>Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a</p>
+                    <p>Einspeisung: ${formatNumber(s.feedIn, 0)} kWh/a (Tarif ${formatNumber(feedInTariff, 2)} EUR/kWh)</p>
                     <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp</p>
                     <p>Speicher-Empfehlung: ${s.batteryRecommended ? formatNumber(s.batteryRecommended, 1) + ' kWh' : 'kein Speicher'}</p>
                     <p>Wärmepumpe: ${s.heatpumpPower ? `${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)` : 'keine WP'}</p>
-                    <p>Kosten: PV (2025 Marktpreis ~1.850-2.400 EUR/kWp) ${formatNumber(s.pvCost, 0)} EUR, Speicher (ca. 650-750 EUR/kWh) ${formatNumber(s.batteryCost, 0)} EUR, Wärmepumpe ${formatNumber(s.heatpumpCost, 0)} EUR, ${s.extrasLabel}, Gesamt ${formatNumber(s.totalCost, 0)} EUR</p>
+                    <div class="cost-block">
+                        <strong>Kosten:</strong><br>
+                        PV (2025 Marktpreis ~1.850-2.400 EUR/kWp): ${formatNumber(s.pvCost, 0)} EUR<br>
+                        Speicher (ca. 650-750 EUR/kWh): ${formatNumber(s.batteryCost, 0)} EUR<br>
+                        Wärmepumpe: ${formatNumber(s.heatpumpCost, 0)} EUR<br>
+                        ${s.extrasLabel}<br>
+                        Gesamt: ${formatNumber(s.totalCost, 0)} EUR
+                    </div>
                     ${(() => {
                         const eq = s.co2_equivalents || {};
                         const co2ValuesValid = [s.co2_today, s.co2_after, s.co2_saving, s.co2_saving_20yr, eq.trees, eq.flights, eq.carKm]
@@ -1086,10 +1226,51 @@ async function calculateAll() {
         `;
 
         resultEl.innerHTML = baseHtml;
+        const resetValuesBtn = document.getElementById('btn_reset_defaults');
+        if (resetValuesBtn) {
+            resetValuesBtn.addEventListener('click', () => {
+                const defaultsRoof = { reihenhaus: 50, doppelhaus: 70, einfamilienhaus: 100 };
+                const strom = document.getElementById('input_stromverbrauch');
+                const heiz = document.getElementById('input_heizwaerme');
+                const stromPreis = document.getElementById('input_preis_strom');
+                const gasPreis = document.getElementById('input_preis_gas');
+                const dach = document.getElementById('input_dachflaeche');
+                const stromDefault = householdElectricDefault;
+                const heizDefault = heatingDemandDefault;
+                if (strom) { strom.value = stromDefault; strom.removeAttribute('data-user-edited'); }
+                if (heiz) { heiz.value = heizDefault; heiz.removeAttribute('data-user-edited'); }
+                if (stromPreis) { stromPreis.value = elPriceDefault; stromPreis.removeAttribute('data-user-edited'); }
+                if (gasPreis) { gasPreis.value = gasPriceDefault; gasPreis.removeAttribute('data-user-edited'); }
+                if (dach) { dach.value = defaultsRoof[houseType]; dach.removeAttribute('data-user-edited'); }
+            });
+        }
+        const recalcBtn = document.getElementById('btn_recalc_results');
+        if (recalcBtn) {
+            recalcBtn.addEventListener('click', () => {
+                // Werte aus den Feldern übernehmen und als manuell markiert
+                ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche'].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.dataset.userEdited = 'true';
+                    }
+                });
+                if (!validateConsumptions()) return;
+                calculateAll();
+            });
+        }
         const pdfBtn = document.getElementById('exportPdfBtn');
         if (pdfBtn) {
             pdfBtn.style.display = 'block';
         }
+        // Markiere manuelle Eingaben
+        ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', () => {
+                    el.dataset.userEdited = 'true';
+                });
+            }
+        });
         await showSubsidies(houseAgeValue, bundesland);
     } catch (err) {
 
@@ -1101,9 +1282,13 @@ async function calculateAll() {
 
 
 
-document.getElementById('calcBtn').addEventListener('click', calculateAll);
-
-
+const calcBtn = document.getElementById('calcBtn');
+if (calcBtn) {
+    calcBtn.addEventListener('click', () => {
+        if (!validateConsumptions()) return;
+        calculateAll();
+    });
+}
 
 const resetBtn = document.getElementById('resetBtn');
 
