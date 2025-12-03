@@ -1216,26 +1216,27 @@ async function calculateAll() {
             <h2>Ergebnis</h2>
             <div class="verbrauch-edit">
                 <h3>Unterstellte Verbräuche / Rahmendaten</h3>
+                <div class="verbrauch-grid">
+                    <label>Haushaltsstrom (kWh/a)
+                        <input id="input_stromverbrauch" type="number" min="500" max="15000" value="${Math.round(householdElectric)}">
+                    </label>
 
-                <label>Haushaltsstrom (kWh/a)
-                    <input id="input_stromverbrauch" type="number" min="500" max="15000" value="${Math.round(householdElectric)}">
-                </label>
+                    <label>Heizwärmebedarf (kWh/a)
+                        <input id="input_heizwaerme" type="number" min="2000" max="40000" value="${Math.round(heatingDemand)}">
+                    </label>
 
-                <label>Heizwärmebedarf (kWh/a)
-                    <input id="input_heizwaerme" type="number" min="2000" max="40000" value="${Math.round(heatingDemand)}">
-                </label>
+                    <label>Strompreis (€/kWh)
+                        <input id="input_preis_strom" type="number" step="0.01" min="0.10" max="1.00" value="${elPrice.toFixed(2)}">
+                    </label>
 
-                <label>Strompreis (€/kWh)
-                    <input id="input_preis_strom" type="number" step="0.01" min="0.10" max="1.00" value="${elPrice.toFixed(2)}">
-                </label>
+                    <label>Gaspreis (€/kWh)
+                        <input id="input_preis_gas" type="number" step="0.01" min="0.05" max="0.50" value="${gasPrice.toFixed(2)}">
+                    </label>
 
-                <label>Gaspreis (€/kWh)
-                    <input id="input_preis_gas" type="number" step="0.01" min="0.05" max="0.50" value="${gasPrice.toFixed(2)}">
-                </label>
-
-                <label>Realistische bebaubare Dachfläche (m²)
-                    <input id="input_dachflaeche" type="number" min="20" max="200" value="${roofArea ?? ''}">
-                </label>
+                    <label>Realistische bebaubare Dachfläche (m²)
+                        <input id="input_dachflaeche" type="number" min="20" max="200" value="${roofArea ?? ''}">
+                    </label>
+                </div>
 
                 <div class="verbrauch-hinweis">
                     <span class="hinweis-icon">ℹ️</span>
@@ -1259,7 +1260,7 @@ async function calculateAll() {
             <p>Heizwärmebedarf bleibt: ${formatNumber(heatingDemand, 0)} kWh/a;</p>
             <p>Wärmepumpen-Strom (falls WP): ${formatNumber(heatpumpElectric, 0)} kWh/a,</p>
             <p>WP-Leistung: ${formatNumber(heatpumpPower, 1)} kW</p>
-            ${wallboxHintText ? `<p class="note">${wallboxHintText} Bevorzugte Nachtladung bei Speicher, um Netzlast zu senken. Zusätzlich ersetzt das E-Auto einen Verbrenner (~1.940 EUR/Jahr Sprit, ~1.522 kg CO₂/a Einsparung).</p>` : ''}
+            ${wallboxHintText ? `<p class="note">${wallboxHintText} Bevorzugte Nachtladung bei Speicher, um Netzlast zu senken. Zusätzlich ersetzt das E-Auto einen typischen Mittelklasse-Verbrenner (Annahme: VW Passat 1.5 TSI, ca. 15.000 km/a, Verbrauch ~7,0 l/100 km, jährliche Kraftstoffkosten ~1.940 EUR).</p>` : ''}
             ${warnings.length ? `<div class="warn-box">${warnings.map((w) => `<p>${w}</p>`).join('')}</div>` : ''}
 
             <h3>Szenarien (${hasAircon ? 'mit Klimaanlage' : 'ohne Klimaanlage'}, ${hasWallbox ? 'mit Wallbox' : 'ohne Wallbox'})</h3>
@@ -1272,7 +1273,7 @@ async function calculateAll() {
                     <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp</p>
                     <p>Speicher-Empfehlung: ${s.batteryRecommended ? formatNumber(s.batteryRecommended, 1) + ' kWh' : 'kein Speicher'}</p>
                     <p>Wärmepumpe: ${s.heatpumpPower ? `${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)` : 'keine WP'}</p>
-                    ${hasWallbox ? `<p>Mobilität: EV-Ladung ${formatNumber(wallboxExtra, 0)} kWh/a${s.evFromBattery ? `, davon ${formatNumber(s.evFromBattery, 0)} kWh/a nachts aus Speicher` : ''}. Ersetzte Spritkosten: ~1.940 EUR/a, CO₂-Einsparung ~1.522 kg/a.</p>` : ''}
+                    ${hasWallbox ? `<p>EV-Ladung: ${formatNumber(wallboxExtra, 0)} kWh/a</p>` : ''}
                     <div class="cost-block">
                         <strong>Kosten:</strong><br>
                         PV (2025 Marktpreis ~1.850-2.400 EUR/kWp): ${formatNumber(s.pvCost, 0)} EUR<br>
@@ -1452,3 +1453,15 @@ if (resetBtn) {
 
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const backToTop = document.getElementById('backToTop');
+    if (!backToTop) return;
+    const toggle = () => {
+        backToTop.style.display = window.scrollY > 300 ? 'flex' : 'none';
+    };
+    window.addEventListener('scroll', toggle);
+    toggle();
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+});

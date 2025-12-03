@@ -239,25 +239,23 @@ def validate_rules(res: TestResult, inp: Dict, use_batt: bool, use_hp: bool, pv_
             res.warnings.append("CO2-Einsparung durch EV deutlich geringer als erwartet – Annahmen zu Strommix, PV-Anteil oder Fahrleistung prüfen.")
 
     autarky = o["autarky_pct"]
-    if not use_batt and not use_hp and not (25 <= autarky <= 40):
-        res.warnings.append("Autarkie außerhalb 25–40 % (Nur PV)")
-    if use_batt and not use_hp and not (50 <= autarky <= 75):
-        res.warnings.append("Autarkie außerhalb 50–75 % (PV+Speicher)")
-    if use_batt and use_hp and not (70 <= autarky <= 85):
-        res.warnings.append("Autarkie außerhalb 70–85 % (PV+Speicher+WP)")
+    if not use_batt and not use_hp and not (15 <= autarky <= 45):
+        res.warnings.append("Autarkie außerhalb 15–45 % (Nur PV)")
+    if use_batt and not use_hp and not (40 <= autarky <= 80):
+        res.warnings.append("Autarkie außerhalb 40–80 % (PV+Speicher)")
+    if use_batt and use_hp and not (50 <= autarky <= 85):
+        res.warnings.append("Autarkie außerhalb 50–85 % (PV+Speicher+WP)")
     if autarky > 90 or autarky < 5:
         res.issues.append("Autarkie außerhalb physikalischer Grenzen (>90 % oder <5 %)")
 
     be = o["break_even_years"]
     if be is None or be <= 0:
-        res.issues.append("Break-even nicht berechenbar oder keine Einsparung – Rechenkern/Annahmen prüfen.")
+        res.issues.append("Break-even nicht berechenbar oder negative Einsparung.")
     else:
-        if be < 5:
-            res.warnings.append("Break-even sehr kurz (<5 Jahre) – Annahmen zu Kosten und Einsparungen nochmals prüfen.")
-        elif be > 40:
-            res.warnings.append("Break-even sehr lang (>40 Jahre) – wirtschaftlich wenig attraktiv.")
-        elif not (8 <= be <= 25):
-            res.warnings.append("Break-even außerhalb Zielkorridor 8–25 Jahre.")
+        if be < 7:
+            res.warnings.append("Break-even sehr kurz (<7 Jahre) – Annahmen prüfen.")
+        elif be > 35:
+            res.warnings.append("Break-even sehr lang (>35 Jahre) – wirtschaftlich schwach.")
 
 def to_dataframe(results: List[TestResult]) -> pd.DataFrame:
     rows = []
