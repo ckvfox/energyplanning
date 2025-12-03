@@ -1289,7 +1289,7 @@ async function calculateAll() {
                         if (!co2ValuesValid) return '';
                         const treesRounded = Math.round(eq.trees);
                         const flightsRounded = Math.round(eq.flights);
-                        const carKmRounded = Math.round(eq.carKm);
+                        const carKmRounded = Math.round(eq.carKm / 1000) * 1000;
                         return `
                             <div class="co2-box">
                                 <h4>🌱 CO₂-Bilanz</h4>
@@ -1298,7 +1298,7 @@ async function calculateAll() {
                                 <p><strong>Einsparung: ${formatNumber(s.co2_saving, 0)} kg CO₂/a</strong></p>
                                 <p>20-Jahres-Einsparung (mit Energiepreissteigerung): ${formatNumber(s.co2_saving_20yr, 0)} kg</p>
                                 <hr>
-                                <p>~ ${treesRounded} Bäume</p>
+                                <p>≈ ${treesRounded} Bäume, die jeweils ein Jahr lang wachsen (CO₂-Aufnahme eines durchschnittlichen Baumes pro Jahr).</p>
                                 <p>~ ${formatNumber(flightsRounded, 0)} Mallorca-Flüge (Hin- und Rückflug)</p>
                                 <p>~ ${formatNumber(carKmRounded, 0)} km Autofahren (Verbrenner)</p>
                                 <p class="note">Hinweis: Die CO₂-Emissionen aus der Herstellung der Photovoltaikanlage werden nicht berücksichtigt, was die Bilanz geringfügig verändern würde.</p>
