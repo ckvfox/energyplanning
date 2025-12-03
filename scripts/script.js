@@ -25,6 +25,57 @@ function clamp(value, min, max) {
 
 }
 
+function roofPvLimit(roofArea) {
+    const area = Number.isFinite(roofArea) ? roofArea : 0;
+    return Math.max(0, Math.floor(area / 7)); // 7 m² pro kWp laut Vorgabe
+}
+
+function estimateEnergyBalance({
+    pvKwp,
+    batteryKwh,
+    annualLoadKwh,
+    pvYieldPerKwp,
+    hasHeatpump = false,
+    hasEv = false,
+    evLoadKwh = 0
+}) {
+    const roundtripEff = 0.85;
+    const pvGeneration = Math.max(0, pvKwp) * pvYieldPerKwp;
+    const directShare = batteryKwh > 0 ? 0.45 : 0.35;
+
+    const directSelf = Math.min(annualLoadKwh * directShare, pvGeneration * 0.9);
+    const pvSurplus = Math.max(pvGeneration - directSelf, 0);
+
+    let batteryDelivered = 0;
+    if (batteryKwh > 0) {
+        const dailyUsable = batteryKwh * 0.7;
+        const annualUsablePv = dailyUsable * 365; // max. 1 Vollzyklus pro Tag
+        const pvForBattery = Math.min(pvSurplus, annualUsablePv);
+        batteryDelivered = pvForBattery * roundtripEff;
+    }
+
+    const selfUse = Math.min(annualLoadKwh, directSelf + batteryDelivered);
+    const feedIn = Math.max(0, pvGeneration - selfUse);
+    const gridImport = Math.max(0, annualLoadKwh - selfUse);
+
+    const evFromBattery = hasEv && batteryKwh > 0
+        ? Math.round(Math.min(evLoadKwh * 0.5, batteryDelivered * 0.4))
+        : 0;
+
+    const autarkyPct = annualLoadKwh > 0 ? (selfUse / annualLoadKwh) * 100 : 0;
+
+    return {
+        pvGeneration,
+        directSelf,
+        batteryDelivered,
+        selfUse,
+        gridImport,
+        feedIn,
+        autarky: autarkyPct,
+        evFromBattery
+    };
+}
+
 
 
 function formatNumber(value, digits = 1) {
@@ -68,8 +119,8 @@ function calculateCO2Today(householdElectric, heatingDemand, data) {
         + heatingDemand * data.co2.gas_factor;
 }
 
-function calculateCO2After(annualConsumption, heatingDemand, scenario, data) {
-    const electricityCO2 = annualConsumption * data.co2.electricity_factor;
+function calculateCO2After(annualGridImport, heatingDemand, scenario, data) {
+    const electricityCO2 = annualGridImport * data.co2.electricity_factor;
     const gasCO2 = scenario.includeHeatpump ? 0 : heatingDemand * data.co2.gas_factor;
     return electricityCO2 + gasCO2;
 }
@@ -895,6 +946,11 @@ async function calculateAll() {
         const evKwhPer100Km = data.consumption.ev?.kwh_per_100km ?? 17;
         const evModel = data.consumption.ev?.model || 'VW ID.4 (meistverkauftes E-Auto)';
         const wallboxExtra = hasWallbox ? (evAnnualKm / 100) * evKwhPer100Km : 0;
+        const combustionLitres = hasWallbox ? (evAnnualKm / 100) * 7.0 : 0;
+        const combustionCo2Factor = 2.3; // kg CO2/L
+        const combustionCo2Annual = combustionLitres * combustionCo2Factor;
+        const evCo2Factor = 0.35; // kg CO2/kWh Strommix
+        const evFuelCost = combustionLitres * 1.85; // 7 L/100 km * 1,85 EUR
         const wallboxHintText = hasWallbox
             ? `Wallbox-Mehrverbrauch: ${formatNumber(wallboxExtra, 0)} kWh/a (Annahme: ${evModel}, ca. ${formatNumber(evAnnualKm, 0)} km/a, ~${formatNumber(evKwhPer100Km, 1)} kWh/100 km).`
             : '';
@@ -957,8 +1013,9 @@ async function calculateAll() {
             cop *= data.heatpump.factor_bad;
         }
         if (hasFloorHeating) {
-            cop *= data.heatpump.factor_fbh;
+            cop *= 1.1;
         }
+        cop = clamp(cop, 2.5, 3.5);
         const heatpumpElectric = heatingDemand / cop;
         const heatpumpPower = heatingDemand / data.heatpump.full_load_hours;
 
@@ -967,7 +1024,8 @@ async function calculateAll() {
 
         const baselineElectric = householdElectric;
         const baselineGas = heatingDemand;
-        const baselineCost = baselineElectric * elPrice + baselineGas * gasPrice;
+        const baselineFuel = hasWallbox ? evFuelCost : 0;
+        const baselineCost = baselineElectric * elPrice + baselineGas * gasPrice + baselineFuel;
         const baselineElectricCost = baselineElectric * elPrice;
         const baselineGasCost = baselineGas * gasPrice;
 
@@ -975,7 +1033,11 @@ async function calculateAll() {
         // Modernisierungs-Verbrauch (mit optionalen Zusatzlasten)
         const modernBaseElectric = householdElectric + airconExtra + wallboxExtra;
 
-        const co2Today = calculateCO2Today(householdElectric, heatingDemand, data);
+        const totalElectricAll = modernBaseElectric + heatpumpElectric;
+
+        const co2Today = calculateCO2Today(householdElectric, heatingDemand, data) + (hasWallbox ? combustionCo2Annual : 0);
+
+        const warnings = [];
 
         // Drei Szenarien
         const scenarios = [
@@ -986,40 +1048,40 @@ async function calculateAll() {
 
             const includesAircon = hasAircon;
             const includesWallbox = hasWallbox;
-            const annualConsumption = modernBaseElectric + (scenario.includeHeatpump ? heatpumpElectric : 0);
+            const householdBlock = householdElectric;
+            const acBlock = includesAircon ? airconExtra : 0;
+            const evBlock = includesWallbox ? wallboxExtra : 0;
+            const heatpumpBlock = scenario.includeHeatpump ? heatpumpElectric : 0;
+            const annualConsumption = householdBlock + acBlock + evBlock + heatpumpBlock;
             const gasUse = scenario.includeHeatpump ? 0 : heatingDemand;
 
-            // PV sizing an marktübliche Angebotsgrößen angepasst
+            // PV sizing dynamisch anhand Verbrauch + Dach
             const totalElectricDemand = annualConsumption;
-            let pvKwpCandidate;
-            if (scenario.includeHeatpump) {
-                pvKwpCandidate = Math.max(Math.ceil((totalElectricDemand + heatpumpElectric) / 850), 8);
-            } else {
-                pvKwpCandidate = Math.max(Math.ceil(totalElectricDemand / 800), 6);
-            }
-            let pvKwp = Math.ceil(pvKwpCandidate * 10) / 10;
-            // PV limitieren: Dachfläche / 5 m² pro kWp
-            const maxKwpFromRoof = Math.floor(roofArea / 5);
+            let pvKwpCandidate = totalElectricDemand / 900;
+            // PV limitieren: Dachfläche / 7 m² pro kWp
+            const maxKwpFromRoof = roofPvLimit(roofArea);
 
             // Realistische Haustypbegrenzung (12/15/20)
             const pvLimits = { reihenhaus: 12, doppelhaus: 15, einfamilienhaus: 20 };
             const maxKwpHouse = pvLimits[houseType] ?? 15;
 
+            if (pvKwpCandidate > maxKwpFromRoof) {
+                warnings.push(`Die maximal mögliche PV-Leistung liegt bei ${formatNumber(maxKwpFromRoof, 0)} kWp; mehr ist auf der verfügbaren Dachfläche nicht realisierbar.`);
+            }
+
             // Finaler erlaubter Wert
-            pvKwp = Math.min(pvKwp, maxKwpFromRoof, maxKwpHouse);
+            let pvKwp = Math.min(pvKwpCandidate, maxKwpFromRoof, maxKwpHouse);
+            pvKwp = Math.max(0, Math.round(pvKwp * 10) / 10);
             const pvGeneration = pvKwp * data.pv.yield_per_kwp;
 
 
-            // Speicher sizing (6-14 kWh Clamp)
-
+            // Speicher sizing (5-12 kWh Clamp, 1 Zyklus/Tag)
             const dailyUse = annualConsumption / 365;
-            const nightLoad = dailyUse * 0.5;
-            const batteryMin = nightLoad * data.battery.recommended_factor_min;
-            const batteryMax = nightLoad * data.battery.recommended_factor_max;
             const batteryRecommended = scenario.includeBattery
-                ? clamp((batteryMin + batteryMax) / 2, 6, 14)
+                ? clamp(dailyUse * 0.8, 5, 12)
                 : 0;
-            const storageKwh = scenario.includeBattery ? batteryRecommended : 0;
+            const dailyPv = pvKwp * data.pv.yield_per_kwp / 365;
+            const storageKwh = scenario.includeBattery ? Math.min(batteryRecommended, dailyPv * 2) : 0;
 
 
             // Kosten
@@ -1040,18 +1102,18 @@ async function calculateAll() {
 
                 : 'Klimaanlage/Wallbox nicht ausgewählt';
 
-
-
-            // Betriebskosten (mit PV, Einspeisevergütung) - theoretische Bilanz
-            const storageBoost = scenario.includeBattery ? 0.7 : 0.35;
-            const selfUseTheoretical = Math.min(totalElectricDemand, pvGeneration * storageBoost);
-            const feedInTheoretical = Math.max(pvGeneration - selfUseTheoretical, 0);
-            const gridImportTheoretical = Math.max(totalElectricDemand - selfUseTheoretical, 0);
-
-            // CO₂ nachher (theoretischer Netzbezug wird später überschrieben)
+            // Realistische Energieflüsse (1 Zyklus/Tag, Verluste, nächtliche EV-Ladung)
             const gasNew = scenario.includeHeatpump ? 0 : heatingDemand;
-            // Autarkie-Heuristiken (für Anzeige) und realistischen Netzbezug ableiten
-            // totalElectricDemand bereits oben ermittelt
+            const energyBalance = estimateEnergyBalance({
+                pvKwp,
+                batteryKwh: storageKwh,
+                annualLoadKwh: totalElectricDemand,
+                pvYieldPerKwp: data.pv.yield_per_kwp,
+                hasHeatpump: scenario.includeHeatpump,
+                hasEv: includesWallbox,
+                evLoadKwh: evBlock
+            });
+
             const scenarioResult = {
                 label: scenario.label,
                 name: scenario.label,
@@ -1070,82 +1132,59 @@ async function calculateAll() {
                 extrasLabel,
                 totalCost,
                 pvHint: `Hinweis: Die PV-Empfehlung basiert auf der angenommenen Dachfläche (${roofArea} m²) und typischen Hausgrenzen (${maxKwpHouse} kWp).`,
-                gridImportTheoretical,
+                gridImportTheoretical: energyBalance.gridImport,
                 storageKwh,
                 includesAircon,
                 includesWallbox,
                 includeAC: includesAircon,
                 includeAircon: includesAircon,
-                includeHeatpump: scenario.includeHeatpump
+                includeHeatpump: scenario.includeHeatpump,
+                householdBlock,
+                climateBlock: acBlock,
+                evBlock,
+                heatpumpBlock
             };
+
+            let autarkyPct = clamp(energyBalance.autarky, 5, 90);
             if (!scenario.includeBattery && !scenario.includeHeatpump) {
-                let stromAutarkie = 0.28 + 0.02 * (pvKwp - 2);
-                stromAutarkie = Math.max(20, Math.min(45, stromAutarkie * 100));
-                scenarioResult.stromAutarky = Math.round(stromAutarkie);
+                autarkyPct = clamp(autarkyPct, 25, 40);
             } else if (scenario.includeBattery && !scenario.includeHeatpump) {
-                let stromAutarkie = 0.55 + 0.03 * (pvKwp - 4);
-                stromAutarkie = Math.max(45, Math.min(80, stromAutarkie * 100));
-                scenarioResult.stromAutarky = Math.round(stromAutarkie);
+                autarkyPct = clamp(autarkyPct, 50, 75);
             } else {
-                const minGridShare = 0.20;
-                const assumedGrid = Math.max(totalElectricDemand * minGridShare, totalElectricDemand - pvGeneration * 0.8);
-                const stromAutarkie = Math.max(0, Math.min(100, ((totalElectricDemand - assumedGrid) / totalElectricDemand) * 100));
-                scenarioResult.stromAutarky = Math.round(stromAutarkie);
+                autarkyPct = clamp(autarkyPct, 70, 85);
             }
+            scenarioResult.stromAutarky = Math.round(autarkyPct);
 
-            // Netzstrom und Einspeisung realistisch aus Autarkie ableiten
-            const realAutarky = Math.max(0, Math.min(1, scenarioResult.stromAutarky / 100));
-            let gridImportRealistic = Math.round(totalElectricDemand * (1 - realAutarky));
-            let evFromBattery = 0;
-
-            if (includesWallbox && scenario.includeBattery && storageKwh > 0) {
-                const consumptionWithoutEv = modernBaseElectric - wallboxExtra + (scenario.includeHeatpump ? heatpumpElectric : 0);
-                const pvSurplusForEv = Math.max(pvGeneration - consumptionWithoutEv, 0);
-                const batteryThroughputYear = storageKwh * 365 * 0.9; // angenommene tägliche Zyklen und Verluste
-                const potentialEvFromStorage = Math.max(0, Math.min(wallboxExtra, pvSurplusForEv, batteryThroughputYear));
-                const additionalSelfUse = Math.min(potentialEvFromStorage, gridImportRealistic);
-                gridImportRealistic = Math.max(0, gridImportRealistic - additionalSelfUse);
-                evFromBattery = Math.round(potentialEvFromStorage);
-            }
-
-            const selfUseRealistic = Math.max(0, totalElectricDemand - gridImportRealistic);
-            const feedInRealistic = Math.max(0, pvGeneration - selfUseRealistic);
-
-            scenarioResult.gridImportTheoretical = gridImportTheoretical;
-            scenarioResult.gridImportKwh = gridImportRealistic;
-            scenarioResult.gridElectric = gridImportRealistic;
-            scenarioResult.feedIn = feedInRealistic;
+            scenarioResult.gridImportKwh = Math.round(energyBalance.gridImport);
+            scenarioResult.gridElectric = scenarioResult.gridImportKwh;
+            scenarioResult.feedIn = Math.round(energyBalance.feedIn);
             scenarioResult.heizAutarky = scenario.includeHeatpump ? 100 : 0;
-            scenarioResult.evFromBattery = evFromBattery;
+            scenarioResult.evFromBattery = energyBalance.evFromBattery;
             scenarioResult.evAnnual = hasWallbox ? wallboxExtra : 0;
 
             // Betriebskosten mit realistischem Netzstrom
-            const annualElectricCost = gridImportRealistic * elPrice - feedInRealistic * feedInTariff;
+            const annualElectricCost = scenarioResult.gridImportKwh * elPrice - scenarioResult.feedIn * feedInTariff;
             const annualGasCost = gasUse * gasPrice;
-            const annualSavingElectric = baselineElectricCost - annualElectricCost;
-            const annualSavingGas = baselineGasCost - annualGasCost;
             const annualCost = annualElectricCost + annualGasCost;
+            const annualSaving = baselineCost - annualCost;
             scenarioResult.annualCost = annualCost;
-            scenarioResult.savings = annualSavingElectric + annualSavingGas;
+            scenarioResult.savings = annualSaving;
             scenarioResult.savings20yr = calculateSavingsOverYearsDynamic(
-                annualSavingElectric,
-                annualSavingGas,
+                annualSaving,
+                0,
                 data.inflation.electricity_rate,
-                data.inflation.gas_rate,
+                0,
                 20
             );
             scenarioResult.breakEvenDynamic = scenarioResult.savings > 0
-                ? calculateBreakEvenDynamic(
-                    Math.max(0, totalCost - extrasCost),
-                    annualSavingElectric,
-                    annualSavingGas,
-                    data.inflation.electricity_rate,
-                    data.inflation.gas_rate
-                )
+                ? Math.max(0, totalCost) / scenarioResult.savings
                 : null;
 
             // CO₂ mit realistischem Netzbezug
-            const co2_after = calculateCO2After(gridImportRealistic, gasNew, scenario, data);
+            const gridEvShare = hasWallbox ? Math.min(scenarioResult.gridImportKwh, wallboxExtra) : 0;
+            const gridOther = Math.max(0, scenarioResult.gridImportKwh - gridEvShare);
+            const electricityCO2 = (hasWallbox ? wallboxExtra * evCo2Factor : 0) + gridOther * data.co2.electricity_factor;
+            const co2_after = electricityCO2 + (scenario.includeHeatpump ? 0 : heatingDemand) * data.co2.gas_factor;
             const co2_saving = co2Today - co2_after;
             const co2_saving_20yr = calculateCO2SavingsOverYears(co2_saving, data.inflation.electricity_rate, 20);
             const equivalents = calculateCO2Equivalents(co2_saving_20yr, data);
@@ -1215,24 +1254,25 @@ async function calculateAll() {
             <p>Heutige jährliche Energiekosten (Strom ${formatNumber(elPrice, 2)} EUR/kWh, Gas ${formatNumber(gasPrice, 2)} EUR/kWh): ${formatNumber(baselineCost, 0)} EUR/a</p>
 
             <h3>Annahmen nach Modernisierung</h3>
-            <p>Haushalt (inkl. ggf. Klima/Wallbox): ${formatNumber(modernBaseElectric, 0)} kWh/a${hasAircon ? `, davon Klima +${formatNumber(airconExtra, 0)} kWh/a` : ''}${hasWallbox ? `, Wallbox +${formatNumber(wallboxExtra, 0)} kWh/a` : ''}</p>
+            <p>Verbrauchsblöcke (kWh/a): Haushalt ${formatNumber(householdElectric, 0)}, Klima ${formatNumber(airconExtra, 0)}, Wallbox ${formatNumber(wallboxExtra, 0)}, Wärmepumpe ${formatNumber(heatpumpElectric, 0)}.</p>
+            <p>Summe Strom (inkl. ggf. WP): ${formatNumber(totalElectricAll, 0)} kWh/a</p>
             <p>Heizwärmebedarf bleibt: ${formatNumber(heatingDemand, 0)} kWh/a;</p>
             <p>Wärmepumpen-Strom (falls WP): ${formatNumber(heatpumpElectric, 0)} kWh/a,</p>
             <p>WP-Leistung: ${formatNumber(heatpumpPower, 1)} kW</p>
-            ${wallboxHintText ? `<p class="note">${wallboxHintText} Bevorzugte Nachtladung bei Speicher, um Netzlast zu senken.</p>` : ''}
+            ${wallboxHintText ? `<p class="note">${wallboxHintText} Bevorzugte Nachtladung bei Speicher, um Netzlast zu senken. Zusätzlich ersetzt das E-Auto einen Verbrenner (~1.940 EUR/Jahr Sprit, ~1.522 kg CO₂/a Einsparung).</p>` : ''}
+            ${warnings.length ? `<div class="warn-box">${warnings.map((w) => `<p>${w}</p>`).join('')}</div>` : ''}
 
             <h3>Szenarien (${hasAircon ? 'mit Klimaanlage' : 'ohne Klimaanlage'}, ${hasWallbox ? 'mit Wallbox' : 'ohne Wallbox'})</h3>
             ${scenarios.map((s) => `
                 <div class="scenario scenario-block">
                     <h4>${s.label}</h4>
-                    <p>Gesamtstrombedarf: ${formatNumber(s.annualConsumption, 0)} kWh/a</p>
-                    <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a</p>
-                    <p>Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a</p>
+                    <p>Verbräuche (kWh/a): Haushalt ${formatNumber(s.householdBlock, 0)}, Klima ${formatNumber(s.climateBlock, 0)}, Wallbox ${formatNumber(s.evBlock, 0)}, Wärmepumpe ${formatNumber(s.heatpumpBlock, 0)}, Summe ${formatNumber(s.annualConsumption, 0)}</p>
+                    <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a | Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a</p>
                     <p>Einspeisung: ${formatNumber(s.feedIn, 0)} kWh/a (Tarif ${formatNumber(feedInTariff, 2)} EUR/kWh)</p>
                     <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp</p>
                     <p>Speicher-Empfehlung: ${s.batteryRecommended ? formatNumber(s.batteryRecommended, 1) + ' kWh' : 'kein Speicher'}</p>
                     <p>Wärmepumpe: ${s.heatpumpPower ? `${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)` : 'keine WP'}</p>
-                    ${hasWallbox ? `<p>EV-Ladung: ${formatNumber(wallboxExtra, 0)} kWh/a${s.evFromBattery ? `, davon ${formatNumber(s.evFromBattery, 0)} kWh/a nachts aus dem Speicher gespeist` : ''}.</p>` : ''}
+                    ${hasWallbox ? `<p>Mobilität: EV-Ladung ${formatNumber(wallboxExtra, 0)} kWh/a${s.evFromBattery ? `, davon ${formatNumber(s.evFromBattery, 0)} kWh/a nachts aus Speicher` : ''}. Ersetzte Spritkosten: ~1.940 EUR/a, CO₂-Einsparung ~1.522 kg/a.</p>` : ''}
                     <div class="cost-block">
                         <strong>Kosten:</strong><br>
                         PV (2025 Marktpreis ~1.850-2.400 EUR/kWp): ${formatNumber(s.pvCost, 0)} EUR<br>
@@ -1251,15 +1291,15 @@ async function calculateAll() {
                         const carKmRounded = Math.round(eq.carKm);
                         return `
                             <div class="co2-box">
-                                <h4>🌍 CO₂-Bilanz</h4>
+                                <h4>🌱 CO₂-Bilanz</h4>
                                 <p>Heute: ${formatNumber(s.co2_today, 0)} kg CO₂/a</p>
                                 <p>Nachher: ${formatNumber(s.co2_after, 0)} kg CO₂/a</p>
                                 <p><strong>Einsparung: ${formatNumber(s.co2_saving, 0)} kg CO₂/a</strong></p>
                                 <p>20-Jahres-Einsparung (mit Energiepreissteigerung): ${formatNumber(s.co2_saving_20yr, 0)} kg</p>
                                 <hr>
-                                <p>≈ ${treesRounded} Bäume</p>
-                                <p>≈ ${formatNumber(flightsRounded, 0)} Mallorca-Flüge (Hin- und Rückflug)</p>
-                                <p>≈ ${formatNumber(carKmRounded, 0)} km Autofahren (Verbrenner)</p>
+                                <p>~ ${treesRounded} Bäume</p>
+                                <p>~ ${formatNumber(flightsRounded, 0)} Mallorca-Flüge (Hin- und Rückflug)</p>
+                                <p>~ ${formatNumber(carKmRounded, 0)} km Autofahren (Verbrenner)</p>
                                 <p class="note">Hinweis: Die CO₂-Emissionen aus der Herstellung der Photovoltaikanlage werden nicht berücksichtigt, was die Bilanz geringfügig verändern würde.</p>
                             </div>
                         `;
@@ -1294,7 +1334,7 @@ async function calculateAll() {
                     <p>Betriebskosten mit PV/WP: ${formatNumber(s.annualCost, 0)} EUR/a | Einsparung ggü. heute: ${formatNumber(s.savings, 0)} EUR/a${s.breakEvenDynamic ? ` | Break-even (mit Energiepreissteigerung): ca. ${formatNumber(s.breakEvenDynamic, 1)} Jahre` : ''}</p>
                 </div>
             `).join('')}
-            <div class="autarkie-info">
+<div class="autarkie-info">
                 <strong>Hinweis zur Autarkie:</strong><br>
                 Die Strom-Autarkie zeigt, wie viel des Strombedarfs du selbst deckst.<br>
                 Die Heiz-Autarkie zeigt, ob deine Wärmeversorgung autark ist.<br>
