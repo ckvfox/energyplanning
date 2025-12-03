@@ -891,6 +891,14 @@ async function calculateAll() {
         const wallboxValue = (document.getElementById('wallbox')?.value || '').toLowerCase();
         const hasWallbox = wallboxValue === 'ja';
 
+        const evAnnualKm = data.consumption.ev?.annual_km ?? 15000;
+        const evKwhPer100Km = data.consumption.ev?.kwh_per_100km ?? 17;
+        const evModel = data.consumption.ev?.model || 'VW ID.4 (meistverkauftes E-Auto)';
+        const wallboxExtra = hasWallbox ? (evAnnualKm / 100) * evKwhPer100Km : 0;
+        const wallboxHintText = hasWallbox
+            ? `Wallbox-Mehrverbrauch: ${formatNumber(wallboxExtra, 0)} kWh/a (Annahme: ${evModel}, ca. ${formatNumber(evAnnualKm, 0)} km/a, ~${formatNumber(evKwhPer100Km, 1)} kWh/100 km).`
+            : '';
+
         const feedInTariff = data.prices.feed_in_eur_per_kwh;
 
         // Neue überschreibbare Eingaben
@@ -938,7 +946,7 @@ async function calculateAll() {
 
         // Haushaltsstrom (Status quo: ohne Zusatzlasten)
         const airconExtra = hasAircon ? data.consumption.aircon_extra : 0;
-        const wallboxExtra = hasWallbox ? data.consumption.wallbox_extra : 0;
+        // (evConsumption already calculated above)
 
         // Wärmepumpenstrom und Leistung
         let cop = data.heatpump.base_cop;
@@ -1087,7 +1095,19 @@ async function calculateAll() {
 
             // Netzstrom und Einspeisung realistisch aus Autarkie ableiten
             const realAutarky = Math.max(0, Math.min(1, scenarioResult.stromAutarky / 100));
-            const gridImportRealistic = Math.round(totalElectricDemand * (1 - realAutarky));
+            let gridImportRealistic = Math.round(totalElectricDemand * (1 - realAutarky));
+            let evFromBattery = 0;
+
+            if (includesWallbox && scenario.includeBattery && storageKwh > 0) {
+                const consumptionWithoutEv = modernBaseElectric - wallboxExtra + (scenario.includeHeatpump ? heatpumpElectric : 0);
+                const pvSurplusForEv = Math.max(pvGeneration - consumptionWithoutEv, 0);
+                const batteryThroughputYear = storageKwh * 365 * 0.9; // angenommene tägliche Zyklen und Verluste
+                const potentialEvFromStorage = Math.max(0, Math.min(wallboxExtra, pvSurplusForEv, batteryThroughputYear));
+                const additionalSelfUse = Math.min(potentialEvFromStorage, gridImportRealistic);
+                gridImportRealistic = Math.max(0, gridImportRealistic - additionalSelfUse);
+                evFromBattery = Math.round(potentialEvFromStorage);
+            }
+
             const selfUseRealistic = Math.max(0, totalElectricDemand - gridImportRealistic);
             const feedInRealistic = Math.max(0, pvGeneration - selfUseRealistic);
 
@@ -1096,6 +1116,8 @@ async function calculateAll() {
             scenarioResult.gridElectric = gridImportRealistic;
             scenarioResult.feedIn = feedInRealistic;
             scenarioResult.heizAutarky = scenario.includeHeatpump ? 100 : 0;
+            scenarioResult.evFromBattery = evFromBattery;
+            scenarioResult.evAnnual = hasWallbox ? wallboxExtra : 0;
 
             // Betriebskosten mit realistischem Netzstrom
             const annualElectricCost = gridImportRealistic * elPrice - feedInRealistic * feedInTariff;
@@ -1197,6 +1219,7 @@ async function calculateAll() {
             <p>Heizwärmebedarf bleibt: ${formatNumber(heatingDemand, 0)} kWh/a;</p>
             <p>Wärmepumpen-Strom (falls WP): ${formatNumber(heatpumpElectric, 0)} kWh/a,</p>
             <p>WP-Leistung: ${formatNumber(heatpumpPower, 1)} kW</p>
+            ${wallboxHintText ? `<p class="note">${wallboxHintText} Bevorzugte Nachtladung bei Speicher, um Netzlast zu senken.</p>` : ''}
 
             <h3>Szenarien (${hasAircon ? 'mit Klimaanlage' : 'ohne Klimaanlage'}, ${hasWallbox ? 'mit Wallbox' : 'ohne Wallbox'})</h3>
             ${scenarios.map((s) => `
@@ -1209,6 +1232,7 @@ async function calculateAll() {
                     <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp</p>
                     <p>Speicher-Empfehlung: ${s.batteryRecommended ? formatNumber(s.batteryRecommended, 1) + ' kWh' : 'kein Speicher'}</p>
                     <p>Wärmepumpe: ${s.heatpumpPower ? `${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)` : 'keine WP'}</p>
+                    ${hasWallbox ? `<p>EV-Ladung: ${formatNumber(wallboxExtra, 0)} kWh/a${s.evFromBattery ? `, davon ${formatNumber(s.evFromBattery, 0)} kWh/a nachts aus dem Speicher gespeist` : ''}.</p>` : ''}
                     <div class="cost-block">
                         <strong>Kosten:</strong><br>
                         PV (2025 Marktpreis ~1.850-2.400 EUR/kWp): ${formatNumber(s.pvCost, 0)} EUR<br>

@@ -3,6 +3,11 @@
     "per_person": 1000,
     "aircon_extra": 450,
     "wallbox_extra": 1800,
+    "ev": {
+      "model": "VW ID.4",
+      "annual_km": 15000,
+      "kwh_per_100km": 17
+    },
     "heating_per_sqm": {
       "reihenhaus": {
         "gut": 80,
