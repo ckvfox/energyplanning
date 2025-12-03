@@ -434,54 +434,113 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentIndex = chartScenarioIndex;
 
         const page = document.querySelector('.page');
-        if (!page) return alert('Keine Ergebnisse gefunden.');
+        const resultsSection = document.getElementById('results');
+        if (!page || !resultsSection) return alert('Keine Ergebnisse gefunden.');
 
+        // Hilfsfunktion: Inputs/Selects entfernen und Werte als Text übernehmen
+        const sanitizeInputs = (root) => {
+            root.querySelectorAll('label').forEach((label) => {
+                const input = label.querySelector('input');
+                const select = label.querySelector('select');
+                const labelText = (label.childNodes[0]?.textContent || '').trim();
+                if (input) {
+                    const value = input.value;
+                    const div = document.createElement('div');
+                    div.className = 'pdf-field';
+                    div.innerHTML = `<strong>${labelText}:</strong> ${value}`;
+                    label.replaceWith(div);
+                } else if (select) {
+                    const value = select.options[select.selectedIndex]?.textContent || select.value;
+                    const div = document.createElement('div');
+                    div.className = 'pdf-field';
+                    div.innerHTML = `<strong>${labelText}:</strong> ${value}`;
+                    label.replaceWith(div);
+                }
+            });
+            root.querySelectorAll('button, select, input, .scenario-btn, .day-btn, #day-toggle, #scenario-switch').forEach((el) => el.remove());
+        };
+
+        // PDF-Container komplett neu aufbauen
         const pdfContainer = document.createElement('div');
-        pdfContainer.classList.add('export-container');
+        pdfContainer.classList.add('export-container', 'pdf-container');
+        pdfContainer.style.width = '900px';
 
-        const header = document.createElement('div');
-        header.classList.add('pdf-header');
-        header.innerHTML = `
-        <img src="logo.png" alt="Logo">
-        <h2>Energetische Modernisierung – Ergebnisbericht</h2>
-        <p>Erstellt am: ${new Date().toLocaleDateString()}</p>
-    `;
-        pdfContainer.appendChild(header);
+        // Titelblatt / Intro
+        const intro = document.createElement('div');
+        intro.className = 'pdf-section pdf-intro';
+        intro.innerHTML = `
+            <div class="pdf-header">
+                <img src="images/logo.png" alt="Logo" onerror="this.style.display='none'">
+                <h1>Energetische Modernisierung – Ergebnisbericht</h1>
+                <p class="pdf-date">Erstellt am: ${new Date().toLocaleDateString()}</p>
+            </div>
+        `;
+        const hero = page.querySelector('.hero');
+        if (hero) {
+            const heroClone = hero.cloneNode(true);
+            sanitizeInputs(heroClone);
+            intro.appendChild(heroClone);
+        }
+        pdfContainer.appendChild(intro);
 
-        const clone = page.cloneNode(true);
-        clone.querySelectorAll('#exportPdfBtn').forEach((btn) => btn.remove());
-        clone.querySelectorAll('canvas').forEach((c) => c.remove());
+        // Eingabedaten kompakt
+        const formSection = document.createElement('div');
+        formSection.className = 'pdf-section';
+        formSection.innerHTML = `<h2>Eingabedaten (kompakt)</h2>`;
+        const formCard = page.querySelector('.form-card');
+        if (formCard) {
+            const formClone = formCard.cloneNode(true);
+            sanitizeInputs(formClone);
+            formClone.querySelectorAll('button').forEach((b) => b.remove());
+            formSection.appendChild(formClone);
+        }
+        pdfContainer.appendChild(formSection);
 
-        clone.querySelectorAll('.scenario-block').forEach((block) => {
-            const pb = document.createElement('div');
-            pb.classList.add('pdf-pagebreak');
-            block.insertAdjacentElement('afterend', pb);
-        });
-
-        pdfContainer.appendChild(clone);
+        // Ergebnisse
+        const resultsClone = resultsSection.cloneNode(true);
+        sanitizeInputs(resultsClone);
+        const resultsWrapper = document.createElement('div');
+        resultsWrapper.className = 'pdf-section';
+        resultsWrapper.innerHTML = `<h2>Ergebnisse</h2>`;
+        resultsWrapper.appendChild(resultsClone);
+        pdfContainer.appendChild(resultsWrapper);
 
         if (scenarios.length) {
-            for (let i = 0; i < scenarios.length; i++) {
-                chartScenarioIndex = i;
-                updateChartsForScenario(scenarios);
-                const yearCanvas = document.getElementById('yearChart');
-                const dayCanvas = document.getElementById('dayChart');
-                const block = document.createElement('div');
-                block.classList.add('pdf-pagebreak');
-                const title = document.createElement('h3');
-                title.textContent = `Charts: ${scenarios[i].name || scenarios[i].label || 'Szenario ' + (i + 1)}`;
-                block.appendChild(title);
-                [yearCanvas, dayCanvas].forEach((c) => {
-                    if (!c) return;
-                    const img = new Image();
-                    img.classList.add('pdf-chart');
-                    img.src = c.toDataURL('image/jpeg', 0.8);
-                    block.appendChild(img);
-                });
-                pdfContainer.appendChild(block);
+            const chartsSection = document.createElement('div');
+            chartsSection.className = 'pdf-section';
+            chartsSection.innerHTML = `<h2>Charts</h2>`;
+
+            // Charts für aktives Szenario
+            const yearCanvas = document.getElementById('yearChart');
+            const dayCanvasActive = document.getElementById('dayChart');
+            if (yearCanvas) {
+                const imgYear = new Image();
+                imgYear.classList.add('pdf-chart');
+                imgYear.src = yearCanvas.toDataURL('image/png', 0.9);
+                chartsSection.appendChild(imgYear);
             }
-            chartScenarioIndex = currentIndex;
+            if (dayCanvasActive) {
+                const imgDay = new Image();
+                imgDay.classList.add('pdf-chart');
+                imgDay.src = dayCanvasActive.toDataURL('image/png', 0.9);
+                chartsSection.appendChild(imgDay);
+            }
+
+            // Winter-Chart zusätzlich rendern
+            const prevSeason = daySeason;
+            daySeason = 'winter';
             updateChartsForScenario(scenarios);
+            const winterCanvas = document.getElementById('dayChart');
+            if (winterCanvas) {
+                const imgWinter = new Image();
+                imgWinter.classList.add('pdf-chart');
+                imgWinter.src = winterCanvas.toDataURL('image/png', 0.9);
+                chartsSection.appendChild(imgWinter);
+            }
+            daySeason = prevSeason;
+            updateChartsForScenario(scenarios);
+
+            pdfContainer.appendChild(chartsSection);
         }
 
         document.body.appendChild(pdfContainer);
@@ -490,6 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .set({
                 margin: 10,
                 filename: 'energetische-modernisierung.pdf',
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'], avoid: ['.content-card', '.scenario', '.cost-block', '.autarkie-card', '.pdf-chart-block', '.verbrauch-edit', '.pdf-section', '.pdf-intro', '.pdf-field'] },
                 html2canvas: {
                     scale: 1.2,
                     letterRendering: true

@@ -714,6 +714,40 @@ button:hover {
     margin: 8px 0;
     line-height: 1.4;
 }
+
+/* PDF: Seitenumbrüche sauberer halten */
+.content-card,
+.scenario,
+.cost-block,
+.autarkie-card,
+.verbrauch-edit {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.pdf-chart-block img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 8px 0;
+}
+
+.pdf-container {
+    font-size: 14px;
+    line-height: 1.45;
+}
+.pdf-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 16px;
+}
+.pdf-header h1,
+.pdf-header h2 {
+    margin: 8px 0;
+}
+.pdf-field {
+    margin: 4px 0;
+}
 .verbrauch-edit {
     margin-top: 12px;
     padding: 16px;
