@@ -2,6 +2,26 @@
 
 Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
+## [1.3.0] – In Entwicklung
+
+### Added
+- ♿ Umfassende Accessibility-Verbesserungen:
+  - Korrekte `<label for="">` Bindungen für alle Formularfelder
+  - `<fieldset>` & `<legend>` semantische Struktur
+  - ARIA-Attribute: `aria-required`, `aria-describedby`, `aria-live`, `aria-selected`, `aria-pressed`
+  - Keyboard-Navigation: Tab, Shift+Tab, Arrow-Keys, Home/End in Tablist
+  - Focus-Styling mit 3px Box-Shadow für alle interaktiven Elemente
+  - Screenreader-Text mit `.visually-hidden` Klasse
+  - Hilfs-Text (`.hint-text`) für optionale Formularfelder
+- 🎨 `.scenario-buttons` Container mit Flex-Wrapping
+- ⌨️ Keyboard-Shortcuts für Szenario-Auswahl und Tag/Nacht-Toggle
+
+### Technical
+- 🔧 Form Submit statt Button Click für bessere Semantik
+- 🔧 Formular-Validierung über `required` Attribute
+- 🔧 ARIA tablist/tab Rollen für Szenario-Buttons
+- 🔧 ARIA pressed/selected State-Handling in Keyboard-Events
+
 ## [1.2.0] – 2025-12-04
 
 ### Added

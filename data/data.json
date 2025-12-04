@@ -83,5 +83,18 @@
     "electricity_rate": 0.02,
     "gas_rate": 0.03
   },
-  "price_inflation_rate": 0.02
+  "price_inflation_rate": 0.02,
+  "colors": {
+    "pv": "#fbc02d",
+    "consumption": "#1976d2",
+    "selfConsumption": "#388e3c",
+    "gridImport": "#d32f2f",
+    "load": "#1976d2",
+    "eigenverbrauch": "#388e3c",
+    "netzbezug": "#d32f2f"
+  },
+  "ui": {
+    "dateFormat": "de-DE",
+    "language": "de"
+  }
 }

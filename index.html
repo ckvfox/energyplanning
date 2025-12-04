@@ -3,26 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energetische Modernisierung</title>
+    <meta name="description" content="Kostenloser Online-Rechner für energetische Modernisierung: PV-Dimensionierung, Speicher, Wärmepumpe, Break-even-Analyse und Förderberatung.">
+    <meta name="keywords" content="Photovoltaik, Energiespeicher, Wärmepumpe, Modernisierung, Kosten, Förderung, Beratung">
+    <meta name="theme-color" content="#007bff">
+    <meta property="og:title" content="Energetische Modernisierung – Kostenkalkulation">
+    <meta property="og:description" content="Berechnen Sie Ihre Investitionskosten und Amortisation für PV, Speicher und Wärmepumpe.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/logo.png">
+    <title>Energetische Modernisierung – Rechner & Kostenanalyse</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-      /* Pagebreak-Regeln für PDF */
-      .pdf-pagebreak { page-break-before: always; }
-      .pdf-hide { display: none !important; }
-      .export-container { width: 100%; }
-
-      /* PDF-Kopf */
-      .pdf-header {
-          text-align: center;
-          padding: 20px 0 10px;
-          border-bottom: 1px solid #ccc;
-          margin-bottom: 20px;
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Energetische Modernisierung Rechner",
+      "description": "Kostenloser Kalkulator für PV, Speicher, Wärmepumpen und Förderberatung",
+      "applicationCategory": "UtilityApplication",
+      "url": "https://example.com",
+      "author": {
+        "@type": "Organization",
+        "name": "energyplanning"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
       }
-      .pdf-header img {
-          height: 40px;
-          margin-bottom: 10px;
-      }
-    </style>
+    }
+    </script>
 </head>
 <body>
     <div class="page">
@@ -40,129 +48,150 @@
         </header>
 
         <main>
-            <section class="form-card">
-                <h2>Eingabedaten</h2>
-                <div class="form-grid">
-                <label>Haustyp
-                    <select id="houseType">
-                        <option value="reihenhaus">Reihenhaus</option>
-                        <option value="doppelhaus">Doppelhaus</option>
-                        <option value="einfamilienhaus">Einfamilienhaus freistehend</option>
-                    </select>
-                </label>
-                <label>Wohnfläche (m²)
-                    <select id="area">
-                        <option value="100">100</option>
-                        <option value="110">110</option>
-                        <option value="120">120</option>
-                        <option value="130">130</option>
-                        <option value="140">140</option>
-                        <option value="150">150</option>
-                        <option value="160">160</option>
-                        <option value="170">170</option>
-                        <option value="180">180</option>
-                        <option value="190">190</option>
-                        <option value="200">200</option>
-                    </select>
-                </label>
-                <label>Personen im Haushalt
-                    <select id="people">
-                        <option value="1">1</option>
-                        <option value="2" selected>2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                    </select>
-                </label>
-                <label>Isolierung
-                    <select id="insulation">
-                        <option value="gut">gut – Neubau / gut saniert</option>
-                        <option value="normal" selected>normal – typisch 80er–2000er</option>
-                        <option value="schlecht">schlecht – 60er/70er unsaniert</option>
-                    </select>
-                </label>
-                <label>Fußbodenheizung
-                    <select id="floorHeating">
-                        <option value="Nein" selected>Nein</option>
-                        <option value="Ja">Ja</option>
-                    </select>
-                </label>
-                <label>Klimaanlage geplant
-                    <select id="aircon">
-                        <option value="Nein" selected>Nein</option>
-                        <option value="Ja">Ja</option>
-                    </select>
-                </label>
-                <label>Wallbox geplant
-                    <select id="wallbox">
-                        <option value="Nein" selected>Nein</option>
-                        <option value="Ja">Ja</option>
-                    </select>
-                </label>
-                </div>
-                <div class="optional-box">
-                    <h3>Angaben optional zur Ermittlung von Förderprogrammen</h3>
-                    <div class="form-grid">
-                        <label>Bundesland
-                            <select id="bundesland">
-                                <option value="">bitte wählen</option>
-                                <option value="BW">Baden-Württemberg</option>
-                                <option value="BY">Bayern</option>
-                                <option value="BE">Berlin</option>
-                                <option value="BB">Brandenburg</option>
-                                <option value="HB">Bremen</option>
-                                <option value="HH">Hamburg</option>
-                                <option value="HE">Hessen</option>
-                                <option value="MV">Mecklenburg-Vorpommern</option>
-                                <option value="NI">Niedersachsen</option>
-                                <option value="NW">Nordrhein-Westfalen</option>
-                                <option value="RP">Rheinland-Pfalz</option>
-                                <option value="SL">Saarland</option>
-                                <option value="SN">Sachsen</option>
-                                <option value="ST">Sachsen-Anhalt</option>
-                                <option value="SH">Schleswig-Holstein</option>
-                                <option value="TH">Thüringen</option>
-                            </select>
-                        </label>
-                        <label>Baujahr
-                            <input type="number" id="houseAge" placeholder="z.B. 1995">
-                        </label>
+            <section class="form-card" role="region" aria-labelledby="inputHeading">
+                <h2 id="inputHeading">Eingabedaten</h2>
+                <form id="energyForm">
+                    <fieldset>
+                        <legend class="visually-hidden">Grundeinstellungen für die Energieberechnung</legend>
+                        <div class="form-grid">
+                            <div>
+                                <label for="houseType">Haustyp</label>
+                                <select id="houseType" name="houseType" required aria-required="true">
+                                    <option value="reihenhaus">Reihenhaus</option>
+                                    <option value="doppelhaus">Doppelhaus</option>
+                                    <option value="einfamilienhaus">Einfamilienhaus freistehend</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="area">Wohnfläche (m²)</label>
+                                <select id="area" name="area" required aria-required="true">
+                                    <option value="100">100</option>
+                                    <option value="110">110</option>
+                                    <option value="120">120</option>
+                                    <option value="130">130</option>
+                                    <option value="140">140</option>
+                                    <option value="150">150</option>
+                                    <option value="160">160</option>
+                                    <option value="170">170</option>
+                                    <option value="180">180</option>
+                                    <option value="190">190</option>
+                                    <option value="200">200</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="people">Personen im Haushalt</label>
+                                <select id="people" name="people" required aria-required="true">
+                                    <option value="1">1</option>
+                                    <option value="2" selected>2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="insulation">Isolierung</label>
+                                <select id="insulation" name="insulation" required aria-required="true">
+                                    <option value="gut">gut – Neubau / gut saniert</option>
+                                    <option value="normal" selected>normal – typisch 80er–2000er</option>
+                                    <option value="schlecht">schlecht – 60er/70er unsaniert</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="floorHeating">Fußbodenheizung</label>
+                                <select id="floorHeating" name="floorHeating" required aria-required="true">
+                                    <option value="Nein" selected>Nein</option>
+                                    <option value="Ja">Ja</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="aircon">Klimaanlage geplant</label>
+                                <select id="aircon" name="aircon" required aria-required="true">
+                                    <option value="Nein" selected>Nein</option>
+                                    <option value="Ja">Ja</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="wallbox">Wallbox geplant</label>
+                                <select id="wallbox" name="wallbox" required aria-required="true">
+                                    <option value="Nein" selected>Nein</option>
+                                    <option value="Ja">Ja</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend>Angaben optional zur Ermittlung von Förderprogrammen</legend>
+                        <div class="form-grid">
+                            <div>
+                                <label for="bundesland">Bundesland</label>
+                                <select id="bundesland" name="bundesland" aria-describedby="bundeslandHint">
+                                    <option value="">bitte wählen</option>
+                                    <option value="BW">Baden-Württemberg</option>
+                                    <option value="BY">Bayern</option>
+                                    <option value="BE">Berlin</option>
+                                    <option value="BB">Brandenburg</option>
+                                    <option value="HB">Bremen</option>
+                                    <option value="HH">Hamburg</option>
+                                    <option value="HE">Hessen</option>
+                                    <option value="MV">Mecklenburg-Vorpommern</option>
+                                    <option value="NI">Niedersachsen</option>
+                                    <option value="NW">Nordrhein-Westfalen</option>
+                                    <option value="RP">Rheinland-Pfalz</option>
+                                    <option value="SL">Saarland</option>
+                                    <option value="SN">Sachsen</option>
+                                    <option value="ST">Sachsen-Anhalt</option>
+                                    <option value="SH">Schleswig-Holstein</option>
+                                    <option value="TH">Thüringen</option>
+                                </select>
+                                <span id="bundeslandHint" class="hint-text">Optional – wird für Förderprogrammsuche verwendet</span>
+                            </div>
+                            <div>
+                                <label for="houseAge">Baujahr</label>
+                                <input type="number" id="houseAge" name="houseAge" placeholder="z.B. 1995" aria-describedby="houseAgeHint">
+                                <span id="houseAgeHint" class="hint-text">Optional – wird für Förderprogrammsuche verwendet</span>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="actions" role="group" aria-label="Formularsteuerelemente">
+                        <button id="calcBtn" type="submit" class="primary">Berechnen</button>
+                        <button id="resetBtn" type="reset">Zurücksetzen</button>
                     </div>
-                </div>
-                <div class="actions">
-                    <button id="calcBtn" class="primary">Berechnen</button>
-                    <button id="resetBtn" type="button">Zurücksetzen</button>
-                </div>
+                </form>
             </section>
 
             <div id="pdf-wrapper">
-            <div class="content-card">
-                <div id="results"></div>
-                <button id="exportPdfBtn" class="export-btn" style="display:none;">📄 Ergebnis als PDF herunterladen</button>
+            <div class="content-card" role="region" aria-labelledby="resultsHeading" aria-live="polite" aria-atomic="false">
+                <h2 id="resultsHeading" class="visually-hidden">Berechnungsergebnisse</h2>
+                <div id="results" role="main"></div>
+                <button id="exportPdfBtn" class="export-btn">📄 Ergebnis als PDF herunterladen</button>
             </div>
 
             <div class="content-card">
-                <div id="scenario-switch" class="scenario-switch hidden">
-                  <span>Diagramm anzeigen für:</span>
-                  <button data-scenario="0" class="scenario-btn active">Nur PV</button>
-                  <button data-scenario="1" class="scenario-btn">PV + Speicher</button>
-                  <button data-scenario="2" class="scenario-btn">PV + Speicher + WP</button>
+                <div id="scenario-switch" class="scenario-switch hidden" role="group" aria-label="Szenarioauswahl für Diagrammdarstellung">
+                  <span id="scenarioLabel">Diagramm anzeigen für:</span>
+                  <div class="scenario-buttons" role="tablist" aria-labelledby="scenarioLabel">
+                      <button data-scenario="0" class="scenario-btn active" role="tab" aria-selected="true">Nur PV</button>
+                      <button data-scenario="1" class="scenario-btn" role="tab" aria-selected="false">PV + Speicher</button>
+                      <button data-scenario="2" class="scenario-btn" role="tab" aria-selected="false">PV + Speicher + WP</button>
+                  </div>
                 </div>
 
                 <div class="chart-container">
                     <div class="chart-area">
-                        <canvas id="yearChart"></canvas>
-                        <div id="day-toggle" class="day-toggle hidden">
-                          <button data-season="summer" class="day-btn active">Sommer</button>
-                          <button data-season="winter" class="day-btn">Winter</button>
+                        <canvas id="yearChart" role="img" aria-label="Jährliche Energiebilanz mit PV-Erzeugung, Verbrauch, Eigenverbrauch und Netzbezug"></canvas>
+                        <div id="day-toggle" class="day-toggle hidden" role="group" aria-label="Jahreszeit für Tagesansicht">
+                          <button data-season="summer" class="day-btn active" aria-pressed="true">Sommer</button>
+                          <button data-season="winter" class="day-btn" aria-pressed="false">Winter</button>
                         </div>
-                        <canvas id="dayChart"></canvas>
+                        <canvas id="dayChart" role="img" aria-label="Tägliche Energiebilanz mit stündlichen Werten"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div id="subsidyBox" class="subsidy-box content-card" style="display:none;">
+            <div id="subsidyBox" class="subsidy-box content-card">
                 <h3>Förderprogramme (unverbindlicher Hinweis)</h3>
                 <p class="note">
                     Die angezeigten Förderprogramme sind beispielhafte Hinweise. Links führen zu offiziellen Förderportalen (Foerderdatenbank.de, Energiewechsel.de, co2online), da viele Programme keine direkten, stabilen Webseiten besitzen.
@@ -183,6 +212,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="scripts/performance.js"></script>
+    <script src="scripts/tests.js"></script>
     <script src="scripts/script.js"></script>
 </body>
 </html>
