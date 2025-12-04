@@ -8,6 +8,13 @@
       "annual_km": 15000,
       "kwh_per_100km": 17
     },
+    "combustion": {
+      "model": "VW Passat 1.5 TSI",
+      "annual_km": 15000,
+      "litres_per_100km": 7.0,
+      "fuel_price_per_litre": 1.85,
+      "co2_per_litre": 2.3
+    },
     "heating_per_sqm": {
       "reihenhaus": {
         "gut": 80,
@@ -33,12 +40,12 @@
   },
   "pv": {
     "yield_per_kwp": 950,
-    "cost_per_kwp": 2000
+    "cost_per_kwp": 1600
   },
   "battery": {
     "recommended_factor_min": 0.6,
     "recommended_factor_max": 0.8,
-    "cost_per_kwh": 700
+    "cost_per_kwh": 550
   },
   "costs": {
     "wallbox_cost": 1200,

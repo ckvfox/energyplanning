@@ -1,36 +1,10 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Kostenloser Online-Rechner für energetische Modernisierung: Photovoltaik, Stromspeicher, Wärmepumpe, Autarkie, CO₂-Einsparung, Kosten, Amortisation & Fördermöglichkeiten. Für Einfamilienhaus, Doppelhaus, Reihenhaus.">
-        <meta name="keywords" content="Energie, Modernisierung, Photovoltaik, Wärmepumpe, Stromspeicher, Förderung, Autarkie, CO2, Kosten, Amortisation, Haus, Sanierung, Rechner, Deutschland">
-        <meta name="author" content="ckvfox">
-        <meta property="og:title" content="Energetische Modernisierung – Rechner für PV, Speicher, Wärmepumpe & Förderung">
-        <meta property="og:description" content="Online-Rechner für energetische Modernisierung: PV, Speicher, Wärmepumpe, Kosten, CO₂, Förderung. Sofortige Ergebnisse für Ihr Haus.">
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://github.com/ckvfox/energyplanning">
-        <meta property="og:image" content="images/logo.png">
-        <title>Energetische Modernisierung – Rechner für PV, Speicher, Wärmepumpe & Förderung</title>
-        <base href="/">
-        <link rel="canonical" href="https://github.com/ckvfox/energyplanning">
-        <link rel="stylesheet" href="style.css">
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "Energetische Modernisierung Rechner",
-            "description": "Online-Rechner für energetische Modernisierung: PV, Speicher, Wärmepumpe, Kosten, CO₂, Förderung.",
-            "applicationCategory": "CalculatorApplication",
-            "operatingSystem": "All",
-            "url": "https://github.com/ckvfox/energyplanning",
-            "image": "images/logo.png",
-            "author": {
-                "@type": "Person",
-                "name": "ckvfox"
-            }
-        }
-        </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energetische Modernisierung</title>
+    <link rel="stylesheet" href="style.css">
     <style>
       /* Pagebreak-Regeln für PDF */
       .pdf-pagebreak { page-break-before: always; }
@@ -55,8 +29,8 @@
         <header class="hero">
             <div class="intro">
                 <div class="intro-title">
-                    <img src="images/logo.png" class="intro-logo" alt="Logo Energetische Modernisierung Rechner">
-                    <h1>Energetische Modernisierung – Rechner für PV, Speicher, Wärmepumpe & Förderung</h1>
+                    <img src="images/logo.png" class="intro-logo" alt="Logo">
+                    <h1>Energie- & Modernisierungsrechner</h1>
                 </div>
                 <p>Erhalte eine fundierte Einschätzung für Photovoltaik, Stromspeicher und Wärmepumpe – inklusive Autarkie, CO₂-Einsparung, Kosten, Amortisation und Fördermöglichkeiten.</p>
                 <p>Eine energetische Modernisierung ist heute wichtiger denn je. Sie hilft nicht nur, Energieverbrauch und Kosten zu reduzieren, sondern erhöht auch deine Unabhängigkeit von schwankenden Energiepreisen. Moderne Technologien wie Photovoltaik, Speicher und Wärmepumpen können den Bedarf eines Hauses deutlich senken — oft um mehr als die Hälfte.</p>
@@ -165,6 +139,7 @@
             <div id="pdf-wrapper">
             <div class="content-card">
                 <div id="results"></div>
+                <button id="exportPdfBtn" class="export-btn" style="display:none;">📄 Ergebnis als PDF herunterladen</button>
             </div>
 
             <div class="content-card">
@@ -187,15 +162,12 @@
                 </div>
             </div>
 
-            <div id="subsidyBox" class="subsidy-box content-card">
+            <div id="subsidyBox" class="subsidy-box content-card" style="display:none;">
                 <h3>Förderprogramme (unverbindlicher Hinweis)</h3>
                 <p class="note">
                     Die angezeigten Förderprogramme sind beispielhafte Hinweise. Links führen zu offiziellen Förderportalen (Foerderdatenbank.de, Energiewechsel.de, co2online), da viele Programme keine direkten, stabilen Webseiten besitzen.
                 </p>
                 <div id="subsidyContent"></div>
-            </div>
-            <div class="content-card export-footer">
-                <button id="exportPdfBtn" class="export-btn">📄 Ergebnis als PDF herunterladen</button>
             </div>
             </div>
         </main>
@@ -205,7 +177,6 @@
                 <a href="datenschutz.html">Datenschutz</a>
             </div>
         </footer>
-        <button id="backToTop" class="back-to-top" aria-label="Nach oben">▲</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

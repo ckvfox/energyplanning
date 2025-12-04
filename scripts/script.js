@@ -482,8 +482,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pdfBtn.addEventListener('click', async () => {
         const scenarios = window._scenarios || [];
-        const currentIndex = chartScenarioIndex;
-
         const page = document.querySelector('.page');
         const resultsSection = document.getElementById('results');
         if (!page || !resultsSection) return alert('Keine Ergebnisse gefunden.');
@@ -511,110 +509,111 @@ document.addEventListener('DOMContentLoaded', () => {
             root.querySelectorAll('button, select, input, .scenario-btn, .day-btn, #day-toggle, #scenario-switch').forEach((el) => el.remove());
         };
 
-        // PDF-Container komplett neu aufbauen
+        // PDF-Container mit minimalem Layout
         const pdfContainer = document.createElement('div');
-        pdfContainer.classList.add('export-container', 'pdf-container');
-        pdfContainer.style.width = '900px';
+        pdfContainer.style.cssText = 'width: 800px; margin: 0; padding: 20px; background: white; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5;';
 
-        // Titelblatt / Intro
-        const intro = document.createElement('div');
-        intro.className = 'pdf-section pdf-intro';
-        intro.innerHTML = `
-            <div class="pdf-header">
-                <img src="images/logo.png" alt="Logo" onerror="this.style.display='none'">
-                <h1>Energetische Modernisierung – Ergebnisbericht</h1>
-                <p class="pdf-date">Erstellt am: ${new Date().toLocaleDateString()}</p>
-            </div>
+        // Titel
+        const title = document.createElement('div');
+        title.style.cssText = 'margin-bottom: 30px; text-align: center;';
+        title.innerHTML = `
+            <h1 style="margin: 0 0 10px 0; font-size: 24px;">Energetische Modernisierung – Ergebnisbericht</h1>
+            <p style="margin: 0; color: #666; font-size: 11px;">Erstellt am: ${new Date().toLocaleDateString('de-DE')}</p>
         `;
-        const hero = page.querySelector('.hero');
-        if (hero) {
-            const heroClone = hero.cloneNode(true);
-            sanitizeInputs(heroClone);
-            intro.appendChild(heroClone);
-        }
-        pdfContainer.appendChild(intro);
+        pdfContainer.appendChild(title);
 
-        // Eingabedaten kompakt
-        const formSection = document.createElement('div');
-        formSection.className = 'pdf-section';
-        formSection.innerHTML = `<h2>Eingabedaten (kompakt)</h2>`;
+        // Eingabedaten
+        const inputSection = document.createElement('div');
+        inputSection.style.cssText = 'margin-bottom: 25px; page-break-inside: avoid;';
+        inputSection.innerHTML = '<h2 style="margin: 0 0 12px 0; font-size: 16px; border-bottom: 2px solid #007bff; padding-bottom: 5px;">Eingabedaten</h2>';
         const formCard = page.querySelector('.form-card');
         if (formCard) {
             const formClone = formCard.cloneNode(true);
             sanitizeInputs(formClone);
             formClone.querySelectorAll('button').forEach((b) => b.remove());
-            formSection.appendChild(formClone);
+            formClone.style.cssText = 'background: #f9f9f9; padding: 10px; border-radius: 4px;';
+            inputSection.appendChild(formClone);
         }
-        pdfContainer.appendChild(formSection);
+        pdfContainer.appendChild(inputSection);
 
         // Ergebnisse
+        const resultsSection2 = document.createElement('div');
+        resultsSection2.style.cssText = 'margin-bottom: 25px;';
+        resultsSection2.innerHTML = '<h2 style="margin: 0 0 12px 0; font-size: 16px; border-bottom: 2px solid #007bff; padding-bottom: 5px;">Ergebnisse</h2>';
         const resultsClone = resultsSection.cloneNode(true);
         sanitizeInputs(resultsClone);
-        const resultsWrapper = document.createElement('div');
-        resultsWrapper.className = 'pdf-section';
-        resultsWrapper.innerHTML = `<h2>Ergebnisse</h2>`;
-        resultsWrapper.appendChild(resultsClone);
-        pdfContainer.appendChild(resultsWrapper);
+        resultsClone.style.cssText = 'font-size: 12px;';
+        resultsSection2.appendChild(resultsClone);
+        pdfContainer.appendChild(resultsSection2);
 
-        if (scenarios.length) {
-            const chartsSection = document.createElement('div');
-            chartsSection.className = 'pdf-section';
-            chartsSection.innerHTML = `<h2>Charts</h2>`;
+        // Charts - nur wenn vorhanden
+        if (scenarios.length && (yearChartInstance || dayChartInstance)) {
+            const chartsDiv = document.createElement('div');
+            chartsDiv.style.cssText = 'page-break-before: always; margin-top: 30px;';
+            chartsDiv.innerHTML = '<h2 style="margin: 0 0 20px 0; font-size: 16px; border-bottom: 2px solid #007bff; padding-bottom: 5px;">Energiediagramme</h2>';
 
-            // Charts für aktives Szenario
-            const yearCanvas = document.getElementById('yearChart');
-            const dayCanvasActive = document.getElementById('dayChart');
-            if (yearCanvas) {
-                const imgYear = new Image();
-                imgYear.classList.add('pdf-chart');
-                imgYear.src = yearCanvas.toDataURL('image/png', 0.9);
-                chartsSection.appendChild(imgYear);
-            }
-            if (dayCanvasActive) {
-                const imgDay = new Image();
-                imgDay.classList.add('pdf-chart');
-                imgDay.src = dayCanvasActive.toDataURL('image/png', 0.9);
-                chartsSection.appendChild(imgDay);
+            if (yearChartInstance) {
+                try {
+                    yearChartInstance.resize();
+                    const canvas = document.getElementById('yearChart');
+                    if (canvas) {
+                        const img = new Image();
+                        img.src = canvas.toDataURL('image/png');
+                        img.style.cssText = 'width: 100%; max-width: 700px; height: auto; margin: 15px 0;';
+                        chartsDiv.appendChild(img);
+                    }
+                } catch (e) {
+                    console.warn('Jahresgraph fehlgeschlagen:', e);
+                }
             }
 
-            // Winter-Chart zusätzlich rendern
-            const prevSeason = daySeason;
-            daySeason = 'winter';
-            updateChartsForScenario(scenarios);
-            const winterCanvas = document.getElementById('dayChart');
-            if (winterCanvas) {
-                const imgWinter = new Image();
-                imgWinter.classList.add('pdf-chart');
-                imgWinter.src = winterCanvas.toDataURL('image/png', 0.9);
-                chartsSection.appendChild(imgWinter);
+            if (dayChartInstance) {
+                try {
+                    dayChartInstance.resize();
+                    const canvas = document.getElementById('dayChart');
+                    if (canvas) {
+                        const img = new Image();
+                        img.src = canvas.toDataURL('image/png');
+                        img.style.cssText = 'width: 100%; max-width: 700px; height: auto; margin: 15px 0;';
+                        chartsDiv.appendChild(img);
+                    }
+                } catch (e) {
+                    console.warn('Tagesgraph fehlgeschlagen:', e);
+                }
             }
-            daySeason = prevSeason;
-            updateChartsForScenario(scenarios);
 
-            pdfContainer.appendChild(chartsSection);
+            pdfContainer.appendChild(chartsDiv);
         }
 
         document.body.appendChild(pdfContainer);
 
-        await html2pdf()
-            .set({
-                margin: 10,
-                filename: 'energetische-modernisierung.pdf',
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'], avoid: ['.content-card', '.scenario', '.cost-block', '.autarkie-card', '.pdf-chart-block', '.verbrauch-edit', '.pdf-section', '.pdf-intro', '.pdf-field'] },
-                html2canvas: {
-                    scale: 1.2,
-                    letterRendering: true
-                },
-                jsPDF: {
-                    unit: 'pt',
-                    format: 'a4',
-                    orientation: 'portrait'
-                }
-            })
-            .from(pdfContainer)
-            .save();
-
-        pdfContainer.remove();
+        try {
+            await html2pdf()
+                .set({
+                    margin: [15, 15, 15, 15],
+                    filename: `energetische-modernisierung-${new Date().toISOString().split('T')[0]}.pdf`,
+                    image: { type: 'png', quality: 0.98 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        windowHeight: 1200,
+                        backgroundColor: '#ffffff'
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: 'a4',
+                        orientation: 'portrait'
+                    }
+                })
+                .from(pdfContainer)
+                .save();
+        } catch (e) {
+            console.error('PDF-Export fehlgeschlagen:', e);
+            alert('PDF-Export fehlgeschlagen. Bitte versuchen Sie es erneut.');
+        } finally {
+            pdfContainer.remove();
+        }
     });
 });
 
@@ -946,11 +945,17 @@ async function calculateAll() {
         const evKwhPer100Km = data.consumption.ev?.kwh_per_100km ?? 17;
         const evModel = data.consumption.ev?.model || 'VW ID.4 (meistverkauftes E-Auto)';
         const wallboxExtra = hasWallbox ? (evAnnualKm / 100) * evKwhPer100Km : 0;
-        const combustionLitres = hasWallbox ? (evAnnualKm / 100) * 7.0 : 0;
-        const combustionCo2Factor = 2.3; // kg CO2/L
+        // Verbrenner-Werte aus data.json
+        const combustionData = data.consumption.combustion || {};
+        const combustionModel = combustionData.model || 'VW Passat 1.5 TSI';
+        const combustionAnnualKm = combustionData.annual_km ?? 15000;
+        const combustionLitresPer100km = combustionData.litres_per_100km ?? 7.0;
+        const combustionFuelPrice = combustionData.fuel_price_per_litre ?? 1.85;
+        const combustionCo2Factor = combustionData.co2_per_litre ?? 2.3;
+        const combustionLitres = hasWallbox ? (combustionAnnualKm / 100) * combustionLitresPer100km : 0;
         const combustionCo2Annual = combustionLitres * combustionCo2Factor;
         const evCo2Factor = 0.35; // kg CO2/kWh Strommix
-        const evFuelCost = combustionLitres * 1.85; // 7 L/100 km * 1,85 EUR
+        const evFuelCost = combustionLitres * combustionFuelPrice;
         const wallboxHintText = hasWallbox
             ? `Wallbox-Mehrverbrauch: ${formatNumber(wallboxExtra, 0)} kWh/a (Annahme: ${evModel}, ca. ${formatNumber(evAnnualKm, 0)} km/a, ~${formatNumber(evKwhPer100Km, 1)} kWh/100 km).`
             : '';
@@ -1002,7 +1007,8 @@ async function calculateAll() {
 
         // Haushaltsstrom (Status quo: ohne Zusatzlasten)
         const airconExtra = hasAircon ? data.consumption.aircon_extra : 0;
-        // (evConsumption already calculated above)
+        // wallboxExtra ist nur relevant, wenn Wallbox (EV) gewählt wurde
+        // Es wird keine Vermischung von EV- und Verbrenner-Logik vorgenommen
 
         // Wärmepumpenstrom und Leistung
         let cop = data.heatpump.base_cop;
@@ -1057,28 +1063,30 @@ async function calculateAll() {
 
             // PV sizing dynamisch anhand Verbrauch + Dach
             const totalElectricDemand = annualConsumption;
-            let pvKwpCandidate = totalElectricDemand / 900;
-            // PV limitieren: Dachfläche / 7 m² pro kWp
-            const maxKwpFromRoof = roofPvLimit(roofArea);
-
-            // Realistische Haustypbegrenzung (12/15/20)
-            const pvLimits = { reihenhaus: 12, doppelhaus: 15, einfamilienhaus: 20 };
-            const maxKwpHouse = pvLimits[houseType] ?? 15;
-
+            // Neue PV-Sizing-Logik
+            let pvKwpCandidate = totalElectricDemand / 850;
+            // Mindestgröße bei Speicher oder WP: mindestens 7 kWp
+            if (scenario.includeBattery || scenario.includeHeatpump) {
+                pvKwpCandidate = Math.max(pvKwpCandidate, 7);
+            }
+            // Dachfläche: moderner Faktor 6 m²/kWp
+            const maxKwpFromRoof = Math.max(0, Math.floor((Number.isFinite(roofArea) ? roofArea : 0) / 6));
+            // Neue Limits für Haustypen
+            const pvLimits = { reihenhaus: 14, doppelhaus: 18, einfamilienhaus: 24 };
+            const maxKwpHouse = pvLimits[houseType] ?? 18;
             if (pvKwpCandidate > maxKwpFromRoof) {
                 warnings.push(`Die maximal mögliche PV-Leistung liegt bei ${formatNumber(maxKwpFromRoof, 0)} kWp; mehr ist auf der verfügbaren Dachfläche nicht realisierbar.`);
             }
-
-            // Finaler erlaubter Wert
+            // Finaler erlaubter Wert, auf 0,1 runden
             let pvKwp = Math.min(pvKwpCandidate, maxKwpFromRoof, maxKwpHouse);
             pvKwp = Math.max(0, Math.round(pvKwp * 10) / 10);
             const pvGeneration = pvKwp * data.pv.yield_per_kwp;
 
 
-            // Speicher sizing (5-12 kWh Clamp, 1 Zyklus/Tag)
+            // Speicher sizing: empfohlen = 0,9 × täglicher Verbrauch, Clamp 4–15 kWh
             const dailyUse = annualConsumption / 365;
             const batteryRecommended = scenario.includeBattery
-                ? clamp(dailyUse * 0.8, 5, 12)
+                ? clamp(dailyUse * 0.9, 4, 15)
                 : 0;
             const dailyPv = pvKwp * data.pv.yield_per_kwp / 365;
             const storageKwh = scenario.includeBattery ? Math.min(batteryRecommended, dailyPv * 2) : 0;
@@ -1260,7 +1268,7 @@ async function calculateAll() {
             <p>Heizwärmebedarf bleibt: ${formatNumber(heatingDemand, 0)} kWh/a;</p>
             <p>Wärmepumpen-Strom (falls WP): ${formatNumber(heatpumpElectric, 0)} kWh/a,</p>
             <p>WP-Leistung: ${formatNumber(heatpumpPower, 1)} kW</p>
-            ${wallboxHintText ? `<p class="note">${wallboxHintText} Bevorzugte Nachtladung bei Speicher, um Netzlast zu senken. Zusätzlich ersetzt das E-Auto einen typischen Mittelklasse-Verbrenner (Annahme: VW Passat 1.5 TSI, ca. 15.000 km/a, Verbrauch ~7,0 l/100 km, jährliche Kraftstoffkosten ~1.940 EUR).</p>` : ''}
+            ${wallboxHintText ? `<p class="note">${wallboxHintText} Bevorzugte Nachtladung bei Speicher, um Netzlast zu senken. Zusätzlich ersetzt das E-Auto einen konventionellen Verbrenner (Annahme: ${combustionModel}, ${formatNumber(combustionAnnualKm, 0)} km/a, Verbrauch ${formatNumber(combustionLitresPer100km, 1)} l/100 km).</p>` : ''}
             ${warnings.length ? `<div class="warn-box">${warnings.map((w) => `<p>${w}</p>`).join('')}</div>` : ''}
 
             <h3>Szenarien (${hasAircon ? 'mit Klimaanlage' : 'ohne Klimaanlage'}, ${hasWallbox ? 'mit Wallbox' : 'ohne Wallbox'})</h3>
@@ -1271,8 +1279,8 @@ async function calculateAll() {
                     <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a | Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a</p>
                     <p>Einspeisung: ${formatNumber(s.feedIn, 0)} kWh/a (Tarif ${formatNumber(feedInTariff, 2)} EUR/kWh)</p>
                     <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp</p>
-                    <p>Speicher-Empfehlung: ${s.batteryRecommended ? formatNumber(s.batteryRecommended, 1) + ' kWh' : 'kein Speicher'}</p>
-                    <p>Wärmepumpe: ${s.heatpumpPower ? `${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)` : 'keine WP'}</p>
+                    ${s.batteryRecommended ? `<p>Speicher-Empfehlung: ${formatNumber(s.batteryRecommended, 1)} kWh</p>` : ''}
+                    ${s.heatpumpPower ? `<p>Wärmepumpe: ${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)</p>` : ''}
                     ${hasWallbox ? `<p>EV-Ladung: ${formatNumber(wallboxExtra, 0)} kWh/a</p>` : ''}
                     <div class="cost-block">
                         <strong>Kosten:</strong><br>
@@ -1282,6 +1290,19 @@ async function calculateAll() {
                         ${s.extrasLabel}<br>
                         Gesamt: ${formatNumber(s.totalCost, 0)} EUR
                     </div>
+                    ${(() => {
+                        let techLabel = 'PV';
+                        if (s.batteryRecommended > 0) techLabel += ' + Speicher';
+                        if (s.includeHeatpump) techLabel += ' + Wärmepumpe';
+                        return `
+                            <div class="economy-box">
+                                <h4>💶 Wirtschaftlichkeit</h4>
+                                <p>Betriebskosten mit ${techLabel}: ${formatNumber(s.annualCost, 0)} EUR/a</p>
+                                <p>Einsparung gegenüber heute: ${formatNumber(s.savings, 0)} EUR/a</p>
+                                ${s.breakEvenDynamic ? `<p>Break-even (inkl. Energiepreissteigerung): ca. ${formatNumber(s.breakEvenDynamic, 1)} Jahre</p>` : ''}
+                            </div>
+                        `;
+                    })()}
                     ${(() => {
                         const eq = s.co2_equivalents || {};
                         const co2ValuesValid = [s.co2_today, s.co2_after, s.co2_saving, s.co2_saving_20yr, eq.trees, eq.flights, eq.carKm]
@@ -1298,10 +1319,10 @@ async function calculateAll() {
                                 <p><strong>Einsparung: ${formatNumber(s.co2_saving, 0)} kg CO₂/a</strong></p>
                                 <p>20-Jahres-Einsparung (mit Energiepreissteigerung): ${formatNumber(s.co2_saving_20yr, 0)} kg</p>
                                 <hr>
-                                <p>≈ ${treesRounded} Bäume, die jeweils ein Jahr lang wachsen (CO₂-Aufnahme eines durchschnittlichen Baumes pro Jahr).</p>
+                                <p>Entspricht der CO₂-Bindung von etwa ${treesRounded} Bäumen über ein Jahr.</p>
                                 <p>~ ${formatNumber(flightsRounded, 0)} Mallorca-Flüge (Hin- und Rückflug)</p>
                                 <p>~ ${formatNumber(carKmRounded, 0)} km Autofahren (Verbrenner)</p>
-                                <p class="note">Hinweis: Die CO₂-Emissionen aus der Herstellung der Photovoltaikanlage werden nicht berücksichtigt, was die Bilanz geringfügig verändern würde.</p>
+                                <p class="note">Hinweis: Die CO₂-Emissionen aus der Herstellung der Photovoltaikanlage werden nicht berücksichtigt.</p>
                             </div>
                         `;
                     })()}
@@ -1332,7 +1353,6 @@ async function calculateAll() {
                             <div class="autarkie-fill haushalt" style="width:${clamp(s.haushaltAutarky, 0, 100)}%"></div>
                         </div>
                     </div>
-                    <p>Betriebskosten mit PV/WP: ${formatNumber(s.annualCost, 0)} EUR/a | Einsparung ggü. heute: ${formatNumber(s.savings, 0)} EUR/a${s.breakEvenDynamic ? ` | Break-even (mit Energiepreissteigerung): ca. ${formatNumber(s.breakEvenDynamic, 1)} Jahre` : ''}</p>
                 </div>
             `).join('')}
 <div class="autarkie-info">

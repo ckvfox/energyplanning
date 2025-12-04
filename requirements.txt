@@ -1,5 +1,0 @@
-# requirements.txt for energyplanning
-# Only needed if you want to use the Python scripts (e.g., fetch_subsidies.py)
-openai
-httpx
-python-dotenv

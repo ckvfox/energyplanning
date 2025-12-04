@@ -1,0 +1,6 @@
+Contact: security@example.com
+Expires: 2025-12-04T00:00:00Z
+Preferred-Languages: de, en
+Canonical: https://github.com/ckvfox/energyplanning/security/advisories
+Policy: https://github.com/ckvfox/energyplanning/blob/main/SECURITY.md
+Acknowledgments: https://github.com/ckvfox/energyplanning/blob/main/SECURITY.md#acknowledgments

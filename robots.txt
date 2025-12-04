@@ -1,0 +1,24 @@
+# robots.txt
+# https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+Allow: /data/data.json
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /docs/
+Disallow: /tests/
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+
+# Crawl Delay (optional, 1 Sekunde zwischen Requests)
+Crawl-delay: 1
+
+# Sitemap (falls später hinzugefügt)
+# Sitemap: https://example.com/sitemap.xml
