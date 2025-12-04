@@ -1186,6 +1186,7 @@ async function calculateAll() {
                 annualConsumption,
                 householdElectric: annualConsumption,
                 pvKwp,
+                pvExceedsRoof,
                 batteryRecommended,
                 heatpumpPower: scenario.includeHeatpump ? heatpumpPower : 0,
                 heatpumpElectric: scenario.includeHeatpump ? heatpumpElectric : 0,
@@ -1304,17 +1305,23 @@ async function calculateAll() {
                     </label>
 
                     <label>ALTERNATIV: Gewünschte PV-Leistung (kWp)
-                        <input id="input_pv_kwp" type="number" min="2" max="30" step="0.1" placeholder="automatisch ermittelt" value="">
+                        <input id="input_pv_kwp" type="number" min="2" max="30" step="0.1" placeholder="automatisch ermittelt">
                     </label>
 
-                    <label>E-Auto: km/a und Verbrauch (kWh/100km)
-                        <input id="input_ev_km" type="number" min="0" max="50000" placeholder="km/a" value="">
-                        <input id="input_ev_consumption" type="number" min="0" max="50" step="0.1" placeholder="kWh/100km" value="">
+                    <label>E-Auto Jahreskilometer (km/a)
+                        <input id="input_ev_km" type="number" min="0" max="50000" placeholder="z.B. 12000">
                     </label>
 
-                    <label>Verbrenner: km/a und Verbrauch (l/100km)
-                        <input id="input_combustion_km" type="number" min="0" max="50000" placeholder="km/a" value="">
-                        <input id="input_combustion_consumption" type="number" min="0" max="20" step="0.1" placeholder="l/100km" value="">
+                    <label>E-Auto Verbrauch (kWh/100km)
+                        <input id="input_ev_consumption" type="number" min="0" max="50" step="0.1" placeholder="z.B. 17">
+                    </label>
+
+                    <label>Verbrenner Jahreskilometer (km/a)
+                        <input id="input_combustion_km" type="number" min="0" max="50000" placeholder="z.B. 15000">
+                    </label>
+
+                    <label>Verbrenner Verbrauch (l/100km)
+                        <input id="input_combustion_consumption" type="number" min="0" max="20" step="0.1" placeholder="z.B. 7.0">
                     </label>
                 </div>
 
