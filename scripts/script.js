@@ -526,143 +526,131 @@ document.addEventListener('DOMContentLoaded', () => {
     const pdfBtn = document.getElementById('exportPdfBtn');
     if (!pdfBtn) return;
 
-    pdfBtn.addEventListener('click', async () => {
-        const scenarios = window._scenarios || [];
-        const page = document.querySelector('.page');
+    pdfBtn.addEventListener('click', () => {
         const resultsSection = document.getElementById('results');
-        if (!page || !resultsSection) return alert('Keine Ergebnisse gefunden.');
+        if (!resultsSection) return alert('Keine Ergebnisse gefunden.');
 
-        // Hilfsfunktion: Inputs/Selects entfernen und Werte als Text übernehmen
-        const sanitizeInputs = (root) => {
-            root.querySelectorAll('label').forEach((label) => {
-                const input = label.querySelector('input');
-                const select = label.querySelector('select');
-                const labelText = (label.childNodes[0]?.textContent || '').trim();
-                if (input) {
-                    const value = input.value;
-                    const div = document.createElement('div');
-                    div.className = 'pdf-field';
-                    div.innerHTML = `<strong>${labelText}:</strong> ${value}`;
-                    label.replaceWith(div);
-                } else if (select) {
-                    const value = select.options[select.selectedIndex]?.textContent || select.value;
-                    const div = document.createElement('div');
-                    div.className = 'pdf-field';
-                    div.innerHTML = `<strong>${labelText}:</strong> ${value}`;
-                    label.replaceWith(div);
-                }
-            });
-            root.querySelectorAll('button, select, input, .scenario-btn, .day-btn, #day-toggle, #scenario-switch').forEach((el) => el.remove());
-        };
-
-        // PDF-Container mit minimalem Layout
-        const pdfContainer = document.createElement('div');
-        pdfContainer.style.cssText = 'width: 800px; margin: 0; padding: 20px; background: white; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5;';
-
-        // Titel
-        const title = document.createElement('div');
-        title.style.cssText = 'margin-bottom: 30px; text-align: center;';
-        title.innerHTML = `
-            <h1 style="margin: 0 0 10px 0; font-size: 24px;">Energetische Modernisierung – Ergebnisbericht</h1>
-            <p style="margin: 0; color: #666; font-size: 11px;">Erstellt am: ${new Date().toLocaleDateString('de-DE')}</p>
+        // Erstelle print-freundliche Version im hidden iframe
+        const printWindow = window.open('', '_blank');
+        
+        // HTML für Druckversion zusammenstellen
+        const printContent = `
+            <!DOCTYPE html>
+            <html lang="de">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Energetische Modernisierung – Ergebnisbericht</title>
+                <style>
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                        font-size: 12px;
+                        line-height: 1.6;
+                        color: #333;
+                        padding: 20mm;
+                        background: white;
+                    }
+                    h1 {
+                        font-size: 24px;
+                        margin-bottom: 10px;
+                        text-align: center;
+                    }
+                    .date {
+                        text-align: center;
+                        color: #666;
+                        font-size: 11px;
+                        margin-bottom: 30px;
+                    }
+                    h2 {
+                        font-size: 16px;
+                        margin-top: 25px;
+                        margin-bottom: 12px;
+                        border-bottom: 2px solid #007bff;
+                        padding-bottom: 5px;
+                    }
+                    .section {
+                        margin-bottom: 25px;
+                        page-break-inside: avoid;
+                    }
+                    .field-group {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 15px;
+                        margin-bottom: 10px;
+                    }
+                    .field {
+                        padding: 8px;
+                        background: #f9f9f9;
+                        border-radius: 4px;
+                    }
+                    .field-label {
+                        font-weight: bold;
+                        color: #007bff;
+                        font-size: 11px;
+                    }
+                    .field-value {
+                        margin-top: 4px;
+                        font-size: 12px;
+                    }
+                    .charts-section {
+                        page-break-before: always;
+                        margin-top: 30px;
+                    }
+                    canvas {
+                        max-width: 100%;
+                        height: auto;
+                        margin: 15px 0;
+                    }
+                    @media print {
+                        body {
+                            padding: 0;
+                        }
+                        .section {
+                            page-break-inside: avoid;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Energetische Modernisierung – Ergebnisbericht</h1>
+                <div class="date">Erstellt am: ${new Date().toLocaleDateString('de-DE')}</div>
+                
+                <div id="printContainer"></div>
+                
+                <script>
+                    // Kopiere Inhalte vom Hauptfenster
+                    const resultsHtml = ${JSON.stringify(document.getElementById('results')?.innerHTML || '')};
+                    const formHtml = ${JSON.stringify(document.querySelector('.form-card')?.innerHTML || '')};
+                    
+                    // Eingabedaten
+                    const inputSection = document.createElement('div');
+                    inputSection.className = 'section';
+                    inputSection.innerHTML = '<h2>Eingabedaten</h2>' + formHtml;
+                    
+                    // Ergebnisse
+                    const resultsSection = document.createElement('div');
+                    resultsSection.className = 'section';
+                    resultsSection.innerHTML = '<h2>Ergebnisse</h2>' + resultsHtml;
+                    
+                    document.getElementById('printContainer').appendChild(inputSection);
+                    document.getElementById('printContainer').appendChild(resultsSection);
+                    
+                    // Nach kurzem Delay: Druckdialog öffnen
+                    setTimeout(() => {
+                        window.print();
+                    }, 500);
+                </script>
+            </body>
+            </html>
         `;
-        pdfContainer.appendChild(title);
-
-        // Eingabedaten
-        const inputSection = document.createElement('div');
-        inputSection.style.cssText = 'margin-bottom: 25px; page-break-inside: avoid;';
-        inputSection.innerHTML = '<h2 style="margin: 0 0 12px 0; font-size: 16px; border-bottom: 2px solid #007bff; padding-bottom: 5px;">Eingabedaten</h2>';
-        const formCard = page.querySelector('.form-card');
-        if (formCard) {
-            const formClone = formCard.cloneNode(true);
-            sanitizeInputs(formClone);
-            formClone.querySelectorAll('button').forEach((b) => b.remove());
-            formClone.style.cssText = 'background: #f9f9f9; padding: 10px; border-radius: 4px;';
-            inputSection.appendChild(formClone);
-        }
-        pdfContainer.appendChild(inputSection);
-
-        // Ergebnisse
-        const resultsSection2 = document.createElement('div');
-        resultsSection2.style.cssText = 'margin-bottom: 25px;';
-        resultsSection2.innerHTML = '<h2 style="margin: 0 0 12px 0; font-size: 16px; border-bottom: 2px solid #007bff; padding-bottom: 5px;">Ergebnisse</h2>';
-        const resultsClone = resultsSection.cloneNode(true);
-        sanitizeInputs(resultsClone);
-        resultsClone.style.cssText = 'font-size: 12px;';
-        resultsSection2.appendChild(resultsClone);
-        pdfContainer.appendChild(resultsSection2);
-
-        // Charts - nur wenn vorhanden
-        if (scenarios.length && (yearChartInstance || dayChartInstance)) {
-            const chartsDiv = document.createElement('div');
-            chartsDiv.style.cssText = 'page-break-before: always; margin-top: 30px;';
-            chartsDiv.innerHTML = '<h2 style="margin: 0 0 20px 0; font-size: 16px; border-bottom: 2px solid #007bff; padding-bottom: 5px;">Energiediagramme</h2>';
-
-            if (yearChartInstance) {
-                try {
-                    yearChartInstance.resize();
-                    const canvas = document.getElementById('yearChart');
-                    if (canvas) {
-                        const img = new Image();
-                        img.src = canvas.toDataURL('image/png');
-                        img.style.cssText = 'width: 100%; max-width: 700px; height: auto; margin: 15px 0;';
-                        chartsDiv.appendChild(img);
-                    }
-                } catch (e) {
-                    console.warn('Jahresgraph fehlgeschlagen:', e);
-                }
-            }
-
-            if (dayChartInstance) {
-                try {
-                    dayChartInstance.resize();
-                    const canvas = document.getElementById('dayChart');
-                    if (canvas) {
-                        const img = new Image();
-                        img.src = canvas.toDataURL('image/png');
-                        img.style.cssText = 'width: 100%; max-width: 700px; height: auto; margin: 15px 0;';
-                        chartsDiv.appendChild(img);
-                    }
-                } catch (e) {
-                    console.warn('Tagesgraph fehlgeschlagen:', e);
-                }
-            }
-
-            pdfContainer.appendChild(chartsDiv);
-        }
-
-        document.body.appendChild(pdfContainer);
-
-        try {
-            // Nutze html2pdf mit optimierten Einstellungen
-            await html2pdf()
-                .set({
-                    margin: [15, 15, 15, 15],
-                    filename: `energetische-modernisierung-${new Date().toISOString().split('T')[0]}.pdf`,
-                    image: { type: 'png', quality: 0.98 },
-                    html2canvas: {
-                        scale: 1.5,
-                        useCORS: true,
-                        logging: false,
-                        windowHeight: 1200,
-                        backgroundColor: '#ffffff',
-                        allowTaint: true,
-                        willReadFrequently: true
-                    },
-                    jsPDF: {
-                        unit: 'mm',
-                        format: 'a4',
-                        orientation: 'portrait'
-                    }
-                })
-                .from(pdfContainer)
-                .save();
-        } catch (e) {
-            console.error('PDF-Export fehlgeschlagen:', e);
-            alert('PDF-Export fehlgeschlagen. Bitte versuchen Sie es erneut.');
-        } finally {
-            pdfContainer.remove();
-        }
+        
+        printWindow.document.write(printContent);
+        printWindow.document.close();
     });
 });
 
