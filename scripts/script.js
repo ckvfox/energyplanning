@@ -1107,6 +1107,10 @@ async function calculateAll() {
             // PV sizing dynamisch anhand Verbrauch + Dach (oder Nutzer-Override)
             const totalElectricDemand = annualConsumption;
             
+            // Neue Limits für Haustypen - VOR der Berechnung
+            const pvLimits = { reihenhaus: 14, doppelhaus: 18, einfamilienhaus: 24 };
+            const maxKwpHouse = pvLimits[houseType] ?? 18;
+            
             let pvKwp;
             let pvExceedsRoof = false;
             
@@ -1126,9 +1130,6 @@ async function calculateAll() {
                 }
                 // Dachfläche: moderner Faktor 6 m²/kWp
                 const maxKwpFromRoof = Math.max(0, Math.floor((Number.isFinite(roofArea) ? roofArea : 0) / 6));
-                // Neue Limits für Haustypen
-                const pvLimits = { reihenhaus: 14, doppelhaus: 18, einfamilienhaus: 24 };
-                const maxKwpHouse = pvLimits[houseType] ?? 18;
                 if (pvKwpCandidate > maxKwpFromRoof) {
                     warnings.push(`Die maximal mögliche PV-Leistung liegt bei ${formatNumber(maxKwpFromRoof, 0)} kWp; mehr ist auf der verfügbaren Dachfläche nicht realisierbar.`);
                 }
