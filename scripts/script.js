@@ -1361,7 +1361,7 @@ async function calculateAll() {
                     <p>Verbräuche (kWh/a): Haushalt ${formatNumber(s.householdBlock, 0)}, Klima ${formatNumber(s.climateBlock, 0)}, Wallbox ${formatNumber(s.evBlock, 0)}, Wärmepumpe ${formatNumber(s.heatpumpBlock, 0)}, Summe ${formatNumber(s.annualConsumption, 0)}</p>
                     <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a | Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a</p>
                     <p>Einspeisung: ${formatNumber(s.feedIn, 0)} kWh/a (Tarif ${formatNumber(feedInTariff, 2)} EUR/kWh)</p>
-                    <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp ${pvExceedsRoof ? '<span class="warn">⚠️ ACHTUNG: Übersteigt verfügbaren Platz auf der Dachfläche.</span>' : ''}</p>
+                    <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp ${s.pvExceedsRoof ? '<span class="warn">⚠️ ACHTUNG: Übersteigt verfügbaren Platz auf der Dachfläche.</span>' : ''}</p>
                     ${s.batteryRecommended ? `<p>Speicher-Empfehlung: ${formatNumber(s.batteryRecommended, 1)} kWh</p>` : ''}
                     ${s.heatpumpPower ? `<p>Wärmepumpe: ${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)</p>` : ''}
                     ${hasWallbox ? `<p>EV-Ladung: ${formatNumber(wallboxExtra, 0)} kWh/a</p>` : ''}
