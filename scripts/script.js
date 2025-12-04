@@ -634,66 +634,29 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(pdfContainer);
 
         try {
-            // Nutze html2canvas mit willReadFrequently-Flag für bessere Kompatibilität
-            const canvas = await html2canvas(pdfContainer, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                windowHeight: 1200,
-                backgroundColor: '#ffffff',
-                allowTaint: true,
-                willReadFrequently: true
-            });
-
-            // Konvertiere Canvas zu Bild
-            const imgData = canvas.toDataURL('image/png');
-            
-            // Erstelle PDF mit jsPDF
-            const pageWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
-            const margin = 15;
-            const contentWidth = pageWidth - (2 * margin);
-            const contentHeight = pageHeight - (2 * margin);
-
-            const imgWidth = contentWidth;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            let yPosition = margin;
-            let remainingHeight = imgHeight;
-
-            // Teile Bild über mehrere Seiten auf
-            while (remainingHeight > 0) {
-                const heightToCut = Math.min(remainingHeight, contentHeight);
-                const sourceYStart = ((imgHeight - remainingHeight) / imgHeight) * canvas.height;
-                const sourceHeight = (heightToCut / imgHeight) * canvas.height;
-
-                // Erstelle temporäres Canvas für Seitenteil
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = canvas.width;
-                tempCanvas.height = sourceHeight;
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCtx.drawImage(canvas, 0, -sourceYStart, canvas.width, canvas.height);
-
-                const pageImgData = tempCanvas.toDataURL('image/png');
-                doc.addImage(pageImgData, 'PNG', margin, yPosition, imgWidth, heightToCut);
-
-                remainingHeight -= heightToCut;
-                yPosition = margin;
-
-                if (remainingHeight > 0) {
-                    doc.addPage();
-                }
-            }
-
-            // Speichere PDF
-            const filename = `energetische-modernisierung-${new Date().toISOString().split('T')[0]}.pdf`;
-            doc.save(filename);
+            // Nutze html2pdf mit optimierten Einstellungen
+            await html2pdf()
+                .set({
+                    margin: [15, 15, 15, 15],
+                    filename: `energetische-modernisierung-${new Date().toISOString().split('T')[0]}.pdf`,
+                    image: { type: 'png', quality: 0.98 },
+                    html2canvas: {
+                        scale: 1.5,
+                        useCORS: true,
+                        logging: false,
+                        windowHeight: 1200,
+                        backgroundColor: '#ffffff',
+                        allowTaint: true,
+                        willReadFrequently: true
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: 'a4',
+                        orientation: 'portrait'
+                    }
+                })
+                .from(pdfContainer)
+                .save();
         } catch (e) {
             console.error('PDF-Export fehlgeschlagen:', e);
             alert('PDF-Export fehlgeschlagen. Bitte versuchen Sie es erneut.');
