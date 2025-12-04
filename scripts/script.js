@@ -849,24 +849,35 @@ function validateConsumptions() {
         input_heizwaerme: 'Heizwärmebedarf',
         input_preis_strom: 'Strompreis',
         input_preis_gas: 'Gaspreis',
-        input_dachflaeche: 'bebaubare Dachfläche'
+        input_dachflaeche: 'bebaubare Dachfläche',
+        input_pv_kwp: 'PV-Leistung'
     };
     const ids = [
         { id: 'input_stromverbrauch', min: 500, max: 15000 },
         { id: 'input_heizwaerme', min: 2000, max: 40000 },
         { id: 'input_preis_strom', min: 0.10, max: 1.00 },
         { id: 'input_preis_gas', min: 0.05, max: 0.50 },
-        { id: 'input_dachflaeche', min: 20, max: 200 }
+        { id: 'input_dachflaeche', min: 20, max: 200 },
+        { id: 'input_pv_kwp', min: 2, max: 30, optional: true }
     ];
     for (const f of ids) {
         const el = document.getElementById(f.id);
         if (!el) continue;
         el.classList.remove('input-error');
-        const v = Number(el.value);
-        if (Number.isNaN(v) || v < f.min || v > f.max) {
+        const v = el.value;
+        
+        // Optional-Felder überspringen wenn leer
+        if (f.optional && v === '') continue;
+        
+        const num = Number(v);
+        if (Number.isNaN(num) || num < f.min || num > f.max) {
             el.classList.add('input-error');
             const label = labels[f.id] || f.id;
-            alert(`Bitte gib einen realistischen Wert für "${label}" ein (${f.min} – ${f.max}).`);
+            if (f.optional && v !== '') {
+                alert(`Bitte gib einen realistischen Wert für "${label}" ein (${f.min} – ${f.max}).`);
+            } else if (!f.optional) {
+                alert(`Bitte gib einen realistischen Wert für "${label}" ein (${f.min} – ${f.max}).`);
+            }
             el.focus();
             return false;
         }
@@ -886,12 +897,23 @@ async function calculateAll() {
         const prevPreisStromEl = document.getElementById('input_preis_strom');
         const prevPreisGasEl = document.getElementById('input_preis_gas');
         const prevDachEl = document.getElementById('input_dachflaeche');
+        const prevPvEl = document.getElementById('input_pv_kwp');
+        const prevEvKmEl = document.getElementById('input_ev_km');
+        const prevEvConsEl = document.getElementById('input_ev_consumption');
+        const prevCombustionKmEl = document.getElementById('input_combustion_km');
+        const prevCombustionConsEl = document.getElementById('input_combustion_consumption');
+        
         const prevValues = {
             strom: prevStromEl && prevStromEl.dataset.userEdited === 'true' ? Number(prevStromEl.value) : null,
             heiz: prevHeizEl && prevHeizEl.dataset.userEdited === 'true' ? Number(prevHeizEl.value) : null,
             preisStrom: prevPreisStromEl && prevPreisStromEl.dataset.userEdited === 'true' ? Number(prevPreisStromEl.value) : null,
             preisGas: prevPreisGasEl && prevPreisGasEl.dataset.userEdited === 'true' ? Number(prevPreisGasEl.value) : null,
-            dach: prevDachEl && prevDachEl.dataset.userEdited === 'true' ? Number(prevDachEl.value) : null
+            dach: prevDachEl && prevDachEl.dataset.userEdited === 'true' ? Number(prevDachEl.value) : null,
+            pvKwp: prevPvEl && prevPvEl.value ? Number(prevPvEl.value) : null,
+            evKm: prevEvKmEl && prevEvKmEl.value ? Number(prevEvKmEl.value) : null,
+            evCons: prevEvConsEl && prevEvConsEl.value ? Number(prevEvConsEl.value) : null,
+            combustionKm: prevCombustionKmEl && prevCombustionKmEl.value ? Number(prevCombustionKmEl.value) : null,
+            combustionCons: prevCombustionConsEl && prevCombustionConsEl.value ? Number(prevCombustionConsEl.value) : null
         };
 
         const data = await loadData();
@@ -960,15 +982,17 @@ async function calculateAll() {
         const wallboxValue = (document.getElementById('wallbox')?.value || '').toLowerCase();
         const hasWallbox = wallboxValue === 'ja';
 
-        const evAnnualKm = data.consumption.ev?.annual_km ?? 15000;
-        const evKwhPer100Km = data.consumption.ev?.kwh_per_100km ?? 17;
+        // E-Auto-Werte (mit optionalem Nutzer-Override)
+        const evAnnualKm = Number.isFinite(prevValues.evKm) ? prevValues.evKm : (data.consumption.ev?.annual_km ?? 15000);
+        const evKwhPer100Km = Number.isFinite(prevValues.evCons) ? prevValues.evCons : (data.consumption.ev?.kwh_per_100km ?? 17);
         const evModel = data.consumption.ev?.model || 'VW ID.4 (meistverkauftes E-Auto)';
         const wallboxExtra = hasWallbox ? (evAnnualKm / 100) * evKwhPer100Km : 0;
-        // Verbrenner-Werte aus data.json
+        
+        // Verbrenner-Werte aus data.json (mit optionalem Nutzer-Override)
         const combustionData = data.consumption.combustion || {};
         const combustionModel = combustionData.model || 'VW Passat 1.5 TSI';
-        const combustionAnnualKm = combustionData.annual_km ?? 15000;
-        const combustionLitresPer100km = combustionData.litres_per_100km ?? 7.0;
+        const combustionAnnualKm = Number.isFinite(prevValues.combustionKm) ? prevValues.combustionKm : (combustionData.annual_km ?? 15000);
+        const combustionLitresPer100km = Number.isFinite(prevValues.combustionCons) ? prevValues.combustionCons : (combustionData.litres_per_100km ?? 7.0);
         const combustionFuelPrice = combustionData.fuel_price_per_litre ?? 1.85;
         const combustionCo2Factor = combustionData.co2_per_litre ?? 2.3;
         const combustionLitres = hasWallbox ? (combustionAnnualKm / 100) * combustionLitresPer100km : 0;
@@ -1080,25 +1104,39 @@ async function calculateAll() {
             const annualConsumption = householdBlock + acBlock + evBlock + heatpumpBlock;
             const gasUse = scenario.includeHeatpump ? 0 : heatingDemand;
 
-            // PV sizing dynamisch anhand Verbrauch + Dach
+            // PV sizing dynamisch anhand Verbrauch + Dach (oder Nutzer-Override)
             const totalElectricDemand = annualConsumption;
-            // Neue PV-Sizing-Logik
-            let pvKwpCandidate = totalElectricDemand / 850;
-            // Mindestgröße bei Speicher oder WP: mindestens 7 kWp
-            if (scenario.includeBattery || scenario.includeHeatpump) {
-                pvKwpCandidate = Math.max(pvKwpCandidate, 7);
+            
+            let pvKwp;
+            let pvExceedsRoof = false;
+            
+            if (Number.isFinite(prevValues.pvKwp) && prevValues.pvKwp > 0) {
+                // Nutzer hat einen festen Wert eingegeben
+                pvKwp = prevValues.pvKwp;
+                const maxKwpFromRoof = Math.max(0, Math.floor((Number.isFinite(roofArea) ? roofArea : 0) / 6));
+                if (pvKwp > maxKwpFromRoof) {
+                    pvExceedsRoof = true;
+                }
+            } else {
+                // Automatische Berechnung
+                let pvKwpCandidate = totalElectricDemand / 850;
+                // Mindestgröße bei Speicher oder WP: mindestens 7 kWp
+                if (scenario.includeBattery || scenario.includeHeatpump) {
+                    pvKwpCandidate = Math.max(pvKwpCandidate, 7);
+                }
+                // Dachfläche: moderner Faktor 6 m²/kWp
+                const maxKwpFromRoof = Math.max(0, Math.floor((Number.isFinite(roofArea) ? roofArea : 0) / 6));
+                // Neue Limits für Haustypen
+                const pvLimits = { reihenhaus: 14, doppelhaus: 18, einfamilienhaus: 24 };
+                const maxKwpHouse = pvLimits[houseType] ?? 18;
+                if (pvKwpCandidate > maxKwpFromRoof) {
+                    warnings.push(`Die maximal mögliche PV-Leistung liegt bei ${formatNumber(maxKwpFromRoof, 0)} kWp; mehr ist auf der verfügbaren Dachfläche nicht realisierbar.`);
+                }
+                // Finaler erlaubter Wert, auf 0,1 runden
+                pvKwp = Math.min(pvKwpCandidate, maxKwpFromRoof, maxKwpHouse);
+                pvKwp = Math.max(0, Math.round(pvKwp * 10) / 10);
             }
-            // Dachfläche: moderner Faktor 6 m²/kWp
-            const maxKwpFromRoof = Math.max(0, Math.floor((Number.isFinite(roofArea) ? roofArea : 0) / 6));
-            // Neue Limits für Haustypen
-            const pvLimits = { reihenhaus: 14, doppelhaus: 18, einfamilienhaus: 24 };
-            const maxKwpHouse = pvLimits[houseType] ?? 18;
-            if (pvKwpCandidate > maxKwpFromRoof) {
-                warnings.push(`Die maximal mögliche PV-Leistung liegt bei ${formatNumber(maxKwpFromRoof, 0)} kWp; mehr ist auf der verfügbaren Dachfläche nicht realisierbar.`);
-            }
-            // Finaler erlaubter Wert, auf 0,1 runden
-            let pvKwp = Math.min(pvKwpCandidate, maxKwpFromRoof, maxKwpHouse);
-            pvKwp = Math.max(0, Math.round(pvKwp * 10) / 10);
+            
             const pvGeneration = pvKwp * data.pv.yield_per_kwp;
 
 
@@ -1263,12 +1301,30 @@ async function calculateAll() {
                     <label>Realistische bebaubare Dachfläche (m²)
                         <input id="input_dachflaeche" type="number" min="20" max="200" value="${roofArea ?? ''}">
                     </label>
+
+                    <label>ALTERNATIV: Gewünschte PV-Leistung (kWp)
+                        <input id="input_pv_kwp" type="number" min="2" max="30" step="0.1" placeholder="automatisch ermittelt" value="">
+                    </label>
+
+                    <label>E-Auto: km/a und Verbrauch (kWh/100km)
+                        <input id="input_ev_km" type="number" min="0" max="50000" placeholder="km/a" value="">
+                        <input id="input_ev_consumption" type="number" min="0" max="50" step="0.1" placeholder="kWh/100km" value="">
+                    </label>
+
+                    <label>Verbrenner: km/a und Verbrauch (l/100km)
+                        <input id="input_combustion_km" type="number" min="0" max="50000" placeholder="km/a" value="">
+                        <input id="input_combustion_consumption" type="number" min="0" max="20" step="0.1" placeholder="l/100km" value="">
+                    </label>
                 </div>
 
                 <div class="verbrauch-hinweis">
                     <span class="hinweis-icon">ℹ️</span>
-                    Falls Sie Ihre eigenen Energieverbrauchs- oder Dachflächenwerte kennen, tragen Sie diese ein.
-                    Alle Berechnungen nutzen automatisch diese Eingaben.
+                    Falls Sie Ihre eigenen Werte kennen, tragen Sie diese ein. Alle Berechnungen nutzen automatisch diese Eingaben:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>Energieverbrauch, Preise und Dachfläche werden automatisch an Ihre Angaben angepasst</li>
+                        <li>PV-Leistung: Lassen Sie das Feld leer für automatische Berechnung oder geben Sie einen Wert (2-30 kWp) ein</li>
+                        <li>E-Auto & Verbrenner: Eigene Fahrleistungen und Verbrauchswerte überschreiben die Standardannahmen</li>
+                    </ul>
                 </div>
 
                 <div class="verbrauch-actions">
@@ -1297,7 +1353,7 @@ async function calculateAll() {
                     <p>Verbräuche (kWh/a): Haushalt ${formatNumber(s.householdBlock, 0)}, Klima ${formatNumber(s.climateBlock, 0)}, Wallbox ${formatNumber(s.evBlock, 0)}, Wärmepumpe ${formatNumber(s.heatpumpBlock, 0)}, Summe ${formatNumber(s.annualConsumption, 0)}</p>
                     <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a | Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a</p>
                     <p>Einspeisung: ${formatNumber(s.feedIn, 0)} kWh/a (Tarif ${formatNumber(feedInTariff, 2)} EUR/kWh)</p>
-                    <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp</p>
+                    <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp ${pvExceedsRoof ? '<span class="warn">⚠️ ACHTUNG: Übersteigt verfügbaren Platz auf der Dachfläche.</span>' : ''}</p>
                     ${s.batteryRecommended ? `<p>Speicher-Empfehlung: ${formatNumber(s.batteryRecommended, 1)} kWh</p>` : ''}
                     ${s.heatpumpPower ? `<p>Wärmepumpe: ${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)</p>` : ''}
                     ${hasWallbox ? `<p>EV-Ladung: ${formatNumber(wallboxExtra, 0)} kWh/a</p>` : ''}
@@ -1412,9 +1468,9 @@ async function calculateAll() {
         if (recalcBtn) {
             recalcBtn.addEventListener('click', () => {
                 // Werte aus den Feldern übernehmen und als manuell markiert
-                ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche'].forEach((id) => {
+                ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche', 'input_pv_kwp'].forEach((id) => {
                     const el = document.getElementById(id);
-                    if (el) {
+                    if (el && el.value) {
                         el.dataset.userEdited = 'true';
                     }
                 });
