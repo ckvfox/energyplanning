@@ -1,0 +1,51 @@
+import pandas as pd
+import numpy as np
+
+df = pd.read_excel('modernisierung_tests.xlsx')
+issues = df[df['issues'].notna()]
+
+print("=== DETAILLIERTE ANALYSE DER 6 PROBLEM-FÄLLE ===\n")
+print(f"Total: {len(issues)} Fehler\n")
+
+for i, (idx, row) in enumerate(issues.iterrows(), 1):
+    print(f"\n{'='*70}")
+    print(f"PROBLEM {i} (Row {idx})")
+    print(f"{'='*70}")
+    print(f"Hausgröße: {int(row['area'])}m², Personen: {int(row['people'])}, Insulation: {row['insulation']}")
+    print(f"Dachfläche: {row['roofArea']}m², Klima: {row['climate']}, Fußbodenheizung: {row['floorHeating']}")
+    print(f"\nSystemkonfiguration:")
+    print(f"  PV: {row['pv_kwp']}kWp")
+    print(f"  Batterie: {row['battery_kwh']}kWh")
+    print(f"  Wärmepumpe: installiert")
+    print(f"\nKosten-Blöcke:")
+    print(f"  Haushalt/Basis: {row['household_block']:.0f}€")
+    print(f"  Klima (Heizung/WP): {row['climate_block']:.0f}€")
+    print(f"  EV-Block: {row['ev_block']:.0f}€")
+    print(f"  Wärmepumpen-Block: {row['heatpump_block']:.0f}€")
+    print(f"  >>> GESAMT: {row['total_cost']:.0f}€")
+    print(f"\nEinsparungen & Energiefluss:")
+    print(f"  Jährliche Kosten nach Umbau: {row['annual_cost_post']:.0f}€")
+    print(f"  CO2 heute: {row['co2_today']:.0f}kg → Nach Umbau: {row['co2_after']:.0f}kg")
+    print(f"  CO2-Einsparung: {row['co2_saving']:.0f}kg/Jahr")
+    print(f"  PV-Erzeugung: {row['pv_generation']:.0f}kWh/Jahr")
+    print(f"  Netzbezug: {row['grid_import']:.0f}kWh/Jahr")
+    print(f"  Einspeisung: {row['feed_in']:.0f}kWh/Jahr")
+    print(f"  Autarkie: {row['autarky_pct']:.1f}%")
+    print(f"\nBreak-even:")
+    print(f"  Berechnet: {row['break_even_years']}")
+    if pd.isna(row['break_even_years']):
+        print(f"  >>> PROBLEM: NaN (nicht berechenbar)")
+    print(f"\nFehler-Nachricht: {row['issues']}")
+    print(f"Status: {row['status']}")
+
+print(f"\n\n{'='*70}")
+print("ZUSAMMENFASSUNG")
+print(f"{'='*70}")
+print("\nAlle 6 Fehler treten auf in:")
+print("  - Szenario: PV + Speicher + Wärmepumpe")
+print("  - Haustyp: Reihenhaus")
+print(f"  - Hauskonfiguration: 100m², 1 Person, gut isoliert, 30m² Dachfläche")
+print("\nHypothesen:")
+print("  1. Wärmepumpen-Kosten (€5500) zu hoch für kleine Häuser → negative Einsparung")
+print("  2. Break-even-Berechnung kann negative Werte nicht handhaben")
+print("  3. Jahreseinsparung ist negativ oder zu niedrig für amortization")

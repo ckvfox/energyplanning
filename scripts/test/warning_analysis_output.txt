@@ -1,0 +1,23 @@
+================================================================================
+WARNUNG-ANALYSE (2768 Warnings in 5832 Tests = 47.4%)
+================================================================================
+
+Total unique warning types: 3
+
+2252 ( 38.6%) - Break-even sehr kurz (<7 Jahre) û Annahmen pr³fen.
+ 648 ( 11.1%) - Autarkie au▀erhalb 50û85 % (PV+Speicher+WP)
+  60 (  1.0%) - Break-even sehr lang (>35 Jahre) û wirtschaftlich schwach.
+
+================================================================================
+INTERPRETATION
+================================================================================
+
+Break-down by scenario:
+  Nur Photovoltaik                    -  50.0% (972/1944)
+  PV + Speicher                       -  47.2% (918/1944)
+  PV + Speicher + Wõrmepumpe          -  45.2% (878/1944)
+
+Break-down by houseType:
+  reihenhaus                          -  46.3% (900/1944)
+  doppelhaus                          -  47.5% (924/1944)
+  einfamilienhaus                     -  48.6% (944/1944)

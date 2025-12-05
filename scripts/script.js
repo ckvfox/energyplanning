@@ -98,6 +98,42 @@ const dailyPVShape = [
     0.95, 0.85, 0.65, 0.45, 0.25, 0.12, 0.05, 0, 0, 0, 0, 0
 ];
 
+// ========== EV/COMBUSTION FIELD DISABLE LOGIC ==========
+/**
+ * Disables/enables EV and combustion vehicle input fields based on Wallbox selection
+ * Fields are only usable when Wallbox is enabled
+ */
+function updateEVCombustionFieldsState() {
+    const wallboxEl = document.getElementById('wallbox');
+    const evCombustionSection = document.getElementById('ev_combustion_section');
+    
+    if (!wallboxEl || !evCombustionSection) return;
+    
+    const isWallboxEnabled = wallboxEl.checked;
+    const evFields = [
+        'input_ev_km',
+        'input_ev_consumption',
+        'input_combustion_km',
+        'input_combustion_consumption'
+    ];
+    
+    evFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.disabled = !isWallboxEnabled;
+        }
+    });
+    
+    // Visual feedback: fade out when disabled
+    if (isWallboxEnabled) {
+        evCombustionSection.style.opacity = '1';
+        evCombustionSection.style.pointerEvents = 'auto';
+    } else {
+        evCombustionSection.style.opacity = '0.5';
+        evCombustionSection.style.pointerEvents = 'none';
+    }
+}
+
 const dailyHouseholdShape = [
     0.12, 0.10, 0.08, 0.07, 0.08, 0.20, 0.35, 0.25, 0.10, 0.08, 0.10, 0.12,
     0.15, 0.20, 0.25, 0.30, 0.40, 0.45, 0.35, 0.25, 0.20, 0.18, 0.15, 0.12
@@ -1308,21 +1344,23 @@ async function calculateAll() {
                         <input id="input_pv_kwp" type="number" min="2" max="30" step="0.1" placeholder="automatisch ermittelt">
                     </label>
 
+                    <div id="ev_combustion_section" style="opacity: 0.5; pointer-events: none;">
                     <label>E-Auto Jahreskilometer (km/a)
-                        <input id="input_ev_km" type="number" min="0" max="50000" value="${data.consumption.ev?.annual_km ?? 12000}">
+                        <input id="input_ev_km" type="number" min="0" max="50000" value="${data.consumption.ev?.annual_km ?? 12000}" disabled>
                     </label>
 
                     <label>E-Auto Verbrauch (kWh/100km)
-                        <input id="input_ev_consumption" type="number" min="0" max="50" step="0.1" value="${data.consumption.ev?.kwh_per_100km ?? 17}">
+                        <input id="input_ev_consumption" type="number" min="0" max="50" step="0.1" value="${data.consumption.ev?.kwh_per_100km ?? 17}" disabled>
                     </label>
 
                     <label>Verbrenner Jahreskilometer (km/a)
-                        <input id="input_combustion_km" type="number" min="0" max="50000" value="${data.consumption.combustion?.annual_km ?? 15000}">
+                        <input id="input_combustion_km" type="number" min="0" max="50000" value="${data.consumption.combustion?.annual_km ?? 15000}" disabled>
                     </label>
 
                     <label>Verbrenner Verbrauch (l/100km)
-                        <input id="input_combustion_consumption" type="number" min="0" max="20" step="0.1" value="${data.consumption.combustion?.litres_per_100km ?? 7.0}">
+                        <input id="input_combustion_consumption" type="number" min="0" max="20" step="0.1" value="${data.consumption.combustion?.litres_per_100km ?? 7.0}" disabled>
                     </label>
+                    </div>
                 </div>
 
                 <div class="verbrauch-hinweis">
@@ -1509,6 +1547,14 @@ async function calculateAll() {
                 if (evCons) { evCons.value = data.consumption.ev?.kwh_per_100km ?? 17; evCons.removeAttribute('data-user-edited'); }
                 if (combustionKm) { combustionKm.value = data.consumption.combustion?.annual_km ?? 15000; combustionKm.removeAttribute('data-user-edited'); }
                 if (combustionCons) { combustionCons.value = data.consumption.combustion?.litres_per_100km ?? 7.0; combustionCons.removeAttribute('data-user-edited'); }
+                
+                // Update EV/Combustion fields disabled state based on wallbox
+                updateEVCombustionFieldsState();
+                
+                // Trigger recalculation
+                if (validateConsumptions()) {
+                    calculateAll();
+                }
             });
         }
         const recalcBtn = document.getElementById('btn_recalc_results');
@@ -1622,7 +1668,14 @@ window.addEventListener('DOMContentLoaded', () => {
     // 1. Initialize Lazy Loading für Subsidies
     initializeSubsidyLazyLoading?.();
     
-    // 2. Debounce für Input-Events (verhindert zu häufige Berechnungen)
+    // 2. Initialize EV/Combustion fields state (disabled until wallbox is checked)
+    updateEVCombustionFieldsState();
+    const wallboxEl = document.getElementById('wallbox');
+    if (wallboxEl) {
+        wallboxEl.addEventListener('change', updateEVCombustionFieldsState);
+    }
+    
+    // 3. Debounce für Input-Events (verhindert zu häufige Berechnungen)
     const form = document.getElementById('energyForm');
     if (form) {
         // Debounce für alle Input/Select-Änderungen (außer Submit)
@@ -1638,7 +1691,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // 3. Throttle für Window Resize (Chart Redraw)
+    // 4. Throttle für Window Resize (Chart Redraw)
     const redrawChartsThrottled = throttle(() => {
         if (yearChartInstance) yearChartInstance.resize();
         if (dayChartInstance) dayChartInstance.resize();
