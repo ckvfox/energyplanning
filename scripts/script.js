@@ -105,9 +105,8 @@ const dailyPVShape = [
  */
 function updateEVCombustionFieldsState() {
     const wallboxEl = document.getElementById('wallbox');
-    const evCombustionSection = document.getElementById('ev_combustion_section');
     
-    if (!wallboxEl || !evCombustionSection) return;
+    if (!wallboxEl) return;
     
     const isWallboxEnabled = wallboxEl.checked;
     const evFields = [
@@ -123,15 +122,21 @@ function updateEVCombustionFieldsState() {
             el.disabled = !isWallboxEnabled;
         }
     });
+}
+
+// ========== BAUJAHR FIELD DISABLE LOGIC ==========
+/**
+ * Disables/enables Baujahr (house age) input field based on Bundesland selection
+ * Field is only usable when a Bundesland is selected
+ */
+function updateBaujahrFieldState() {
+    const bundeslandEl = document.getElementById('bundesland');
+    const baujahrEl = document.getElementById('houseAge');
     
-    // Visual feedback: fade out when disabled
-    if (isWallboxEnabled) {
-        evCombustionSection.style.opacity = '1';
-        evCombustionSection.style.pointerEvents = 'auto';
-    } else {
-        evCombustionSection.style.opacity = '0.5';
-        evCombustionSection.style.pointerEvents = 'none';
-    }
+    if (!bundeslandEl || !baujahrEl) return;
+    
+    const isBundeslandSelected = bundeslandEl.value !== '';
+    baujahrEl.disabled = !isBundeslandSelected;
 }
 
 const dailyHouseholdShape = [
@@ -1344,7 +1349,6 @@ async function calculateAll() {
                         <input id="input_pv_kwp" type="number" min="2" max="30" step="0.1" placeholder="automatisch ermittelt">
                     </label>
 
-                    <div id="ev_combustion_section" style="opacity: 0.5; pointer-events: none;">
                     <label>E-Auto Jahreskilometer (km/a)
                         <input id="input_ev_km" type="number" min="0" max="50000" value="${data.consumption.ev?.annual_km ?? 12000}" disabled>
                     </label>
@@ -1360,7 +1364,6 @@ async function calculateAll() {
                     <label>Verbrenner Verbrauch (l/100km)
                         <input id="input_combustion_consumption" type="number" min="0" max="20" step="0.1" value="${data.consumption.combustion?.litres_per_100km ?? 7.0}" disabled>
                     </label>
-                    </div>
                 </div>
 
                 <div class="verbrauch-hinweis">
@@ -1369,7 +1372,7 @@ async function calculateAll() {
                     <ul style="margin-top: 8px; margin-left: 20px;">
                         <li>Energieverbrauch, Preise und Dachfläche werden automatisch an Ihre Angaben angepasst</li>
                         <li>PV-Leistung: Lassen Sie das Feld leer für automatische Berechnung oder geben Sie einen Wert (2-30 kWp) ein</li>
-                        <li>E-Auto & Verbrenner: Eigene Fahrleistungen und Verbrauchswerte überschreiben die Standardannahmen</li>
+                        <li>E-Auto & Verbrenner: Nur verfügbar wenn Wallbox geplant ist. Eigene Fahrleistungen und Verbrauchswerte überschreiben die Standardannahmen</li>
                     </ul>
                 </div>
 
@@ -1675,7 +1678,14 @@ window.addEventListener('DOMContentLoaded', () => {
         wallboxEl.addEventListener('change', updateEVCombustionFieldsState);
     }
     
-    // 3. Debounce für Input-Events (verhindert zu häufige Berechnungen)
+    // 3. Initialize Baujahr field state (disabled until Bundesland is selected)
+    updateBaujahrFieldState();
+    const bundeslandEl = document.getElementById('bundesland');
+    if (bundeslandEl) {
+        bundeslandEl.addEventListener('change', updateBaujahrFieldState);
+    }
+    
+    // 4. Debounce für Input-Events (verhindert zu häufige Berechnungen)
     const form = document.getElementById('energyForm');
     if (form) {
         // Debounce für alle Input/Select-Änderungen (außer Submit)
@@ -1691,7 +1701,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // 4. Throttle für Window Resize (Chart Redraw)
+    // 5. Throttle für Window Resize (Chart Redraw)
     const redrawChartsThrottled = throttle(() => {
         if (yearChartInstance) yearChartInstance.resize();
         if (dayChartInstance) dayChartInstance.resize();
