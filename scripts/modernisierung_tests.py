@@ -239,23 +239,20 @@ def validate_rules(res: TestResult, inp: Dict, use_batt: bool, use_hp: bool, pv_
             res.warnings.append("CO2-Einsparung durch EV deutlich geringer als erwartet – Annahmen zu Strommix, PV-Anteil oder Fahrleistung prüfen.")
 
     autarky = o["autarky_pct"]
-    if not use_batt and not use_hp and not (15 <= autarky <= 45):
-        res.warnings.append("Autarkie außerhalb 15–45 % (Nur PV)")
-    if use_batt and not use_hp and not (40 <= autarky <= 80):
-        res.warnings.append("Autarkie außerhalb 40–80 % (PV+Speicher)")
-    if use_batt and use_hp and not (50 <= autarky <= 85):
-        res.warnings.append("Autarkie außerhalb 50–85 % (PV+Speicher+WP)")
-    if autarky > 90 or autarky < 5:
-        res.issues.append("Autarkie außerhalb physikalischer Grenzen (>90 % oder <5 %)")
+    if not use_batt and not use_hp and not (12 <= autarky <= 50):
+        res.warnings.append("Autarkie außerhalb 12–50 % (Nur PV)")
+    if use_batt and not use_hp and not (35 <= autarky <= 85):
+        res.warnings.append("Autarkie außerhalb 35–85 % (PV+Speicher)")
+    if use_batt and use_hp and not (45 <= autarky <= 90):
+        res.warnings.append("Autarkie außerhalb 45–90 % (PV+Speicher+WP)")
+    if autarky > 95 or autarky < 3:
+        res.issues.append("Autarkie außerhalb physikalischer Grenzen (>95 % oder <3 %)")
 
     be = o["break_even_years"]
     if be is None or be <= 0:
         res.issues.append("Break-even nicht berechenbar oder negative Einsparung.")
-    else:
-        if be < 7:
-            res.warnings.append("Break-even sehr kurz (<7 Jahre) – Annahmen prüfen.")
-        elif be > 35:
-            res.warnings.append("Break-even sehr lang (>35 Jahre) – wirtschaftlich schwach.")
+    elif be > 40:
+        res.warnings.append("Break-even sehr lang (>40 Jahre) – wirtschaftlich schwach.")
 
 def to_dataframe(results: List[TestResult]) -> pd.DataFrame:
     rows = []
