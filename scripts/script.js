@@ -30,6 +30,25 @@ function roofPvLimit(roofArea) {
     return Math.max(0, Math.floor(area / 7)); // 7 m² pro kWp laut Vorgabe
 }
 
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+    };
+}
+
+function throttle(func, limit) {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func(...args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
 function estimateEnergyBalance({
     pvKwp,
     batteryKwh,
