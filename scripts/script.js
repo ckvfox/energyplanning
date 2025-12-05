@@ -1573,24 +1573,21 @@ document.addEventListener('DOMContentLoaded', () => {
  * - Result Caching Integration
  */
 window.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Lazy Loading für Subsidies
-    initializeSubsidyLazyLoading?.();
-    
-    // 2. Initialize EV/Combustion fields state (disabled until wallbox is checked)
+    // 1. Initialize EV/Combustion fields state (disabled until wallbox is checked)
     updateEVCombustionFieldsState();
     const wallboxEl = document.getElementById('wallbox');
     if (wallboxEl) {
         wallboxEl.addEventListener('change', updateEVCombustionFieldsState);
     }
     
-    // 3. Initialize Baujahr field state (disabled until Bundesland is selected)
+    // 2. Initialize Baujahr field state (disabled until Bundesland is selected)
     updateBaujahrFieldState();
     const bundeslandEl = document.getElementById('bundesland');
     if (bundeslandEl) {
         bundeslandEl.addEventListener('change', updateBaujahrFieldState);
     }
     
-    // 4. Debounce für Input-Events (verhindert zu häufige Berechnungen)
+    // 3. Debounce für Input-Events (verhindert zu häufige Berechnungen)
     const form = document.getElementById('energyForm');
     if (form) {
         // Debounce für alle Input/Select-Änderungen (außer Submit)
@@ -1606,7 +1603,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // 5. Throttle für Window Resize (Chart Redraw)
+    // 4. Throttle für Window Resize (Chart Redraw)
     const redrawChartsThrottled = throttle(() => {
         if (yearChartInstance) yearChartInstance.resize();
         if (dayChartInstance) dayChartInstance.resize();
