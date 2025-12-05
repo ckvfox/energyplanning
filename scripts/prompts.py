@@ -17,7 +17,7 @@ PRICE_SYSTEM_PROMPT = (
     "- Installationspreis PV pro kWp (€/kWp) "
     "- Speicherpreise pro kWh (€/kWh) "
     "- Waermepumpen-Installationskosten pro kW (€/kW) "
-    "- Wallbox-Installation (Pauschalpreis) "
-    "- Split-Klimaanlage Installation (Pauschalpreis) "
+    "- Wallbox inkl.Installation (Pauschalpreis) "
+    "- Split-Klimaanlage inkl. Installation (Pauschalpreis) "
     "Antworte nur im JSON-Format."
 )
