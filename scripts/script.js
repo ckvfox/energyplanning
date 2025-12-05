@@ -1382,9 +1382,6 @@ async function calculateAll() {
                     <button id="btn_reset_defaults" class="primary" type="button">Zurücksetzen</button>
                 </div>
             </div>
-            <p style="margin-top:8px; font-size:13px; color:#555;">
-            Hinweis: Die Standardwerte für Verbrauch, Energiepreise und Dachfläche passen sich automatisch an die Eingaben (Haustyp, Fläche, Personen, Dämmung) an. Eigene Werte können Sie jederzeit überschreiben.
-            </p>
             <p>Heutige jährliche Energiekosten (Strom ${formatNumber(elPrice, 2)} EUR/kWh, Gas ${formatNumber(gasPrice, 2)} EUR/kWh): ${formatNumber(baselineCost, 0)} EUR/a</p>
 
             <h3>Annahmen nach Modernisierung</h3>
