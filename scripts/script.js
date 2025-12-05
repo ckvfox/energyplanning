@@ -1309,19 +1309,19 @@ async function calculateAll() {
                     </label>
 
                     <label>E-Auto Jahreskilometer (km/a)
-                        <input id="input_ev_km" type="number" min="0" max="50000" placeholder="z.B. 12000">
+                        <input id="input_ev_km" type="number" min="0" max="50000" value="${data.consumption.ev?.annual_km ?? 12000}">
                     </label>
 
                     <label>E-Auto Verbrauch (kWh/100km)
-                        <input id="input_ev_consumption" type="number" min="0" max="50" step="0.1" placeholder="z.B. 17">
+                        <input id="input_ev_consumption" type="number" min="0" max="50" step="0.1" value="${data.consumption.ev?.kwh_per_100km ?? 17}">
                     </label>
 
                     <label>Verbrenner Jahreskilometer (km/a)
-                        <input id="input_combustion_km" type="number" min="0" max="50000" placeholder="z.B. 15000">
+                        <input id="input_combustion_km" type="number" min="0" max="50000" value="${data.consumption.combustion?.annual_km ?? 15000}">
                     </label>
 
                     <label>Verbrenner Verbrauch (l/100km)
-                        <input id="input_combustion_consumption" type="number" min="0" max="20" step="0.1" placeholder="z.B. 7.0">
+                        <input id="input_combustion_consumption" type="number" min="0" max="20" step="0.1" value="${data.consumption.combustion?.litres_per_100km ?? 7.0}">
                     </label>
                 </div>
 
