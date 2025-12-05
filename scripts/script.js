@@ -570,90 +570,66 @@ document.addEventListener('DOMContentLoaded', () => {
     pdfBtn.addEventListener('click', () => {
         const resultsSection = document.getElementById('results');
         if (!resultsSection) {
-            alert('Keine Ergebnisse gefunden.');
+            alert('Keine Ergebnisse gefunden. Bitte führen Sie zuerst eine Berechnung durch.');
             return;
         }
 
         try {
-            // Sammle HTML-Inhalte
-            const resultsHtml = resultsSection?.innerHTML || '';
-            const formHtml = document.querySelector('.form-card')?.innerHTML || '';
+            // Einfacher Ansatz: Nutze direkt den Results-Container
+            const originalDisplay = resultsSection.style.display;
+            const printWindow = window.open('', '', 'width=800,height=600');
+            
+            if (!printWindow) {
+                alert('Druckfenster konnte nicht geöffnet werden. Bitte überprüfen Sie Ihre Browser-Einstellungen.');
+                return;
+            }
 
-            // Erstelle unsichtbaren Container mit print-Styling
-            const printContainer = document.createElement('div');
-            printContainer.id = 'printContent_' + Date.now();
-            printContainer.style.cssText = `
-                position: fixed;
-                top: -9999px;
-                left: -9999px;
-                width: 210mm;
-                height: 297mm;
-                padding: 20mm;
-                background: white;
-                font-family: Arial, sans-serif;
-                font-size: 12px;
-                line-height: 1.6;
-                color: #333;
+            // Schreibe HTML ins Druckfenster
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html lang="de">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Energetische Modernisierung – Ergebnisbericht</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 20px;
+                            color: #333;
+                            background: white;
+                        }
+                        h1 { font-size: 24px; text-align: center; margin-bottom: 10px; }
+                        h2 { font-size: 16px; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-top: 25px; }
+                        h3 { font-size: 14px; margin-top: 15px; }
+                        p { line-height: 1.6; }
+                        .timestamp { text-align: center; color: #666; font-size: 12px; margin-bottom: 30px; }
+                        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+                        th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
+                        th { background: #f0f0f0; }
+                        @media print {
+                            body { margin: 0; }
+                            * { box-sizing: border-box; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Energetische Modernisierung – Ergebnisbericht</h1>
+                    <div class="timestamp">Erstellt am: ${new Date().toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' })} um ${new Date().toLocaleTimeString('de-DE')}</div>
+                    ${resultsSection.innerHTML}
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(() => window.close(), 500);
+                        };
+                    </script>
+                </body>
+                </html>
             `;
-
-            // Baue Print-HTML
-            let printHtml = `
-                <h1 style="font-size: 24px; margin-bottom: 10px; text-align: center;">
-                    Energetische Modernisierung – Ergebnisbericht
-                </h1>
-                <div style="text-align: center; color: #666; font-size: 11px; margin-bottom: 30px;">
-                    Erstellt am: ${new Date().toLocaleDateString('de-DE')}
-                </div>
-                <h2 style="font-size: 16px; margin-top: 25px; margin-bottom: 12px; border-bottom: 2px solid #007bff; padding-bottom: 5px;">
-                    Eingabedaten
-                </h2>
-                <div style="background: #f9f9f9; padding: 10px; border-radius: 4px; margin-bottom: 25px;">
-                    ${formHtml}
-                </div>
-                <h2 style="font-size: 16px; margin-top: 25px; margin-bottom: 12px; border-bottom: 2px solid #007bff; padding-bottom: 5px;">
-                    Ergebnisse
-                </h2>
-                <div style="margin-bottom: 25px;">
-                    ${resultsHtml}
-                </div>
-            `;
-
-            printContainer.innerHTML = printHtml;
-            document.body.appendChild(printContainer);
-
-            // Entferne interaktive Elemente aus Print-Version
-            printContainer.querySelectorAll('button, select, input, .scenario-btn, .day-btn, #day-toggle, #scenario-switch').forEach(el => el.remove());
-
-            // Definiere Print-Stylesheet
-            const printStyle = document.createElement('style');
-            printStyle.textContent = `
-                @media print {
-                    body > * { display: none !important; }
-                    #${printContainer.id} {
-                        position: static !important;
-                        top: auto !important;
-                        left: auto !important;
-                        width: auto !important;
-                        height: auto !important;
-                        display: block !important;
-                    }
-                    #${printContainer.id} h2 {
-                        page-break-inside: avoid;
-                    }
-                }
-            `;
-            document.head.appendChild(printStyle);
-
-            // Öffne Druckdialog
-            setTimeout(() => {
-                window.print();
-                
-                // Cleanup nach Druck
-                setTimeout(() => {
-                    printContainer.remove();
-                    printStyle.remove();
-                }, 1000);
-            }, 100);
+            
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            
         } catch (e) {
             console.error('Druckfehler:', e);
             alert('Druckfehler aufgetreten. Bitte versuchen Sie es später erneut.');
