@@ -1265,15 +1265,15 @@ async function calculateAll() {
                         <input id="input_preis_gas" type="number" step="0.01" min="0.05" max="0.50" value="${gasPrice.toFixed(2)}">
                     </label>
 
-                    <label>Realistische bebaubare Dachfläche (m²)
+                    <label>Bebaubare Dachfläche (m²)
                         <input id="input_dachflaeche" type="number" min="20" max="200" value="${roofArea ?? ''}">
                     </label>
 
-                    <label>ALTERNATIV: Gewünschte PV-Leistung (kWp)
+                    <label>ALTERNATIV: PV-Leistung (kWp)
                         <input id="input_pv_kwp" type="number" min="2" max="30" step="0.1" placeholder="automatisch ermittelt">
                     </label>
 
-                    <label>E-Auto Jahreskilometer (km/a)
+                    <label>E-Auto Laufleistung (km/a)
                         <input id="input_ev_km" type="number" min="0" max="50000" value="${data.consumption.ev?.annual_km ?? 12000}">
                     </label>
 
@@ -1281,7 +1281,7 @@ async function calculateAll() {
                         <input id="input_ev_consumption" type="number" min="0" max="50" step="0.1" value="${data.consumption.ev?.kwh_per_100km ?? 17}">
                     </label>
 
-                    <label>Verbrenner Jahreskilometer (km/a)
+                    <label>Verbrenner Laufleistung (km/a)
                         <input id="input_combustion_km" type="number" min="0" max="50000" value="${data.consumption.combustion?.annual_km ?? 15000}">
                     </label>
 
