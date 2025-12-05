@@ -333,7 +333,12 @@ def main() -> None:
         all_results.extend(scenario_calculations(data, inp))
 
     df = to_dataframe(all_results)
-    output_path = Path("modernisierung_tests.xlsx")
+    
+    # Erstelle test-Verzeichnis falls nicht vorhanden
+    test_dir = Path(__file__).resolve().parent / "test"
+    test_dir.mkdir(exist_ok=True)
+    
+    output_path = test_dir / "modernisierung_tests.xlsx"
     with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
         df.to_excel(writer, sheet_name="Testmatrix", index=False)
     color_rows(output_path, df)
