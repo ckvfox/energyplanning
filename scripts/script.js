@@ -1224,6 +1224,9 @@ async function calculateAll() {
         const autarkyScenario = scenarios[chartScenarioIndex] || scenarios[scenarios.length - 1];
         let baseHtml = `
             <h2>Ergebnis</h2>
+            <div class="baseline-cost-box">
+                Heutige jährliche Energiekosten (Strom ${formatNumber(elPrice, 2)} EUR/kWh, Gas ${formatNumber(gasPrice, 2)} EUR/kWh): ${formatNumber(baselineCost, 0)} EUR/a
+            </div>
             <div class="verbrauch-edit">
                 <h3>Unterstellte Verbräuche / Rahmendaten</h3>
                 <div class="verbrauch-grid">
@@ -1284,7 +1287,6 @@ async function calculateAll() {
                     <button id="btn_reset_defaults" class="primary" type="button">Zurücksetzen</button>
                 </div>
             </div>
-            <p>Heutige jährliche Energiekosten (Strom ${formatNumber(elPrice, 2)} EUR/kWh, Gas ${formatNumber(gasPrice, 2)} EUR/kWh): ${formatNumber(baselineCost, 0)} EUR/a</p>
 
             <h3>Annahmen nach Modernisierung</h3>
             <p>Verbrauchsblöcke (kWh/a): Haushalt ${formatNumber(householdElectric, 0)}, Klima ${formatNumber(airconExtra, 0)}, Wallbox ${formatNumber(wallboxExtra, 0)}, Wärmepumpe ${formatNumber(heatpumpElectric, 0)}.</p>
@@ -1612,51 +1614,9 @@ window.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('resize', redrawChartsThrottled);
     
-    // 4. Debounce für PDF Export (verhindert doppelte PDF-Generierung)
-    const pdfBtn = document.getElementById('exportPdfBtn');
-    if (pdfBtn) {
-        const debouncedPdfExport = debounce(async () => {
-            // Existierende PDF-Export-Logik triggern
-            const event = new MouseEvent('click', { bubbles: true });
-            pdfBtn.dispatchEvent(event);
-        }, 300);
-        
-        // Überschreibe Original-Listener mit debounced Version
-        pdfBtn.addEventListener('click', debouncedPdfExport, { once: true });
-    }
+
     
-    // 5. Monitor Cache-Performance (für Debugging)
-    console.log('[Performance] Caching enabled with localStorage fallback');
-    console.log('[Performance] Debouncing active on input events (500ms)');
-    console.log('[Performance] Throttling active on window resize (500ms)');
+
 });
 
-/**
- * Integration mit bestehender calculateAll() Funktion
- * Fügt Caching auf höchster Ebene hinzu
- */
-const originalCalculateAll = window.calculateAll || (() => {});
-window.calculateAll = async function() {
-    const params = {
-        houseType: document.getElementById('houseType')?.value,
-        area: parseInt(document.getElementById('area')?.value || 0),
-        people: parseInt(document.getElementById('people')?.value || 0),
-        insulation: document.getElementById('insulation')?.value,
-        floorHeating: document.getElementById('floorHeating')?.value,
-        aircon: document.getElementById('aircon')?.value,
-        wallbox: document.getElementById('wallbox')?.value,
-    };
-    
-    // Cache-Check
-    if (resultCache && typeof resultCache.get === 'function') {
-        const cached = resultCache.get(params);
-        if (cached) {
-            console.log('[Cache] Hit! Using cached results');
-            // Würde Ergebnisse aus Cache rendern (optional)
-            // Für jetzt: trotzdem neuberechnen, aber schneller bei wieder gleichen Params
-        }
-    }
-    
-    // Führe ursprüngliche Berechnung aus
-    return originalCalculateAll.apply(this, arguments);
-};
+
