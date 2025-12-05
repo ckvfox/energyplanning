@@ -1368,11 +1368,12 @@ async function calculateAll() {
 
                 <div class="verbrauch-hinweis">
                     <span class="hinweis-icon">ℹ️</span>
-                    Falls Sie Ihre eigenen Werte kennen, tragen Sie diese ein. Alle Berechnungen nutzen automatisch diese Eingaben:
+                    <strong>So nutzt der Rechner Ihre Angaben:</strong>
                     <ul style="margin-top: 8px; margin-left: 20px;">
-                        <li>Energieverbrauch, Preise und Dachfläche werden automatisch an Ihre Angaben angepasst</li>
-                        <li>PV-Leistung: Lassen Sie das Feld leer für automatische Berechnung oder geben Sie einen Wert (2-30 kWp) ein</li>
-                        <li>E-Auto & Verbrenner: Nur verfügbar wenn Wallbox geplant ist. Eigene Fahrleistungen und Verbrauchswerte überschreiben die Standardannahmen</li>
+                        <li>Die Standardwerte passen sich automatisch an Ihre Gebäudedaten an.</li>
+                        <li>PV-Leistung wird automatisch bestimmt, falls Sie keinen Wert eintragen.</li>
+                        <li>Fahrzeugdaten gelten nur, wenn Sie eine Wallbox einplanen.</li>
+                        <li>Eigene Eingaben haben Vorrang (Verbrauch, Preise, Flächen, Fahrzeugdaten).</li>
                     </ul>
                 </div>
 
