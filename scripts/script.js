@@ -1454,6 +1454,32 @@ async function calculateAll() {
         `;
 
         resultEl.innerHTML = baseHtml;
+        
+        // Nach dem Rendern: Werte in die Eingabefelder schreiben (mit user-edited Werten wenn vorhanden)
+        setTimeout(() => {
+            const elStrom = document.getElementById('input_stromverbrauch');
+            const elHeiz = document.getElementById('input_heizwaerme');
+            const elPreisStrom = document.getElementById('input_preis_strom');
+            const elPreisGas = document.getElementById('input_preis_gas');
+            const elDach = document.getElementById('input_dachflaeche');
+            const elPvKwp = document.getElementById('input_pv_kwp');
+            const elEvKm = document.getElementById('input_ev_km');
+            const elEvCons = document.getElementById('input_ev_consumption');
+            const elCombustionKm = document.getElementById('input_combustion_km');
+            const elCombustionCons = document.getElementById('input_combustion_consumption');
+            
+            // Setze die Werte und markiere falls user-edited
+            if (elStrom) { elStrom.value = Math.round(householdElectric); if (prevValues.strom) elStrom.dataset.userEdited = 'true'; }
+            if (elHeiz) { elHeiz.value = Math.round(heatingDemand); if (prevValues.heiz) elHeiz.dataset.userEdited = 'true'; }
+            if (elPreisStrom) { elPreisStrom.value = elPrice.toFixed(2); if (prevValues.preisStrom) elPreisStrom.dataset.userEdited = 'true'; }
+            if (elPreisGas) { elPreisGas.value = gasPrice.toFixed(2); if (prevValues.preisGas) elPreisGas.dataset.userEdited = 'true'; }
+            if (elDach) { elDach.value = roofArea; if (prevValues.dach) elDach.dataset.userEdited = 'true'; }
+            if (elPvKwp) { elPvKwp.value = prevValues.pvKwp ?? ''; if (prevValues.pvKwp) elPvKwp.dataset.userEdited = 'true'; }
+            if (elEvKm) { elEvKm.value = prevValues.evKm ?? (data.consumption.ev?.annual_km ?? 12000); if (prevValues.evKm) elEvKm.dataset.userEdited = 'true'; }
+            if (elEvCons) { elEvCons.value = prevValues.evCons ?? (data.consumption.ev?.kwh_per_100km ?? 17); if (prevValues.evCons) elEvCons.dataset.userEdited = 'true'; }
+            if (elCombustionKm) { elCombustionKm.value = prevValues.combustionKm ?? (data.consumption.combustion?.annual_km ?? 15000); if (prevValues.combustionKm) elCombustionKm.dataset.userEdited = 'true'; }
+            if (elCombustionCons) { elCombustionCons.value = prevValues.combustionCons ?? (data.consumption.combustion?.litres_per_100km ?? 7.0); if (prevValues.combustionCons) elCombustionCons.dataset.userEdited = 'true'; }
+        }, 50);
         const resetValuesBtn = document.getElementById('btn_reset_defaults');
         if (resetValuesBtn) {
             resetValuesBtn.addEventListener('click', () => {
@@ -1463,6 +1489,12 @@ async function calculateAll() {
                 const stromPreis = document.getElementById('input_preis_strom');
                 const gasPreis = document.getElementById('input_preis_gas');
                 const dach = document.getElementById('input_dachflaeche');
+                const pvKwp = document.getElementById('input_pv_kwp');
+                const evKm = document.getElementById('input_ev_km');
+                const evCons = document.getElementById('input_ev_consumption');
+                const combustionKm = document.getElementById('input_combustion_km');
+                const combustionCons = document.getElementById('input_combustion_consumption');
+                
                 const stromDefault = householdElectricDefault;
                 const heizDefault = heatingDemandDefault;
                 if (strom) { strom.value = stromDefault; strom.removeAttribute('data-user-edited'); }
@@ -1470,13 +1502,20 @@ async function calculateAll() {
                 if (stromPreis) { stromPreis.value = elPriceDefault; stromPreis.removeAttribute('data-user-edited'); }
                 if (gasPreis) { gasPreis.value = gasPriceDefault; gasPreis.removeAttribute('data-user-edited'); }
                 if (dach) { dach.value = defaultsRoof[houseType]; dach.removeAttribute('data-user-edited'); }
+                
+                // Neue Felder zurücksetzen auf Standardwerte
+                if (pvKwp) { pvKwp.value = ''; pvKwp.removeAttribute('data-user-edited'); }
+                if (evKm) { evKm.value = data.consumption.ev?.annual_km ?? 12000; evKm.removeAttribute('data-user-edited'); }
+                if (evCons) { evCons.value = data.consumption.ev?.kwh_per_100km ?? 17; evCons.removeAttribute('data-user-edited'); }
+                if (combustionKm) { combustionKm.value = data.consumption.combustion?.annual_km ?? 15000; combustionKm.removeAttribute('data-user-edited'); }
+                if (combustionCons) { combustionCons.value = data.consumption.combustion?.litres_per_100km ?? 7.0; combustionCons.removeAttribute('data-user-edited'); }
             });
         }
         const recalcBtn = document.getElementById('btn_recalc_results');
         if (recalcBtn) {
             recalcBtn.addEventListener('click', () => {
                 // Werte aus den Feldern übernehmen und als manuell markiert
-                ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche', 'input_pv_kwp'].forEach((id) => {
+                ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche', 'input_pv_kwp', 'input_ev_km', 'input_ev_consumption', 'input_combustion_km', 'input_combustion_consumption'].forEach((id) => {
                     const el = document.getElementById(id);
                     if (el && el.value) {
                         el.dataset.userEdited = 'true';
@@ -1491,7 +1530,7 @@ async function calculateAll() {
             pdfBtn.style.display = 'block';
         }
         // Markiere manuelle Eingaben
-        ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche'].forEach((id) => {
+        ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche', 'input_pv_kwp', 'input_ev_km', 'input_ev_consumption', 'input_combustion_km', 'input_combustion_consumption'].forEach((id) => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('input', () => {
