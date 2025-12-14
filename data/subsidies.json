@@ -2,150 +2,221 @@
   "BW": {
     "pv": [
       {
-        "title": "Klimaschutzförderprogramm BW – Photovoltaik",
+        "title": "Förderprogramm Erneuerbare Energien Wohngebäude (EEW)",
         "type": "Land",
-        "description": "Das Förderprogramm unterstützt die Installation von Photovoltaikanlagen auf Wohngebäuden in Baden-Württemberg mit Zuschüssen zu den Investitionskosten.",
+        "description": "Das Programm unterstützt die Errichtung von Photovoltaikanlagen und Batteriespeichern sowie Wärmepumpen und die Verbesserung der energetischen Gebäudesubstanz in Wohngebäuden in Baden-Württemberg.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "Wohngebäude - Heizen mit Erneuerbaren Energien (LWärmepumpen, Heizungsoptimierung)",
-        "type": "Land",
-        "description": "Förderung für den Einbau von Wärmepumpen und Maßnahmen zur Heizungsoptimierung bei Wohngebäuden im Bundesland Baden-Württemberg.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "KfW-Programm 260 - Energieeffizient Sanieren – Zuschuss",
+        "title": "KfW-Programm Wohngebäude – Energieeffizienz",
         "type": "Bund",
-        "description": "Bundesweite Förderung für Sanierungsmaßnahmen an Wohngebäuden, darunter Dämmung, Fenstererneuerung und Batteriespeicher in Kombination mit Photovoltaik.",
+        "description": "Die KfW fördert den Einbau von Heizungsoptimierung, Wärmepumpen, Dämmung und Fenstertausch sowie Photovoltaik in privaten Wohngebäuden zinsgünstig oder mit Investitionszuschuss.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - PV Batteriespeicher",
+        "title": "Marktanreizprogramm (MAP) für erneuerbare Energien im Wärmemarkt",
         "type": "Bund",
-        "description": "Zuschüsse für Batteriespeicher in Kombination mit Photovoltaikanlagen bei Wohngebäuden deutschlandweit, auch in Baden-Württemberg.",
+        "description": "Das BAFA-Marktanreizprogramm fördert die Installation von Wärmepumpen und Biomasseanlagen in Wohngebäuden, meist kombiniert mit energieeffizienten Gebäudemodernisierungen.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
+    "battery": [],
+    "heatpump": [
+      {
+        "title": "Klimafreundliches Bauen und Sanieren - Heizungspaket",
+        "type": "Land",
+        "description": "Dieses Förderprogramm des Landes Baden-Württemberg unterstützt den Einbau und Austausch von umweltfreundlichen Heizsystemen wie Wärmepumpen in Wohngebäuden, um den CO2-Ausstoß zu reduzieren.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
+        "type": "Bund",
+        "description": "Das Bundesprogramm fördert unter anderem den Einbau von Wärmepumpen in Wohngebäuden als Einzelmaßnahme zur Steigerung der Energieeffizienz und Nutzung erneuerbarer Energien.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
+    "heating_optimization": [
+      {
+        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
+        "type": "Bund",
+        "description": "Förderung von Heizungsoptimierung, Wärmepumpen, Dämmmaßnahmen und Fensteraustausch in Wohngebäuden als Zuschuss oder Kredit mit Tilgungszuschuss.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "KfW-Programm 432 – Energieeffizient Sanieren – Investitionszuschuss",
+        "type": "Bund",
+        "description": "Direkter Zuschuss für Maßnahmen zur Heizungsoptimierung, Wärmepumpen und energetische Sanierung von Wohngebäuden.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "Förderprogramm Heizungstausch BW",
+        "type": "Land",
+        "description": "Das Land Baden-Württemberg unterstützt den Austausch veralteter Heizungen zugunsten energieeffizienter Technologien wie Wärmepumpen mit Zuschüssen.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      }
+    ],
+    "building_envelope": []
+  },
+  "BY": {
+    "pv": [
+      {
+        "title": "BayWaRe – Bayerisches Wärmewende-Programm",
+        "type": "Land",
+        "description": "Förderung von effizienten Heizsystemen, Wärmepumpen und energetischen Sanierungsmaßnahmen in Wohngebäuden. Ziel ist die Steigerung der Energieeffizienz im Gebäudebereich.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "BAFA Bundesförderung für effiziente Gebäude (BEG)",
+        "type": "Bund",
+        "description": "Fördert Maßnahmen wie Photovoltaik, Wärmepumpen, Batteriespeicher und Heizungsoptimierung zur Verbesserung der Energieeffizienz in Wohngebäuden bundesweit. Antragstellung erfolgt über das Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA).",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "KfW-Programm 261/262 – Energieeffizient Sanieren",
+        "type": "Bund",
+        "description": "Kredite und Zuschüsse für energetische Sanierungen einschließlich Dämmung und Verbesserung der Heiztechnik in Wohngebäuden. Unterstützt auch den Einbau von Wärmepumpen und Photovoltaikanlagen zur Eigenstromnutzung.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ],
     "battery": [],
     "heatpump": [],
-    "heating_optimization": [],
+    "heating_optimization": [
+      {
+        "title": "Bayerisches Landesprogramm Energieeffizienz in Wohngebäuden (LEW)",
+        "type": "Land",
+        "description": "Förderung von Maßnahmen zur Heizungsoptimierung, Einsatz von Wärmepumpen, Photovoltaik und energetischer Sanierung in privaten Wohngebäuden. Ziel ist die Reduzierung des Energieverbrauchs und der CO2-Emissionen.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "KfW-Förderprogramme – Effizienzhaus und Einzelmaßnahmen",
+        "type": "Bund",
+        "description": "Bundesweite Förderprogramme für Heizungsoptimierung, Wärmepumpen, Photovoltaik und Batteriespeicher im Bereich Wohngebäude, unterstützt durch zinsgünstige Kredite und Zuschüsse. Relevante Programme sind u.a. die KfW-Effizienzhausförderung und Zuschüsse für Einzelmaßnahmen.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "Marktanreizprogramm (MAP) für Erneuerbare Energien im Wärmemarkt",
+        "type": "Bund",
+        "description": "Förderung von Wärmepumpen, Biomasseanlagen und Solarthermieanlagen zur Heizungsoptimierung in Wohngebäuden. Zuschüsse für den Austausch oder die Neuinstallation effizienter Heizsysteme.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
     "building_envelope": [
       {
-        "title": "Wohngebäude-Programm Baden-Württemberg",
+        "title": "BaySF - Bayerisches Sonderprogramm Energie",
         "type": "Land",
-        "description": "Förderung für Maßnahmen zur Verbesserung der Energieeffizienz in Wohngebäuden, wie Wärmepumpen, Photovoltaik und Dämmung. Ziel ist die Reduktion von CO2-Emissionen und Energieverbrauch.",
+        "description": "Förderung von Maßnahmen zur energetischen Sanierung von bestehenden Wohngebäuden, inklusive Dämmung, Fenstern und Heiztechnik.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "KfW-Förderprogramme für energieeffizientes Bauen und Sanieren",
+        "title": "KfW-Programm 261/262 Energieeffizient Sanieren",
         "type": "Bund",
-        "description": "Bundesweite Förderprogramme für Energieeffizienzmaßnahmen wie Wärmepumpen, Batteriespeicher, Heizungsoptimierung und Gebäudedämmung in Wohngebäuden. Förderung erfolgt über zinsgünstige Kredite und Zuschüsse.",
+        "description": "Bundesweite Förderung für energieeffiziente Sanierung von Wohngebäuden, einschließlich Wärmedämmung und Erneuerbare-Energien-Heizungen.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Marktanreizprogramm (MAP) - Bundesförderung für effiziente Gebäude",
+        "title": "BAFA Heizungsoptimierung und Erneuerbare Energien",
         "type": "Bund",
-        "description": "Fördert den Einbau von Wärmepumpen, Biomasseanlagen und Solarthermie zur Heizungsunterstützung in Wohngebäuden. Zuschüsse helfen Privatpersonen, private Haushalte und Vermieter beim Umstieg auf erneuerbare Energien.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ]
-  },
-  "BY": {
-    "pv": [
-      {
-        "title": "10.000-Häuser-Programm Bayern",
-        "type": "Land",
-        "description": "Das Programm fördert die energetische Modernisierung von Wohngebäuden, einschließlich Photovoltaik, Wärmepumpen, Batteriespeicher und Dämmmaßnahmen. Ziel ist die Steigerung der Energieeffizienz und der Einsatz erneuerbarer Energien im Wohnbereich.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bayerisches Förderprogramm für Batteriespeicher",
-        "type": "Land",
-        "description": "Dieses Programm unterstützt die Installation von Batteriespeichern in Verbindung mit Photovoltaikanlagen zur Eigenverbrauchsoptimierung. Es richtet sich an private Haushalte in Bayern, um die Nutzung von Solarstrom zu erhöhen.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG)",
-        "type": "Bund",
-        "description": "Die BEG fördert Maßnahmen wie Photovoltaik, Wärmepumpen, Heizungsoptimierung und Dämmung/Dämmstofffenster an Wohngebäuden mit zinsgünstigen Krediten und Zuschüssen. Dieses bundesweite Programm kann auch in Bayern genutzt werden.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
-    "battery": [
-      {
-        "title": "Bayerisches Förderprogramm für Batteriespeicher",
-        "type": "Land",
-        "description": "Förderung von stationären Batteriespeichern in Kombination mit Photovoltaikanlagen für Wohngebäude zur Steigerung der Eigenverbrauchsquote und Netzstabilität.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "KfW-Förderprogramm 275 – Batteriespeicher",
-        "type": "Bund",
-        "description": "Bundesweite Förderung von Batteriespeichern zur Kombination mit erneuerbaren Energien, insbesondere Photovoltaikanlagen, zur Erhöhung des Eigenverbrauchs im Wohngebäude.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "KfW-Programm 430 – Zuschuss für Batteriespeicher bei PV-Anlagen",
-        "type": "Bund",
-        "description": "Vergeben von Zuschüssen für Batteriespeicher in Verbindung mit Photovoltaikanlagen in Wohngebäuden, um den Eigenverbrauch zu verbessern und die Netzbelastung zu reduzieren.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
-    "heatpump": [
-      {
-        "title": "Marktanreizprogramm für erneuerbare Energien im Wärmemarkt (MAP)",
-        "type": "Bund",
-        "description": "Förderung von Wärmepumpen in Wohngebäuden zur Nutzung erneuerbarer Energien. Ziel ist die Reduzierung fossiler Heizsysteme durch moderne und effiziente Technologien.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "Klimafreundliches Bauen und Sanieren – Wärmepumpenförderung Bayern",
-        "type": "Land",
-        "description": "Förderprogramm des Freistaats Bayern zur Installation von Wärmepumpen in Wohngebäuden. Unterstützt durch finanzielle Zuschüsse zur Steigerung der Energieeffizienz und zum Klimaschutz.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      }
-    ],
-    "heating_optimization": [],
-    "building_envelope": [
-      {
-        "title": "Energiebonus Bayern für energetische Gebäudesanierung",
-        "type": "Land",
-        "description": "Das Programm unterstützt die energetische Sanierung von Wohngebäuden, inklusive Dämmung, Fenstertausch und Heizungserneuerung, um Energieeffizienz zu steigern und CO2-Emissionen zu reduzieren.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "KfW-Förderprogramme für energieeffizientes Bauen und Sanieren",
-        "type": "Bund",
-        "description": "Bundesweite Programme für die Förderung von Photovoltaik, Wärmepumpen, Batteriespeichern sowie verbesserter Gebäudehülle mit zinsgünstigen Krediten und Investitionszuschüssen.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "Marktanreizprogramm (MAP) – Bundesförderung für effiziente Gebäude",
-        "type": "Bund",
-        "description": "Fördert den Einbau effizienter Heizungs- und Lüftungssysteme, darunter Wärmepumpen und Heizungsoptimierung, zur Reduktion des Energieverbrauchs in Wohngebäuden.",
+        "description": "Förderung von Wärmepumpen, Solarthermie und Heizungsoptimierung in Wohngebäuden durch Zuschüsse und Kredite.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ]
   },
   "BE": {
-    "pv": [
+    "pv": [],
+    "battery": [],
+    "heatpump": [],
+    "heating_optimization": [],
+    "building_envelope": []
+  },
+  "BB": {
+    "pv": [],
+    "battery": [
       {
-        "title": "Berliner Energie- und Klimaschutzprogramm (BEK)",
+        "title": "KfW Effizienzhaus 40 und 55 – Zuschuss",
+        "type": "Bund",
+        "description": "Förderung für umfassende Sanierungen im Wohngebäudebereich zu effizienten Effizienzhäusern, inklusive Batteriespeicher in Kombination mit Photovoltaik-Anlagen. Unterstützt werden Maßnahmen zur Steigerung der Energieeffizienz und Nutzung erneuerbarer Energien.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "Förderung von Batteriespeichern in Brandenburg",
         "type": "Land",
-        "description": "Fördert die Installation von Photovoltaikanlagen, Batteriespeichern und Wärmepumpen in Wohngebäuden in Berlin. Ziel ist die Steigerung der Energieeffizienz und der Nutzung erneuerbarer Energien.",
+        "description": "Das Land Brandenburg unterstützt Batteriespeicher in Verbindung mit erneuerbaren Energien wie Photovoltaik, um die Eigenverbrauchsquote zu erhöhen. Die Förderung zielt auf private Wohngebäude ab und fördert somit die dezentrale Energieversorgung.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "KfW-Förderprogramme Energieeffizient Bauen und Sanieren",
+        "title": "Marktanreizprogramm – Heizungsoptimierung und Dämmung",
         "type": "Bund",
-        "description": "Bundesweite Förderung für Maßnahmen wie Photovoltaik, Wärmepumpen, Batteriespeicher und Dämmung. Beinhaltet zinsgünstige Kredite und Tilgungszuschüsse für Wohngebäude.",
+        "description": "Bundesweites Programm zur Förderung energieeffizienter Heiztechnik und Maßnahmen wie Heizungsoptimierung, Dämmung und Fenstertausch zur Reduzierung des Energieverbrauchs im Wohngebäude. Ergänzt existierende Programme zur Energieeffizienzsteigerung.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
+    "heatpump": [
+      {
+        "title": "BAFA Heizungsoptimierung und -erneuerung mit Wärmepumpen",
+        "type": "Bund",
+        "description": "Das BAFA fördert den Austausch alter Heizungen durch effiziente Wärmepumpen in Wohngebäuden. Ziel ist die Senkung des Energieverbrauchs und die Reduzierung von CO2-Emissionen.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Marktanreizprogramm (MAP) des Bundesamts für Wirtschaft und Ausfuhrkontrolle (BAFA)",
+        "title": "Förderprogramm Klimaschutz Brandenburg - Wärmepumpen",
+        "type": "Land",
+        "description": "Das Land Brandenburg unterstützt den Einbau von Wärmepumpen in Wohngebäuden im Rahmen seiner Klimaschutzstrategie. Gefördert werden innovative und effiziente Systeme im Neubau und Bestand.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      }
+    ],
+    "heating_optimization": [],
+    "building_envelope": [
+      {
+        "title": "Programm Nachhaltige Wohngebäude (Land Brandenburg)",
+        "type": "Land",
+        "description": "Förderung von energetischen Maßnahmen zur Verbesserung der Energieeffizienz von Wohngebäuden, wie Dämmung, Fenstersanierung, Wärmepumpen und Photovoltaik.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "Bundesförderung für effiziente Gebäude (BEG) - Teil Wohngebäude (WG)",
         "type": "Bund",
-        "description": "Fördert erneuerbare Heiztechnologien wie Wärmepumpen in Wohngebäuden bundesweit. Zuschüsse werden für effiziente und nachhaltige Heizsysteme gewährt.",
+        "description": "Bundesweite Förderung für energieeffiziente Sanierung und Neubau von Wohngebäuden, umfasst Maßnahmen wie Wärmepumpe, Dämmung, Fenster- und Heizungsoptimierung.",
         "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "KfW-Programm 261/262 – Energieeffizient Sanieren",
+        "type": "Bund",
+        "description": "KfW-Kredit und Zuschuss für umfangreiche energetische Sanierungen von Wohngebäuden, insbesondere zur Verbesserung der Gebäudehülle und Einsatz erneuerbarer Energien.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ]
+  },
+  "HB": {
+    "pv": [
+      {
+        "title": "KfW-Programm 270: Erneuerbare Energien - Zuschuss Photovoltaik",
+        "type": "Bund",
+        "description": "Förderung von Photovoltaikanlagen auf Wohngebäuden zur Stromerzeugung. Zuschüsse unterstützen die Installation und Erweiterung der PV-Anlagen.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "BAFA-Förderung: Heizungsoptimierung",
+        "type": "Bund",
+        "description": "Zuschüsse für die Optimierung bestehender Heizungsanlagen zur Steigerung der Energieeffizienz in Wohngebäuden. Ziel ist die Verringerung des Energieverbrauchs und der Emissionen.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "BAFA-Förderung: Wärmepumpen im Neubau und Bestand",
+        "type": "Bund",
+        "description": "Förderung von Wärmepumpen als klimaschonende Heiztechnologie durch Zuschüsse. Geeignet für Neuinstallationen und den Ersatz alter Heizsysteme in Wohngebäuden.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "KfW-Programm 430: Energieeffizient Sanieren - Investitionszuschuss",
+        "type": "Bund",
+        "description": "Zuschüsse für energetische Sanierungen von Wohngebäuden einschließlich Dämmung und Fenstererneuerung zur Verbesserung der Energieeffizienz. Unterstützt werden Einzelmaßnahmen und Komplettsanierungen.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "Landesförderung Bremen: Gebäudesanierung und Heizungsmodernisierung",
+        "type": "Land",
+        "description": "Das Land Bremen bietet ergänzende Förderungen für energetische Sanierungen und den Einbau effizienter Heizsysteme in Wohngebäuden. Zuschüsse sind kombinierbar mit Bundesprogrammen.",
+        "link_portal": "https://www.foerderdatenbank.de"
       }
     ],
     "battery": [],
@@ -153,305 +224,163 @@
     "heating_optimization": [],
     "building_envelope": [
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Wohngebäude",
+        "title": "BEG Wohngebäude - Bundesförderung für effiziente Gebäude",
         "type": "Bund",
-        "description": "Die BEG fördert umfangreiche Sanierungsmaßnahmen wie Dämmung von Gebäudehüllen, Fenstertausch, Wärmepumpen und Batteriespeicher in Wohngebäuden. Ziel ist die Steigerung der Energieeffizienz und Nutzung erneuerbarer Energien.",
+        "description": "Förderung von Sanierungen und Neubauten mit energetisch effizienter Gebäudehülle inklusive Dämmung, Fenster, Wärmepumpen und Heizungsoptimierung. Zuschüsse und Kredite über die KfW und BAFA sind verfügbar.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Berliner Förderprogramm Energieeffizient Sanieren",
+        "title": "Förderprogramm Energieeffizienz und Erneuerbare Energien in Wohngebäuden - Bremen",
         "type": "Land",
-        "description": "Dieses Programm unterstützt die energetische Sanierung von Wohngebäuden in Berlin, inklusive Maßnahmen an der Gebäudehülle und Heizungsoptimierung. Es ergänzt die Bundesförderung mit zusätzlichen Zuschüssen.",
+        "description": "Das Land Bremen unterstützt Maßnahmen zur energetischen Sanierung von Wohngebäuden, wie Dämmung, moderne Heizsysteme, Wärmepumpen und Batteriespeicher mit zinsgünstigen Darlehen und Zuschüssen.",
         "link_portal": "https://www.foerderdatenbank.de"
       }
     ]
   },
-  "BB": {
-    "pv": [],
-    "battery": [],
-    "heatpump": [
-      {
-        "title": "ELW - Energie- und Klimaschutzprogramm Brandenburg",
-        "type": "Land",
-        "description": "Förderung von Wärmepumpen in Wohngebäuden zur Steigerung der Energieeffizienz und zum Einsatz erneuerbarer Energien. Zuschüsse werden für die Installation und den Austausch von Wärmepumpen gewährt.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
-        "type": "Bund",
-        "description": "Förderung von Wärmepumpen im Bestand und bei Neubauten durch Zuschüsse oder Kredite. Das Programm unterstützt Investitionen zur Reduzierung des Energieverbrauchs und zur Nutzung erneuerbarer Energien.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
-    "heating_optimization": [],
-    "building_envelope": []
-  },
-  "HB": {
-    "pv": [],
-    "battery": [],
-    "heatpump": [],
-    "heating_optimization": [],
-    "building_envelope": []
-  },
   "HH": {
-    "pv": [
-      {
-        "title": "Solarstromförderung Hamburg",
-        "type": "Land",
-        "description": "Förderung von Photovoltaik-Anlagen auf privaten Wohngebäuden in Hamburg, um die Nutzung erneuerbarer Energien zu steigern. Zuschüsse werden für Anschaffung und Installation gewährt.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Hamburger Heizungsoptimierungsprogramm",
-        "type": "Land",
-        "description": "Unterstützt Maßnahmen zur Optimierung und Modernisierung von Heizungsanlagen in privaten Wohnhäusern, um den Energieverbrauch zu senken. Förderung umfasst auch den Einbau effizienter Regelungstechnik.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG)",
-        "type": "Bund",
-        "description": "Umfasst Zuschüsse und Kredite für Maßnahmen zur Dämmung, Fenstertausch, Heizungsoptimierung sowie Installation von Wärmepumpen und Batteriespeichern. Bundesweit gültig, auch in Hamburg verfügbar.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "KfW-Förderprogramme für Wohngebäude",
-        "type": "Bund",
-        "description": "Bietet zinsgünstige Kredite und Zuschüsse für energieeffizientes Bauen und Sanieren einschließlich Photovoltaik, Wärmepumpen, Dämmung und Batteriespeicher. Diese Programme können auch in Hamburg genutzt werden.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
-    "battery": [
-      {
-        "title": "Hamburg Programm zur Förderung von Batteriespeichern in Wohngebäuden",
-        "type": "Land",
-        "description": "Dieses Förderprogramm unterstützt die Installation von Batteriespeichern in Kombination mit Photovoltaikanlagen in Wohngebäuden, um die Eigenverbrauchsquote zu erhöhen und die Netzentlastung zu fördern.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) – Batteriespeicher-Komponente",
-        "type": "Bund",
-        "description": "Im Rahmen der BEG werden Batteriespeicher gefördert, wenn sie zusammen mit Photovoltaikanlagen zur Verbesserung der Energieeffizienz in Wohngebäuden installiert werden.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
+    "pv": [],
+    "battery": [],
     "heatpump": [
       {
         "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
         "type": "Bund",
-        "description": "Förderung für den Einbau von Wärmepumpen in Wohngebäuden, um klimafreundliche Heiztechniken zu unterstützen. Zuschüsse und Kredite werden gewährt, um die Anschaffungskosten zu senken.",
+        "description": "Förderprogramm zur Unterstützung von Maßnahmen wie dem Einbau von Wärmepumpen in Wohngebäuden. Es umfasst Zuschüsse und Kredite für Energieeffizienzverbesserungen.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Förderprogramm für effiziente Wärmepumpen in Hamburg (lokale Förderungen)",
+        "title": "Hamburgische Klimaschutz-Förderung",
         "type": "Land",
-        "description": "Hamburg bietet ergänzende Förderungen für Wärmepumpen, insbesondere bei Kombination mit erneuerbaren Energien, als Ergänzung zur Bundesförderung. Ziel ist die Reduktion von CO2-Emissionen und Steigerung der Energieeffizienz im Wohnungsbestand.",
+        "description": "Das Land Hamburg fördert den Einbau von Wärmepumpen zur Reduzierung des CO2-Ausstoßes in Wohngebäuden. Ziel ist die Steigerung der Energieeffizienz und die Nutzung erneuerbarer Energien.",
         "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "Hamburger Förderprogramm für klimafreundliche Heizsysteme",
+        "type": "Kommune",
+        "description": "Förderung für den Austausch alter Heizungen gegen Wärmepumpen in Wohngebäuden zur Verringerung des fossilen Energieverbrauchs. Es werden Zuschüsse für private Eigentümer bereitgestellt.",
+        "link_portal": "https://www.co2online.de/foerdermittel/foerdermittel-check/"
       }
     ],
     "heating_optimization": [
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) – Wohnungseigentümer und private Eigentümer",
+        "title": "KfW-Förderprogramm Energieeffizient Sanieren – Zuschuss (261, 262)",
         "type": "Bund",
-        "description": "Fördert Maßnahmen zur Heizungsoptimierung, den Einsatz von Wärmepumpen, Photovoltaik und Batteriespeichern sowie Dämmung und Fensteraustausch in Wohngebäuden.",
+        "description": "Förderung für energetische Sanierungen von Wohngebäuden, inklusive Heizungserneuerung und Optimierung des Heizsystems. Unterstützt werden Maßnahmen wie Wärmepumpen und Heizungsoptimierungen.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Hamburger Förderprogramm für Heizungsoptimierung und erneuerbare Energien",
+        "title": "Hamburger Klimafonds – Förderung zur Heizungsoptimierung",
         "type": "Land",
-        "description": "Unterstützt die Optimierung von Heizungsanlagen, den Einbau von Wärmepumpen und Maßnahmen zur Verbesserung der Energieeffizienz in privaten Wohngebäuden in Hamburg.",
+        "description": "Das Bundesland Hamburg fördert im Rahmen des Hamburger Klimafonds Maßnahmen zur Optimierung der Heiztechnik in Wohngebäuden. Ziel ist die Verbesserung der Energieeffizienz durch z.B. Heizungsregelungen und hydraulischen Abgleich.",
         "link_portal": "https://www.foerderdatenbank.de"
       }
     ],
-    "building_envelope": []
+    "building_envelope": [
+      {
+        "title": "Hamburgische Investitions- und Förderbank (IFB) - Klimaschutzprogramm",
+        "type": "Land",
+        "description": "Förderung von Maßnahmen zur Verbesserung der Energieeffizienz in Wohngebäuden, darunter Wärmepumpen, Dämmung und Fensteraustausch. Ziel ist die Reduzierung des Energieverbrauchs und der CO2-Emissionen.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "KfW-Förderprogramme Energieeffizient Sanieren",
+        "type": "Bund",
+        "description": "Bundesweite Förderprogramme für Wohngebäude zur energetischen Sanierung, inklusive Dämmung der Gebäudehülle, Einbau von Wärmepumpen und Optimierung der Heiztechnik. Die KfW bietet zinsvergünstigte Kredite und Zuschüsse an.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "Hamburger Klimafonds",
+        "type": "Kommune",
+        "description": "Unterstützt private Hauseigentümer bei klimaschonenden Modernisierungsmaßnahmen wie Dämmung, Fensteraustausch und Installation erneuerbarer Energien. Ziel ist die Förderung nachhaltiger Wohngebäude.",
+        "link_portal": "https://www.co2online.de/foerdermittel/foerdermittel-check/"
+      }
+    ]
   },
   "HE": {
     "pv": [
       {
-        "title": "Hessisches Förderprogramm für Photovoltaik und Batteriespeicher (PV-Batteriespeicher-Förderung)",
-        "type": "Land",
-        "description": "Förderung von Photovoltaikanlagen und Batteriespeichern zur Eigenstromnutzung auf Wohngebäuden im Bundesland Hessen. Ziel ist die Erhöhung der Eigenverbrauchsquote und die Steigerung der erneuerbaren Energieerzeugung.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
+        "title": "KfW-Programm 261/262: Energieeffizient Sanieren – Zuschuss und Kredit",
         "type": "Bund",
-        "description": "Förderung von Einzelmaßnahmen wie Wärmepumpen, Heizungsoptimierung, Dämmung und Fensteraustausch für Wohngebäude. Diese Bundesförderung kann auch in Hessen genutzt werden.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
-    "battery": [
-      {
-        "title": "KfW-Programm 275: Energetische Sanierung – Ergänzungsförderung Batteriespeicher",
-        "type": "Bund",
-        "description": "Förderung für Batteriespeicher, die zusammen mit einer Photovoltaikanlage betrieben werden und zur energetischen Sanierung von Wohngebäuden beitragen.",
+        "description": "Fördert die energetische Sanierung von Wohngebäuden, unter anderem für Photovoltaikanlagen, Wärmepumpen, Dämmung und Fenstertausch. Bietet Zuschüsse oder zinsgünstige Kredite für private Eigentümer.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Heizungstausch-Programm Hessen",
+        "title": "Hessisches Förderprogramm Energieeffizienz und erneuerbare Energien (Heizungstausch und Dämmung)",
         "type": "Land",
-        "description": "Förderung für den Austausch alter Heizsysteme und die Installation von Batteriespeichern in Verbindung mit Erneuerbaren Energien in Wohngebäuden.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      }
-    ],
-    "heatpump": [
-      {
-        "title": "Heizungsoptimierung und Nutzung von Wärmepumpen in Hessen",
-        "type": "Land",
-        "description": "Förderprogramm zur Nutzung effizienter Wärmepumpentechnologien in Wohngebäuden zur Senkung des Energieverbrauchs und der CO2-Emissionen in Hessen.",
+        "description": "Fördert Investitionen in Wärmepumpen, Dämmmaßnahmen und Heizungsoptimierung speziell in Wohngebäuden in Hessen. Ziel ist die Reduzierung des Energieverbrauchs und CO2-Ausstoßes.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Wohngebäude",
-        "type": "Bund",
-        "description": "Das BEG-Programm unterstützt die Installation von Wärmepumpen und anderen Maßnahmen zur Steigerung der Energieeffizienz in Wohngebäuden.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "Umweltbonus Hessen – Förderung von Heizungsoptimierung und Wärmepumpen",
+        "title": "Förderung von Batteriespeichern in Hessen",
         "type": "Land",
-        "description": "Landesprogramm zur Förderung von energieeffizienten Heizsystemen, insbesondere Wärmepumpen, für Hessen mit dem Ziel der CO2-Reduktion.",
+        "description": "Unterstützt die Installation von stationären Batteriespeichern in Verbindung mit Photovoltaikanlagen in privaten Wohngebäuden in Hessen. Ziel ist die Eigenverbrauchssteigerung und Netzstabilisierung.",
         "link_portal": "https://www.foerderdatenbank.de"
       }
     ],
+    "battery": [],
+    "heatpump": [],
     "heating_optimization": [],
-    "building_envelope": [
-      {
-        "title": "Klimafreundliches Sanieren und Wohnen in Hessen",
-        "type": "Land",
-        "description": "Förderung von Investitionen in energetische Sanierungen und nachhaltige Heizungstechniken in Wohngebäuden, einschließlich Dämmung, Fenstern und Wärmepumpen.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG)",
-        "type": "Bund",
-        "description": "Bundesweite Förderung für energieeffiziente Sanierungen und Neubauten, u.a. für Wärmepumpen, Dämmmaßnahmen, Photovoltaik und Batteriespeicher im Wohngebäudebereich.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ]
+    "building_envelope": []
   },
   "MV": {
     "pv": [
       {
-        "title": "Förderprogramm Klimafreundliches Bauen und Sanieren Mecklenburg-Vorpommern",
+        "title": "Förderprogramm für Erneuerbare Energien und Effizienz im Wohngebäudebereich Mecklenburg-Vorpommern",
         "type": "Land",
-        "description": "Das Programm unterstützt die energetische Sanierung von Wohngebäuden, inklusive Maßnahmen wie Photovoltaik, Wärmepumpen, Batteriespeicher und Dämmung. Ziel ist die Steigerung der Energieeffizienz und die Nutzung erneuerbarer Energien.",
+        "description": "Das Programm unterstützt die Installation von Photovoltaikanlagen, Batteriespeichern, Wärmepumpen und die energetische Sanierung von Wohngebäuden. Gefördert werden Maßnahmen zur Steigerung der Energieeffizienz und Nutzung erneuerbarer Energien.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) – Wohngebäude",
+        "title": "Bundesförderung für effiziente Gebäude (BEG) – Einzelmaßnahmen",
         "type": "Bund",
-        "description": "Dieses Bundesprogramm fördert umfassende Sanierungen und den Neubau von Wohngebäuden mit Fokus auf Energieeffizienz, inklusive Photovoltaik, Wärmepumpen, Batteriespeicher und Dämmmaßnahmen. Es stehen sowohl Zuschüsse als auch zinsgünstige Kredite zur Verfügung.",
+        "description": "Die BEG fördert unter anderem Wärmepumpen, Batteriespeicher, Heizungsoptimierung und Dämmmaßnahmen in Wohngebäuden. Die Förderung erfolgt als Zuschuss oder Kredit durch die KfW und das BAFA.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ],
-    "battery": [
-      {
-        "title": "Wohngebäudeprogramm Mecklenburg-Vorpommern",
-        "type": "Land",
-        "description": "Förderung von Maßnahmen zur energetischen Sanierung und zum energieeffizienten Neubau von Wohngebäuden, inklusive Photovoltaik, Batteriespeicher und Wärmepumpen.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG)",
-        "type": "Bund",
-        "description": "Förderung von energieeffizienten Maßnahmen im Wohngebäudebereich, insbesondere für Wärmepumpen, Batteriespeicher, Dämmung und Fenster.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "KfW-Programm 270: Energieeffizient Sanieren – Ergänzungskredit",
-        "type": "Bund",
-        "description": "Kredite und Zuschüsse für Maßnahmen zur energetischen Sanierung von Wohngebäuden, darunter Wärmepumpen, Dämmung und Batteriespeicher.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
+    "battery": [],
     "heatpump": [],
-    "heating_optimization": [
-      {
-        "title": "Wohngebäudeförderung Mecklenburg-Vorpommern",
-        "type": "Land",
-        "description": "Förderung von Maßnahmen zur Heizungsoptimierung, Wärmepumpen und energetischer Sanierung in Wohngebäuden im Bundesland Mecklenburg-Vorpommern.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG)",
-        "type": "Bund",
-        "description": "Bundesweite Förderung für Heizungsoptimierung, Wärmepumpen, Batteriespeicher und Dämmmaßnahmen im Bereich Wohngebäude.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "Förderprogramm Energieeffizienz und Gebäudesanierung der KfW",
-        "type": "Bund",
-        "description": "KfW-Programme zur Unterstützung von Wärmepumpen, Heizungsoptimierung und energetischer Gebäudesanierung für private Wohngebäude.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
-    "building_envelope": [
-      {
-        "title": "MV-Sonne: Förderprogramm für Photovoltaik und Batteriespeicher",
-        "type": "Land",
-        "description": "Dieses Programm unterstützt die Installation von Photovoltaikanlagen und Batteriespeichern in Wohngebäuden zur Förderung erneuerbarer Energien und Energieautarkie in Mecklenburg-Vorpommern.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "FWK-Förderprogramm für Wärmepumpen",
-        "type": "Land",
-        "description": "Dieses Programm fördert den Einbau von effizienten Wärmepumpen in Wohngebäuden in Mecklenburg-Vorpommern, um klimaschonende Heiztechniken zu stärken.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "KfW-Förderung: Energieeffizient Sanieren – Investitionszuschuss",
-        "type": "Bund",
-        "description": "Das bundesweite KfW-Programm bietet Zuschüsse für energiesparende Maßnahmen an der Gebäudehülle wie Dämmung und Fenster sowie für den Einbau moderner Heiztechnik in Wohngebäuden.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "BAFA-Förderung: Heizungsoptimierung und effiziente Gebäudehüllen",
-        "type": "Bund",
-        "description": "Das BAFA-Programm unterstützt Maßnahmen zur Heizungsoptimierung und Verbesserung der Gebäudehülle, um den Energieverbrauch in Wohngebäuden zu senken.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ]
+    "heating_optimization": [],
+    "building_envelope": []
   },
   "NI": {
     "pv": [
       {
-        "title": "KfW-Programm 270: Energieeffizient Sanieren – Zuschuss",
-        "type": "Bund",
-        "description": "Dieses Bundesprogramm fördert energetische Sanierungen in Wohngebäuden, inklusive Maßnahmen wie Dämmung und Heizungsoptimierung. Es bietet Zuschüsse für die Installation von Wärmepumpen und den Einbau neuer Fenster.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "BAFA-Förderung: Heizen mit Erneuerbaren Energien",
-        "type": "Bund",
-        "description": "Das BAFA-Programm unterstützt die Installation von Wärmepumpen, Pelletheizungen sowie die Optimierung bestehender Heizungen in Wohngebäuden. Auch Batteriespeicher in Verbindung mit Photovoltaikanlagen werden gefördert.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "Niedersächsisches Klimaschutzprogramm",
+        "title": "Niedersachsen Solar Bonus",
         "type": "Land",
-        "description": "Das Land Niedersachsen bietet verschiedene Fördermöglichkeiten für private Wohngebäude, darunter Zuschüsse für Photovoltaikanlagen, Batteriespeicher und energetische Sanierungen wie Dämmung und Fensteraustausch. Ziel ist die Steigerung der Energieeffizienz und Nutzung erneuerbarer Energien.",
+        "description": "Förderung von Photovoltaikanlagen auf Wohngebäuden mit einem Bonus für die Eigenstromnutzung. Ziel ist die Steigerung der Solarstromerzeugung im Eigenheimbereich.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "Solarstromspeicher-Förderung Niedersachsen",
-        "type": "Land",
-        "description": "Diese spezifische Förderung für Batteriespeicher unterstützt private Haushalte beim Ausbau von Solarstromspeichern, um den Eigenverbrauch der Photovoltaikanlage zu erhöhen. Die Zuschüsse werden über das Land Niedersachsen vergeben.",
-        "link_portal": "https://www.foerderdatenbank.de"
+        "title": "KfW-Programme für energieeffizientes Bauen und Sanieren",
+        "type": "Bund",
+        "description": "Zinsvergünstigte Kredite und Zuschüsse für Photovoltaik, Wärmepumpen, Batteriespeicher und Dämmmaßnahmen in Wohngebäuden. Bundesweite Förderung, auch in Niedersachsen verfügbar.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "BAFA Förderung für Heizungsoptimierung und Wärmepumpen",
+        "type": "Bund",
+        "description": "Zuschüsse für den Einbau energieeffizienter Heizsysteme wie Wärmepumpen und für Heizungsoptimierungen. Die Förderung ist bundesweit gültig und auch in Niedersachsen abrufbar.",
+        "link_portal": "https://www.energiewechsel.de"
       }
     ],
     "battery": [],
     "heatpump": [
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen Wärmepumpe",
+        "title": "BAFA - Bundesförderung für effiziente Gebäude (BEG) Einzelmaßnahmen",
         "type": "Bund",
-        "description": "Förderung von Wärmepumpen als Einzelmaßnahme zur Verbesserung der Energieeffizienz in Wohngebäuden. Zuschüsse für die Installation von effizienten Heizsystemen inklusive Wärmepumpen.",
+        "description": "Förderung von effizienten Heizungen wie Wärmepumpen sowie weiteren Maßnahmen zur energetischen Sanierung von Wohngebäuden. Die Förderung umfasst auch den Austausch alter Heizungsanlagen zugunsten umweltfreundlicher Technologien.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Niedersächsisches Programm zur Heizungsoptimierung und Wärmepumpenförderung",
+        "title": "NBank - Förderprogramm Energetische Gebäudesanierung Niedersachsen",
         "type": "Land",
-        "description": "Niedersachsen unterstützt den Einsatz von Wärmepumpen und Heizungsoptimierungen in Wohngebäuden durch Zuschüsse und Beratung. Ziel ist die Senkung der CO2-Emissionen im Gebäudesektor.",
+        "description": "Das Förderprogramm unterstützt private Eigentümer beim Einbau von effizienten Wärmepumpen und anderen energetischen Sanierungsmaßnahmen. Ziel ist die Reduzierung des Energieverbrauchs und die Senkung der CO2-Emissionen im Wohngebäudebestand.",
         "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "KfW - Effizienzhaus- und Einzelmaßnahmenförderung",
+        "type": "Bund",
+        "description": "KfW-Förderungen für den Einbau von Wärmepumpen und weiteren energetischen Maßnahmen in Wohngebäuden, um Sanierungen wirtschaftlich zu unterstützen. Die Programme bieten zinsgünstige Kredite und Tilgungszuschüsse.",
+        "link_portal": "https://www.energiewechsel.de"
       }
     ],
     "heating_optimization": [],
@@ -460,141 +389,141 @@
   "NW": {
     "pv": [
       {
-        "title": "Heizungstausch und Batteriespeicher NRW",
+        "title": "Förderprogramm Heizen mit Erneuerbaren Energien NRW",
         "type": "Land",
-        "description": "Förderprogramm des Landes Nordrhein-Westfalen für den Austausch alter Heizungen durch effiziente Wärmepumpen und die Installation von Photovoltaik-Batteriespeichern in Wohngebäuden.",
+        "description": "Das Programm unterstützt die Installation von Wärmepumpen, Solarthermieanlagen, Biomasseanlagen und die Heizungsoptimierung in Wohngebäuden in Nordrhein-Westfalen.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "KfW-Förderprogramm Energieeffizient Sanieren",
+        "title": "KfW-Energieeffizienzprogramm – Energieeffizient Sanieren",
         "type": "Bund",
-        "description": "Bundesweite Förderung der KfW für energetische Gebäudesanierung inklusive Dämmung, Fenstererneuerung und Installation von Photovoltaik sowie Wärmepumpen.",
+        "description": "Die KfW fördert den Einbau von Photovoltaikanlagen, Batteriespeichern, Heizungsoptimierung, Dämmung und Fenstererneuerung mit zinsgünstigen Krediten und Tilgungszuschüssen.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "BAFA-Förderung für Wärmepumpen und Solarthermie",
+        "type": "Bund",
+        "description": "Das Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA) unterstützt die Installation von Wärmepumpen sowie thermischen Solaranlagen zur Heizungsunterstützung in Wohngebäuden mit Zuschüssen.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "NRW.BANK Wärmepumpen-Programm",
+        "type": "Land",
+        "description": "Das Förderprogramm der NRW.BANK bietet zinsgünstige Darlehen für die Installation von Wärmepumpen in Wohngebäuden im Bundesland Nordrhein-Westfalen an.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      }
+    ],
+    "battery": [
+      {
+        "title": "NRW.BANK.Bauen und Sanieren",
+        "type": "Land",
+        "description": "Förderprogramm für energieeffiziente Neubauten und Sanierungen mit besonderem Fokus auf erneuerbare Energien und Batteriespeicher in Nordrhein-Westfalen.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "KfW Energieeffizient Sanieren – Kredit und Zuschuss",
+        "type": "Bund",
+        "description": "Bundesweite Förderung für die energetische Sanierung von Wohngebäuden, inklusive Batteriespeicher und anderen Maßnahmen wie Wärmepumpe und Dämmung.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
         "title": "Bundesförderung für effiziente Gebäude (BEG)",
         "type": "Bund",
-        "description": "Umfassende Bundesförderung für energieeffiziente Maßnahmen wie Wärmepumpen, Dämmung, Fensteraustausch und Photovoltaikanlagen in Bestandswohngebäuden.",
+        "description": "Förderprogramm für die Installation von Batteriespeichern, Photovoltaik und anderen energieeffizienten Maßnahmen in Wohngebäuden in ganz Deutschland.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
+    "heatpump": [],
+    "heating_optimization": [],
+    "building_envelope": []
+  },
+  "RP": {
+    "pv": [
+      {
+        "title": "Landesförderprogramm „Klimafreundliche Gebäudesanierung“ Rheinland-Pfalz",
+        "type": "Land",
+        "description": "Förderung von Maßnahmen wie Photovoltaik, Wärmepumpen und Dämmung für private Wohngebäude zur Steigerung der Energieeffizienz und zur Reduzierung von CO2-Emissionen.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "Bundesförderung für effiziente Gebäude (BEG)",
+        "type": "Bund",
+        "description": "Das BEG fördert energetische Sanierungen und den Einbau effizienter Heiz- und Kühlsysteme sowie Photovoltaikanlagen und Batteriespeicher in Wohngebäuden deutschlandweit.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ],
     "battery": [],
-    "heatpump": [],
-    "heating_optimization": [
+    "heatpump": [
       {
-        "title": "NRW.BANK Energieeffizienzfinanzierung",
+        "title": "Rheinland-Pfalz Zuschuss für Wärmepumpen",
         "type": "Land",
-        "description": "Zinsgünstige Darlehen zur Finanzierung von Maßnahmen zur Heizungsoptimierung, Wärmepumpen und weiteren energetischen Verbesserungen im Wohngebäudebereich in Nordrhein-Westfalen.",
+        "description": "Förderung von Wärmepumpen im Wohngebäudebereich zur Steigerung der Energieeffizienz und Nutzung erneuerbarer Energien.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "BAFA-Förderung für Heizungsoptimierung",
+        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen Wärmepumpen",
         "type": "Bund",
-        "description": "Bundesweite Förderung für den Einbau effizienter Heizsysteme wie Wärmepumpen sowie Heizungsoptimierung einschließlich hydraulischem Abgleich innerhalb von Wohngebäuden.",
+        "description": "Bundesweite Förderprogramme für den Einbau von Wärmepumpen als effiziente Heizlösung in Wohngebäuden.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
+    "heating_optimization": [
+      {
+        "title": "Kreditanstalt für Wiederaufbau (KfW) - Energieeffizient Sanieren",
+        "type": "Bund",
+        "description": "Förderung von energetischen Sanierungsmaßnahmen wie Wärmepumpen, Heizungserneuerung und Dämmung bei Wohngebäuden. Unterstützt sowohl Investitionen in Modernisierung als auch Optimierung der Heiztechnik.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "KfW-Förderprogramme Energieeffizient Sanieren",
-        "type": "Bund",
-        "description": "KfW bietet zinsgünstige Kredite und Zuschüsse für energetische Sanierungen einschließlich Heizungserneuerung, Dämmung und Heizungsoptimierung für Wohngebäude in Deutschland.",
-        "link_portal": "https://www.energiewechsel.de"
+        "title": "Rheinland-Pfalz: Zuschussprogramm für energetische Maßnahmen in Wohngebäuden",
+        "type": "Land",
+        "description": "Fördert Maßnahmen wie Heizungstausch, Dämmung und den Einbau von effizienten Heizsystemen inklusive Wärmepumpen. Ziel ist die Reduzierung des Energieverbrauchs und der CO2-Emissionen in privaten Wohngebäuden.",
+        "link_portal": "https://www.foerderdatenbank.de"
       }
     ],
     "building_envelope": [
       {
-        "title": "KfW-Energieeffizienzprogramm – Energieeffizient Sanieren (Wohngebäude)",
+        "title": "KfW-Effizienzhaus-Programm",
         "type": "Bund",
-        "description": "Förderung von Maßnahmen zur Verbesserung der Energieeffizienz von Wohngebäuden, einschließlich Wärmedämmung und Fensteraustausch. Teilweise als zinsgünstiges Darlehen oder Zuschuss verfügbar.",
+        "description": "Förderung für energieeffizientes Bauen und Sanieren, inklusive Maßnahmen an der Gebäudehülle wie Dämmung und Fenster. Unterstützt mit zinsgünstigen Krediten und Investitionszuschüssen.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Heizungsoptimierung und Optimierung der Anlagentechnik NRW",
-        "type": "Land",
-        "description": "Förderung für Maßnahmen zur Heizungsoptimierung in Wohngebäuden in Nordrhein-Westfalen, beispielsweise hydraulischer Abgleich und Austausch von Heizungspumpen. Ziel ist die Reduzierung des Energieverbrauchs und der Emissionen.",
-        "link_portal": "https://www.foerderdatenbank.de"
+        "title": "Marktanreizprogramm (MAP) - BAFA",
+        "type": "Bund",
+        "description": "Förderung für den Einbau von Wärmepumpen und Heizungsoptimierungen zur Senkung des Energieverbrauchs in Wohngebäuden. Zuschüsse für nachhaltige Heiztechnologien und Gebäudesanierungen.",
+        "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Förderprogramm NRW.BANK.Bauen.Wohnen",
+        "title": "Förderprogramm Energieeffizient Sanieren - Rheinland-Pfalz",
         "type": "Land",
-        "description": "Unterstützt energieeffizientes Bauen und Sanieren von Wohngebäuden in Nordrhein-Westfalen, inklusive Investitionen in Gebäudedämmung und Einbau moderner Haustechnik. Es werden zinsgünstige Kredite und Zuschüsse angeboten.",
+        "description": "Landesförderung in Rheinland-Pfalz für energetische Sanierungen von Wohngebäuden, inklusive Dämmung der Gebäudehülle und Fensteraustausch. Kombination mit bundesweiten Programmen ist möglich.",
         "link_portal": "https://www.foerderdatenbank.de"
       }
     ]
   },
-  "RP": {
+  "SL": {
     "pv": [],
     "battery": [],
     "heatpump": [],
-    "heating_optimization": [
-      {
-        "title": "Rheinland-Pfalz Programm zur Heizungsoptimierung und Wärmepumpenförderung",
-        "type": "Land",
-        "description": "Dieses Förderprogramm unterstützt Privatpersonen bei der Installation von effizienten Wärmepumpen und der Optimierung bestehender Heizungsanlagen in Wohngebäuden. Ziel ist die Reduzierung von Energieverbrauch und CO2-Emissionen.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) – Einzelmaßnahmen",
-        "type": "Bund",
-        "description": "Die BEG-Förderung unterstützt Maßnahmen wie Heizungsoptimierung, Wärmepumpen und Dämmung in Wohngebäuden deutschlandweit, auch in Rheinland-Pfalz. Sie bietet Zuschüsse und Kredite für energieeffiziente Sanierungen und Modernisierungen.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "KFW-Energieeffizienzprogramm – Heizungsoptimierung und erneuerbare Energien",
-        "type": "Bund",
-        "description": "Über die KfW-Bank werden zinsgünstige Kredite und Zuschüsse für die Optimierung von Heizungsanlagen, den Einbau von Wärmepumpen und die Integration von Photovoltaik in Wohngebäuden angeboten. Das Programm fördert damit energetische Modernisierungen nachhaltig.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
-    "building_envelope": []
-  },
-  "SL": {
-    "pv": [],
-    "battery": [
-      {
-        "title": "Förderprogramm Batteriespeicher Saarland",
-        "type": "Land",
-        "description": "Das Saarland fördert Batteriespeicher in Verbindung mit Photovoltaikanlagen in Wohngebäuden, um die Eigenverbrauchsoptimierung zu unterstützen.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "KfW-Programm 275 – Energiespeicher",
-        "type": "Bund",
-        "description": "Die KfW-Bank unterstützt den Kauf und die Installation von stationären Batteriespeichern für private Wohngebäude mit Photovoltaikanlagen.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
-    "heatpump": [],
-    "heating_optimization": [
-      {
-        "title": "Klimaschutz- und Energieeffizienzprogramm Saarland (KEEPS)",
-        "type": "Land",
-        "description": "Das Programm unterstützt die Energieeffizienzsteigerung und den Einsatz erneuerbarer Energien in Wohngebäuden, darunter auch Maßnahmen zur Heizungsoptimierung und Wärmepumpen.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
-        "type": "Bund",
-        "description": "Das BEG-Förderprogramm fördert Einzelmaßnahmen wie Heizungsoptimierung, Wärmepumpen, Dämmung und Fensteraustausch bei Wohngebäuden in ganz Deutschland, inklusive Saarland.",
-        "link_portal": "https://www.energiewechsel.de"
-      }
-    ],
+    "heating_optimization": [],
     "building_envelope": [
       {
-        "title": "BAFA Zuschuss Heizungsoptimierung und Wärmepumpen",
+        "title": "KfW-Programm 261/262 – Energieeffizient Sanieren",
         "type": "Bund",
-        "description": "Förderung für den Einbau hocheffizienter Wärmepumpen und Heizungsoptimierungen in Wohngebäuden, um den Energieverbrauch zu senken und den CO2-Ausstoß zu reduzieren.",
+        "description": "Förderkredite und Zuschüsse für die energetische Sanierung von Wohngebäuden, inklusive Maßnahmen wie Dämmung, Fensteraustausch sowie den Einbau von Wärmepumpen und Batteriespeichern.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "KfW-Förderprogramme Energieeffizient Sanieren – Wohngebäude",
+        "title": "BAFA-Heizungsoptimierung und Nutzung erneuerbarer Energien",
         "type": "Bund",
-        "description": "Kredite und Zuschüsse für die energetische Sanierung von Wohngebäuden, einschließlich Dämmung, Fenstererneuerung, Installation von Photovoltaik- und Batteriespeichersystemen.",
+        "description": "Zuschüsse für den Einbau effizienter Heizsysteme wie Wärmepumpen und für die Optimierung bestehender Heizungen im Wohngebäudebereich.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Energetische Sanierung im Saarland",
+        "title": "Solarförderprogramm Saarland",
         "type": "Land",
-        "description": "Das Saarland unterstützt gezielt Maßnahmen zur Verbesserung der Gebäudehülle sowie den Einbau moderner Heizsysteme und erneuerbarer Energien in Wohngebäuden.",
+        "description": "Das Saarland unterstützt die Installation von Photovoltaikanlagen und Batteriespeichern auf Wohngebäuden mit Zuschüssen zur Reduzierung der Investitionskosten.",
         "link_portal": "https://www.foerderdatenbank.de"
       }
     ]
@@ -602,32 +531,19 @@
   "SN": {
     "pv": [],
     "battery": [],
-    "heatpump": [
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
-        "type": "Bund",
-        "description": "Förderung von Wärmepumpen im Wohngebäudebereich zur Steigerung der Energieeffizienz. Zuschüsse und zinsgünstige Kredite sind möglich.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "Sächsisches Förderprogramm für Heizungsoptimierung und Wärmepumpen",
-        "type": "Land",
-        "description": "Das Land Sachsen unterstützt die Installation von Wärmepumpen in Wohngebäuden mit finanziellen Zuschüssen. Ziel ist die Förderung der Nutzung erneuerbarer Energien.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      }
-    ],
+    "heatpump": [],
     "heating_optimization": [],
     "building_envelope": [
       {
-        "title": "Sächsisches Förderprogramm Energieeffizienz und erneuerbare Energien in Wohngebäuden",
+        "title": "Sächsische Energie- und Klimaschutzagentur - Förderprogramme für Wohngebäude",
         "type": "Land",
-        "description": "Dieses Programm unterstützt Maßnahmen zur energetischen Sanierung von Wohngebäuden, insbesondere Dämmung, Fenster, Heizungsoptimierung und den Einbau von Wärmepumpen. Ziel ist die Reduzierung des Energieverbrauchs und die Nutzung erneuerbarer Energien.",
+        "description": "Förderung von Maßnahmen zur energetischen Sanierung und Modernisierung von Wohngebäuden, inklusive Wärmepumpen, Dämmung und Fensteraustausch. Ziel ist die Steigerung der Energieeffizienz und CO2-Reduktion in privaten Bestandsgebäuden.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "KfW-Förderprogramme Energieeffizient Sanieren",
+        "title": "Bundesförderung für effiziente Gebäude (BEG) - Wohngebäude",
         "type": "Bund",
-        "description": "Bundesweite Förderprogramme der KfW-Bankengruppe für Energieeffizienzmaßnahmen wie Gebäudedämmung, Heizungsmodernisierung und Installation von Batteriespeichern. Wohngebäudeeigentümer können zinsgünstige Kredite und Zuschüsse erhalten.",
+        "description": "Das BEG unterstützt umfassende Sanierungsmaßnahmen wie Wärmepumpen, Dämmung, Fenstererneuerung und Batteriespeicher in Wohngebäuden. Es umfasst Zuschüsse und Kredite zur Verbesserung der Energieeffizienz und Nutzung erneuerbarer Energien.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ]
@@ -635,129 +551,141 @@
   "ST": {
     "pv": [
       {
-        "title": "BAFA - Förderung für Heizungsoptimierung",
-        "type": "Bund",
-        "description": "Das Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA) bietet Zuschüsse für die Optimierung bestehender Heizungsanlagen in Wohngebäuden, inklusive Wärmepumpen und Brennstoffzellenheizungen.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "KfW-Programm 261/262 - Energieeffizient Bauen und Sanieren",
-        "type": "Bund",
-        "description": "Die KfW fördert die Errichtung und Sanierung von Wohngebäuden mit energiesparenden Maßnahmen wie Photovoltaik, Wärmepumpen, Batteriespeichern und Dämmung über zinsvergünstigte Kredite und Investitionszuschüsse.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "Förderprogramm Solarstrom und Batteriespeicher Sachsen-Anhalt",
+        "title": "Wohngebäude-Programm Sachsen-Anhalt",
         "type": "Land",
-        "description": "Das Land Sachsen-Anhalt unterstützt die Installation von Photovoltaikanlagen und Batteriespeichern auf Wohngebäuden mit direkten Zuschüssen zur Steigerung der Eigenstromnutzung.",
+        "description": "Förderung von Maßnahmen zur Steigerung der Energieeffizienz in Wohngebäuden, inklusive Photovoltaik, Wärmepumpen und Dämmung. Das Programm unterstützt sowohl Neubau als auch Sanierung.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "Energieberatung vor Ort Sachsen-Anhalt",
-        "type": "Land",
-        "description": "Sachsen-Anhalt bietet Zuschüsse für Energieberatungen in Wohngebäuden, die Maßnahmen wie Wärmepumpen, Dämmsanierung und Heizungsoptimierung umfassen und somit als Vorbereitung für Fördermaßnahmen dienen.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      }
-    ],
-    "battery": [],
-    "heatpump": [
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
+        "title": "KfW-Programme Energieeffizient Sanieren und Energieeffizient Bauen",
         "type": "Bund",
-        "description": "Förderung für den Einbau von Wärmepumpen in Wohngebäuden zur Steigerung der Energieeffizienz. Zuschüsse werden als Anteil der Investitionskosten gewährt.",
+        "description": "Bundesweite Programme zur Förderung von energieeffizienten Neubauten und Sanierungen, inklusive Photovoltaik, Batteriespeicher und Wärmepumpen. Die Förderung erfolgt durch zinsgünstige Kredite und Investitionszuschüsse.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Landesförderprogramm Sachsen-Anhalt – Individuelle Maßnahmen zur Wärmewende",
-        "type": "Land",
-        "description": "Förderung von Wärmepumpen in Wohngebäuden zur klimafreundlichen Beheizung. Zuschüsse unterstützen die Installation und Modernisierung effizienter Heizsysteme.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      }
-    ],
-    "heating_optimization": [
-      {
-        "title": "Förderprogramm Heizen mit Erneuerbaren Energien Sachsen-Anhalt",
-        "type": "Land",
-        "description": "Das Programm unterstützt den Einbau von Wärmepumpen, Solarthermieanlagen und Biomasseheizungen in Wohngebäuden, um erneuerbare Wärmequellen zu fördern und Heizkosten zu senken.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Teil Wärme",
+        "title": "Marktanreizprogramm (MAP) – Bundesförderung für effiziente Gebäude",
         "type": "Bund",
-        "description": "Dieses Bundesprogramm fördert den Einbau von Wärmepumpen, Biomasseheizungen, Solarthermie und andere Maßnahmen zur Heizungsoptimierung in Wohngebäuden mit Zuschüssen oder Krediten.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "KfW-Programm 261/262 Energieeffizient Sanieren – Kredit und Zuschuss",
-        "type": "Bund",
-        "description": "Die KfW bietet zinsgünstige Kredite und Zuschüsse zur Heizungsoptimierung und zur Erhöhung der Energieeffizienz bei Wohngebäuden, z.B. beim Austausch alter Heizungsanlagen gegen moderne Technologien.",
+        "description": "Förderung von erneuerbaren Energien in Wohngebäuden, insbesondere für Wärmepumpen und Solarthermie. Zuschüsse werden für die Installation und Modernisierung gewährt.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ],
-    "building_envelope": []
-  },
-  "SH": {
-    "pv": [],
     "battery": [],
     "heatpump": [],
     "heating_optimization": [],
     "building_envelope": []
   },
-  "TH": {
+  "SH": {
     "pv": [
       {
-        "title": "Thüringer Ökoenergie-Förderprogramm",
+        "title": "Förderung von Photovoltaikanlagen und Speichern in Schleswig-Holstein",
         "type": "Land",
-        "description": "Förderung von Photovoltaikanlagen, Batteriespeichern und Wärmepumpen in Wohngebäuden zur Steigerung der Energieeffizienz und Nutzung erneuerbarer Energien im Bundesland Thüringen.",
+        "description": "Das Land Schleswig-Holstein unterstützt die Installation von Photovoltaikanlagen und Batteriespeichern auf Wohngebäuden mit zinsgünstigen Darlehen und Zuschüssen, um die Eigenstromnutzung zu erhöhen.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "KfW-Förderprogramme für energieeffizientes Bauen und Sanieren",
+        "title": "KfW-Programme zur energetischen Sanierung und Heizungserneuerung",
         "type": "Bund",
-        "description": "Bundesweite Förderung von Photovoltaikanlagen, Batteriespeichern, Wärmepumpen sowie Maßnahmen zur Heizungsoptimierung und Wärmedämmung im privaten Wohngebäude-Sektor.",
+        "description": "Die KfW-Bank fördert bundesweit energetische Sanierungen von Wohngebäuden, dazu zählen Photovoltaik, Wärmepumpen und Dämmmaßnahmen mit zinsgünstigen Krediten und Investitionszuschüssen.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "BAFA-Förderung für Heizungsoptimierung und Wärmepumpen",
+        "type": "Bund",
+        "description": "Das Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA) unterstützt private Haushalte bei der Modernisierung von Heizungssystemen, insbesondere mit Zuschüssen für Wärmepumpen und Heizungsoptimierung.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
+    "battery": [],
+    "heatpump": [],
+    "heating_optimization": [],
+    "building_envelope": [
+      {
+        "title": "Programm „SH: Klimaschutz für Privatkunden“",
+        "type": "Land",
+        "description": "Förderung von Maßnahmen zur Erhöhung der Energieeffizienz und Nutzung erneuerbarer Energien in Wohngebäuden, wie z.B. Wärmepumpen, Dämmung, und Fensteraustausch.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "KfW-Energieeffizienzprogramm",
+        "type": "Bund",
+        "description": "Bundesweit geltendes Förderprogramm für energieeffiziente Sanierungsmaßnahmen an Wohngebäuden, darunter Dämmung, neue Fenster, Heizungsoptimierung und den Einbau von Wärmepumpen.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "BAFA-Förderung für Heizungsoptimierung und Wärmepumpen",
+        "type": "Bund",
+        "description": "Bundesförderung für die Nutzung erneuerbarer Energien im Gebäudebereich inklusive Wärmepumpen, Heizungsoptimierung und Batteriespeicher für Wohngebäude.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ]
+  },
+  "TH": {
+    "pv": [
+      {
+        "title": "Thüringer Förderprogramm für Photovoltaikanlagen und Batteriespeicher",
+        "type": "Land",
+        "description": "Förderung der Installation von Photovoltaikanlagen und Batteriespeichern in Wohngebäuden im Bundesland Thüringen. Ziel ist die Steigerung der Eigenversorgung mit Solarstrom und die Unterstützung der Energiewende.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
+        "type": "Bund",
+        "description": "Bundesweite Förderung für Maßnahmen wie Wärmepumpen, Heizungsoptimierung, Dämmung und Fenster in Wohngebäuden. Die Förderung umfasst Zuschüsse und Kredite zur Verbesserung der Energieeffizienz.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "KfW-Programm Energieeffizient Sanieren",
+        "type": "Bund",
+        "description": "Kredite und Zuschüsse für energetische Sanierungen von Wohngebäuden, darunter Wärmepumpen, Dämmung und Fensteraustausch. Ziel ist die Reduktion des Energieverbrauchs und der CO2-Emissionen.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ],
     "battery": [],
     "heatpump": [
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
+        "title": "Bundesförderung für effiziente Gebäude (BEG) - Teil Wärmepumpe",
         "type": "Bund",
-        "description": "Förderung für Wärmepumpen zur Steigerung der Energieeffizienz in Wohngebäuden. Die Unterstützung umfasst Zuschüsse für Installation und Materialkosten.",
+        "description": "Das BEG-Programm fördert den Einbau von Wärmepumpen in Wohngebäuden zur Steigerung der Energieeffizienz und zur CO2-Reduktion. Es umfasst Zuschüsse und Kredite mit Tilgungszuschüssen für private Hausbesitzer.",
         "link_portal": "https://www.energiewechsel.de"
       },
       {
-        "title": "Thüringer Investitionsbank - Zuschussprogramm Wärmepumpe",
+        "title": "Investitionsprogramm Wärmepumpe Thüringen",
         "type": "Land",
-        "description": "Regionale Förderung für den Einbau moderner Wärmepumpen in Wohngebäuden zur Nutzung erneuerbarer Energiequellen. Zuschüsse werden für private Eigentümer gewährt.",
+        "description": "Das Förderprogramm des Freistaats Thüringen unterstützt private Haushalte beim Austausch alter Heizsysteme durch moderne Wärmepumpen. Ziel ist die Förderung erneuerbarer Energien und die Reduktion fossiler Brennstoffe im Wärmemarkt.",
         "link_portal": "https://www.foerderdatenbank.de"
       }
     ],
     "heating_optimization": [
       {
-        "title": "Thüringer Programm für Energieeffizienz und erneuerbare Energien (TLEE)",
+        "title": "THG-Quote und Heizungsoptimierung in Thüringen",
         "type": "Land",
-        "description": "Das TLEE fördert Maßnahmen zur Heizungsoptimierung, Wärmepumpen und Gebäudedämmung in Wohngebäuden in Thüringen. Ziel ist die Steigerung der Energieeffizienz und Nutzung erneuerbarer Energien.",
+        "description": "Förderung für die Optimierung von Heizungsanlagen und den Einsatz von erneuerbaren Energien zur CO2-Reduktion in Wohngebäuden in Thüringen.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "BAFA-Förderung für Heizungsoptimierung und Wärmepumpen",
+        "title": "Bundesförderung für effiziente Gebäude (BEG) – Teil Heizungsoptimierung",
         "type": "Bund",
-        "description": "Das Bundesamt für Wirtschaft und Ausfuhrkontrolle (BAFA) unterstützt Maßnahmen wie den Einbau von Wärmepumpen, Batteriespeichern und Heizungsoptimierung deutschlandweit. Die Förderung gilt auch für Wohngebäude in Thüringen.",
+        "description": "Bundesweite Förderung für Maßnahmen zur Heizungsoptimierung, einschließlich Wärmepumpen, Batteriespeicher und Dämmmaßnahmen zur Steigerung der Energieeffizienz von Wohngebäuden.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ],
     "building_envelope": [
       {
-        "title": "THG-Quote Förderung Thüringen",
+        "title": "THG - Thüringer Programm Energie und Klima",
         "type": "Land",
-        "description": "Förderung von Maßnahmen zur Nutzung erneuerbarer Energien und Energieeffizienz, darunter Wärmepumpen und Dämmung, im privaten Wohngebäudebereich in Thüringen.",
+        "description": "Förderung für Effizienzmaßnahmen an Wohngebäuden inklusive Dämmung, Fenstern und Heizungsoptimierung. Ziel ist die Reduktion des Energieverbrauchs und der CO2-Emissionen in Thüringen.",
         "link_portal": "https://www.foerderdatenbank.de"
       },
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) - Einzelmaßnahmen",
+        "title": "BAFA - Bundesförderung für effiziente Gebäude (BEG)",
         "type": "Bund",
-        "description": "Fördert Sanierungsmaßnahmen an der Gebäudehülle wie Dämmung, Fenstererneuerung, sowie den Einbau von Wärmepumpen, Photovoltaik und Batteriespeichern bei Wohngebäuden.",
+        "description": "Bundesweite Förderung von Maßnahmen zur Verbesserung der Energieeffizienz und Nutzung erneuerbarer Energien in Wohngebäuden, z.B. Wärmepumpen, Batteriespeicher, Dämmung und Heizungsoptimierung.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "KfW-Programm 261/262 - Wohneigentum und Sanierung",
+        "type": "Bund",
+        "description": "Zinsvergünstigte Kredite und Zuschüsse für energetische Sanierung und Neubau von Wohngebäuden, inklusive Wärmedämmung, Fensteraustausch und Installation von Photovoltaik-Anlagen.",
         "link_portal": "https://www.energiewechsel.de"
       }
     ]
