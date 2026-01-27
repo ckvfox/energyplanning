@@ -2,7 +2,6 @@
 
 > 🏠 Ein leichter, kostenlos nutzbarer Web-Rechner zur **ersten Orientierung** für Strom- und Wärmeverbrauch, PV- und Speicher-Dimensionierung, Wärmepumpen-Auslegung sowie Kosten- und Break-even-Schätzung.
 
-**Live-Demo:** [https://example.com](https://example.com)  
 **GitHub:** [ckvfox/energyplanning](https://github.com/ckvfox/energyplanning)  
 **Version:** 1.3.0
 
