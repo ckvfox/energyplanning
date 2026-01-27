@@ -3,7 +3,7 @@ name: Update subsidies.json
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 3 * * 0" # Sonntag 03:00 UTC
+    - cron: "0 3 1 * *" # 1. eines jeden Monats um 03:00 UTC
 
 permissions:
   contents: write
