@@ -13,3 +13,7 @@ node_modules/
 # Secrets
 *.pem
 *.key
+
+# Deployment packaging (local-only, never commit)
+builds/
+deployment-delta-*/

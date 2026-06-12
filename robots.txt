@@ -20,5 +20,5 @@ Allow: /
 # Crawl Delay (optional, 1 Sekunde zwischen Requests)
 Crawl-delay: 1
 
-# Sitemap (falls später hinzugefügt)
-# Sitemap: https://example.com/sitemap.xml
+# Sitemap
+Sitemap: https://energyplanning.great-site.net/sitemap.xml

@@ -1513,9 +1513,11 @@ async function calculateAll() {
         });
         await showSubsidies(houseAgeValue, bundesland);
     } catch (err) {
-
-        resultEl.innerHTML = `<p>Fehler: ${err.message}</p>`;
-
+        const p = document.createElement('p');
+        const errorMessage = err && err.message ? err.message : 'Unbekannter Fehler';
+        p.textContent = `Fehler: ${errorMessage}`;
+        resultEl.innerHTML = '';
+        resultEl.appendChild(p);
     }
 
 }
