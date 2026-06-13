@@ -4,7 +4,8 @@
 
 **Bitte melden Sie Sicherheitslücken NICHT öffentlich via Issues.**
 
-Senden Sie Details vertraulich an: security@example.com
+Melden Sie Sicherheitsprobleme vertraulich über GitHub Security Advisories:
+https://github.com/ckvfox/energyplanning/security/advisories/new
 
 Bitte begeben Sie sich auf einen responsiblen Disclosure-Weg:
 1. E-Mail mit Beschreibung
@@ -47,4 +48,4 @@ Bitte begeben Sie sich auf einen responsiblen Disclosure-Weg:
 
 ---
 
-**Zuletzt aktualisiert:** 2025-12-04
+**Zuletzt aktualisiert:** 2026-06-13

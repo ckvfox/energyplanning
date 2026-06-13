@@ -7,7 +7,7 @@ Allow: /data/data.json
 Disallow: /.git/
 Disallow: /.github/
 Disallow: /docs/
-Disallow: /tests/
+Disallow: /scripts/test/
 
 # Google
 User-agent: Googlebot

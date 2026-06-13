@@ -226,47 +226,6 @@ Contributions sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md):
 
 ---
 
-## 🌟 Features
-
-- 🔋 **Verbrauchsabschätzung** nach Haustyp, Fläche, Personen, Dämmzustand
-- 🏘️ **3 Szenarien**: 
-  - Nur Photovoltaik
-  - PV + Speicher
-  - PV + Speicher + Wärmepumpe
-- ⚡ **Optionale Zusatzlasten**: Klimaanlage, Wallbox (E-Auto)
-- 💰 **Kostenmodelle** inkl. Einspeisevergütung, Break-even-Berechnung
-- 🎯 **Moderne PV-Sizing**: 850 kWh/kWp, intelligente Limits
-- 💾 **Speicher-Dimensionierung**: 0,9 × täglicher Verbrauch
-- 📊 **Szenarien-Vergleich** mit Autarkie-, Kosten- & CO₂-Visualisierung
-- 🌱 **CO₂-Einsparung** in Bäumen, Flügen, Autofahrten
-- 🗺️ **Förderhinweise** je Bundesland (aus `data/subsidies.json`)
-- 📄 **PDF-Export** der Ergebnisse
-- 🌐 **Vollständig clientseitig** – Keine Server-Calls, keine Datenerhebung
-- 🌍 **Responsive** – Desktop, Tablet, Mobile
-- ⌨️ **Tastaturgesteuert** – Alle Funktionen ohne Maus nutzbar
-- 🔍 **SEO-optimiert** – Meta-Tags, JSON-LD structured data, robots.txt
-
----
-
-## 🚀 Quick Start
-
-### Lokal starten (Python)
-```bash
-git clone https://github.com/ckvfox/energyplanning.git
-cd energyplanning
-python -m http.server 8000
-```
-Dann öffnen: **http://localhost:8000**
-
-### Mit Node.js
-```bash
-npx http-server
-```
-
-Oder einfach die `index.html` direkt im Browser öffnen (eingeschränkte Funktionalität).
-
----
-
 ## 📁 Projektstruktur
 
 ```

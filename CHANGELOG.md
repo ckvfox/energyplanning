@@ -2,7 +2,7 @@
 
 Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
-## [1.3.0] – In Entwicklung
+## [1.3.0] – 2026-06-13
 
 ### Added
 - ♿ Umfassende Accessibility-Verbesserungen:

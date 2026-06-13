@@ -1,0 +1,4 @@
+# Python-Abhängigkeiten für Daten-Update-Skripte (scripts/fetch_subsidies.py, scripts/fetch_subsidy_prices.py)
+openai>=1.30.0
+python-dotenv>=1.0.0
+httpx>=0.27.0
