@@ -2,6 +2,14 @@
 
 Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
+## [1.3.1] – In Entwicklung
+
+### Fixed
+- 🐛 GitHub CI: Dependency-Installation im Workflow auf `pip install -r requirements.txt` umgestellt (vermeidet Shell-Probleme mit `>=` in Paketangaben)
+
+### Technical
+- 🔧 GitHub Actions: `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` gesetzt, um Node-20-Deprecation-Warnungen proaktiv abzufangen
+
 ## [1.3.0] – 2026-06-13
 
 ### Added
