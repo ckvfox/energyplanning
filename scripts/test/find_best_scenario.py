@@ -7,9 +7,9 @@ filtered = df[
     (df['houseType'] == 'reihenhaus') &
     (df['people'] == 3) &
     (df['insulation'] == 'normal') &
-    (df['floorHeating'] == False) &
-    (df['wallbox'] == False) &
-    (df['climate'] == True)
+    ~df['floorHeating'] &
+    ~df['wallbox'] &
+    df['climate']
 ]
 
 print("="*80)
