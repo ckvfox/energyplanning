@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -78,7 +77,6 @@ def parse_response(text: str, bundesland: str, measure: str) -> List[Dict[str, A
 
 
 def fetch_for(client: OpenAI, bundesland: str, measure: str) -> List[Dict[str, Any]]:
-    today = date.today().isoformat()
     user_prompt = (
         f"Gib mir aktuelle Foerderprogramme in Deutschland fuer das Bundesland {bundesland} "
         f"und die Massnahme {measure} (z.B. Photovoltaik, Waermepumpe, Batteriespeicher, "

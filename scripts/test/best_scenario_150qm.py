@@ -8,9 +8,9 @@ filtered = df[
     (df['area'] == 150) &  # Nächster Wert zu 140 im Test-Matrix
     (df['people'] == 3) &
     (df['insulation'] == 'normal') &
-    (df['floorHeating'] == False) &
-    (df['wallbox'] == False) &
-    (df['climate'] == True)
+    (~df['floorHeating']) &
+    (~df['wallbox']) &
+    (df['climate'])
 ]
 
 print("="*80)
@@ -30,17 +30,17 @@ if len(filtered_sorted) > 0:
         print(f"Break-even: {row['break_even_years']:.1f} Jahre")
         print(f"Investition: €{row['total_cost']:,.0f}")
         print(f"Jährliche Kosten danach: €{row['annual_cost_post']:,.0f}/a")
-        print(f"\nTechnik:")
+        print("\nTechnik:")
         print(f"  PV: {row['pv_kwp']}kWp")
         print(f"  Speicher: {row['battery_kwh']}kWh")
         if 'Wärmepumpe' in row['scenario']:
-            print(f"  Wärmepumpe: Ja")
-        print(f"\nEnergiefluss:")
+            print("  Wärmepumpe: Ja")
+        print("\nEnergiefluss:")
         print(f"  Autarkie: {row['autarky_pct']:.1f}%")
         print(f"  PV-Erzeugung: {row['pv_generation']:.0f}kWh/a")
         print(f"  Netzbezug: {row['grid_import']:.0f}kWh/a")
         print(f"  Einspeisung: {row['feed_in']:.0f}kWh/a")
-        print(f"\nUmwelt:")
+        print("\nUmwelt:")
         print(f"  CO2-Einsparung: {row['co2_saving']:.0f}kg/a")
         print(f"\nStatus: {row['status'].upper()}")
 

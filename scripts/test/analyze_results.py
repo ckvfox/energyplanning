@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 import pandas as pd
-import sys
 
 df = pd.read_excel('modernisierung_tests.xlsx', sheet_name='Testmatrix')
 
-print(f"=== TEST RESULTS ANALYSIS ===\n")
+print("=== TEST RESULTS ANALYSIS ===\n")
 print(f"Total test cases: {len(df)}")
 print(f"Columns: {len(df.columns)}")
 
@@ -33,11 +32,11 @@ else:
     print("  ✓ Keine Warnings!")
 
 # Scenario distribution
-print(f"\n=== SCENARIO DISTRIBUTION ===")
+print("\n=== SCENARIO DISTRIBUTION ===")
 print(df['scenario'].value_counts())
 
 # Check for NaN in critical columns
-print(f"\n=== NaN CHECK ===")
+print("\n=== NaN CHECK ===")
 critical_cols = ['pv_kwp', 'battery_kwh', 'grid_import', 'feed_in', 'autarky_pct']
 for col in critical_cols:
     nan_count = df[col].isna().sum()
@@ -46,5 +45,5 @@ for col in critical_cols:
     else:
         print(f"  {col}: ✓ OK")
 
-print(f"\n=== SUMMARY ===")
+print("\n=== SUMMARY ===")
 print(f"Status: {'✓ ALL TESTS PASSED' if len(issues_df) == 0 else '✗ ISSUES FOUND'}")
