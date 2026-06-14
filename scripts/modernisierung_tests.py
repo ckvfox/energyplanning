@@ -308,7 +308,6 @@ def add_summary_sheets(df: pd.DataFrame, path: Path) -> None:
 def color_rows(path: Path, df: pd.DataFrame) -> None:
     wb = load_workbook(path)
     ws = wb["Testmatrix"]
-    status_col = list(df.columns).index("status") + 1
     red = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
     yellow = PatternFill(start_color="FFEB9C", end_color="FFEB9C", fill_type="solid")
     green = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
