@@ -2,7 +2,7 @@
 
 Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
-## [1.3.1] – In Entwicklung
+## [1.3.1] – 2026-06-16
 
 ### Added
 - 🤖 Serverseitige Bot-Erkennung in `.htaccess` via `BrowserMatchNoCase`: Googlebot, Bingbot, DuckDuckBot, YandexBot, Baiduspider, AhrefsBot, SemrushBot, WAVE, Lighthouse und weitere Crawler/Accessibility-Tools werden erkannt
@@ -13,11 +13,12 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 ### Changed
 - 🔒 Webserver-Sicherheitsheader in `.htaccess` auf Härtungsprofil aktualisiert:
   - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
-  - `Content-Security-Policy` mit restriktiveren Richtlinien (u.a. `frame-ancestors 'none'`, ohne `unsafe-inline` für Styles)
+  - `Content-Security-Policy` mit restriktiveren Richtlinien (u.a. `frame-ancestors 'none'`, JSON-LD-Hashes, ohne `unsafe-inline` für Styles)
   - `X-Frame-Options: DENY`
   - `X-Content-Type-Options: nosniff`
   - `Referrer-Policy: no-referrer`
   - erweiterte `Permissions-Policy` mit deaktivierten Browser-Features
+- 🔍 Crawler-Erkennung in `.htaccess` um `webcheck-bot` erweitert, damit lokale Webcheck-Audits denselben statischen HTML-Snapshot wie anerkannte Bots erhalten können
 
 ### Fixed
 - 🐛 GitHub CI: Dependency-Installation im Workflow auf `pip install -r requirements.txt` umgestellt (vermeidet Shell-Probleme mit `>=` in Paketangaben)
