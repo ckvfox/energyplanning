@@ -4,6 +4,15 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## [1.3.1] – In Entwicklung
 
+### Changed
+- 🔒 Webserver-Sicherheitsheader in `.htaccess` auf Härtungsprofil aktualisiert:
+  - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+  - `Content-Security-Policy` mit restriktiveren Richtlinien (u.a. `frame-ancestors 'none'`, ohne `unsafe-inline` für Styles)
+  - `X-Frame-Options: DENY`
+  - `X-Content-Type-Options: nosniff`
+  - `Referrer-Policy: no-referrer`
+  - erweiterte `Permissions-Policy` mit deaktivierten Browser-Features
+
 ### Fixed
 - 🐛 GitHub CI: Dependency-Installation im Workflow auf `pip install -r requirements.txt` umgestellt (vermeidet Shell-Probleme mit `>=` in Paketangaben)
 
