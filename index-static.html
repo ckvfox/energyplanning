@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kostenloser Online-Rechner für energetische Modernisierung: PV-Dimensionierung, Speicher, Wärmepumpe, Break-even-Analyse und Förderberatung.">
+    <meta name="keywords" content="Photovoltaik, Energiespeicher, Wärmepumpe, Modernisierung, Kosten, Förderung, Beratung">
+    <meta name="theme-color" content="#007bff">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Energetische Modernisierung – Kostenkalkulation">
+    <meta property="og:description" content="Berechnen Sie Ihre Investitionskosten und Amortisation für PV, Speicher und Wärmepumpe.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/logo.png">
+    <meta property="og:url" content="https://energyplanning.great-site.net/">
+    <link rel="canonical" href="https://energyplanning.great-site.net/">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="favicon.ico">
+    <title>Energetische Modernisierung – Rechner & Kostenanalyse</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Energetische Modernisierung Rechner",
+      "description": "Kostenloser Kalkulator für PV, Speicher, Wärmepumpen und Förderberatung",
+      "applicationCategory": "UtilityApplication",
+      "url": "https://energyplanning.great-site.net/",
+      "author": {
+        "@type": "Organization",
+        "name": "energyplanning"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    }
+    </script>
+</head>
+<body>
+    <div class="page">
+        <header class="hero">
+            <div class="intro">
+                <div class="intro-title">
+                    <img src="images/logo.png" class="intro-logo" alt="Logo">
+                    <h1>Energie- & Modernisierungsrechner</h1>
+                </div>
+                <p>Erhalte eine fundierte Einschätzung für Photovoltaik, Stromspeicher und Wärmepumpe – inklusive Autarkie, CO₂-Einsparung, Kosten, Amortisation und Fördermöglichkeiten.</p>
+                <p>Eine energetische Modernisierung ist heute wichtiger denn je. Sie hilft nicht nur, Energieverbrauch und Kosten zu reduzieren, sondern erhöht auch deine Unabhängigkeit von schwankenden Energiepreisen. Moderne Technologien wie Photovoltaik, Speicher und Wärmepumpen können den Bedarf eines Hauses deutlich senken — oft um mehr als die Hälfte.</p>
+                <p>Gleichzeitig leistest du einen aktiven Beitrag zum Klimaschutz: Jede Kilowattstunde, die nicht aus fossilen Quellen stammt, spart CO₂ und macht dich langfristig energieautarker.</p>
+                <p>Unser Rechner liefert dir eine erste, unverbindliche Einschätzung, basierend auf deinem Gebäude und deinen Plänen — verständlich aufbereitet und individuell für dein Zuhause.</p>
+            </div>
+        </header>
+
+        <main>
+            <section class="form-card" role="region" aria-labelledby="inputHeading">
+                <h2 id="inputHeading">Eingabedaten</h2>
+                <form id="energyForm" action="/" method="get">
+                    <fieldset>
+                        <legend class="visually-hidden">Grundeinstellungen für die Energieberechnung</legend>
+                        <div class="form-grid">
+                            <div>
+                                <label for="houseType">Haustyp</label>
+                                <select id="houseType" name="houseType">
+                                    <option value="reihenhaus">Reihenhaus</option>
+                                    <option value="doppelhaus">Doppelhaus</option>
+                                    <option value="einfamilienhaus">Einfamilienhaus freistehend</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="area">Wohnfläche (m²)</label>
+                                <select id="area" name="area">
+                                    <option value="100">100</option>
+                                    <option value="110">110</option>
+                                    <option value="120">120</option>
+                                    <option value="130">130</option>
+                                    <option value="140">140</option>
+                                    <option value="150" selected>150</option>
+                                    <option value="160">160</option>
+                                    <option value="170">170</option>
+                                    <option value="180">180</option>
+                                    <option value="190">190</option>
+                                    <option value="200">200</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="people">Personen im Haushalt</label>
+                                <select id="people" name="people">
+                                    <option value="1">1</option>
+                                    <option value="2" selected>2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="insulation">Isolierung</label>
+                                <select id="insulation" name="insulation">
+                                    <option value="gut">gut – Neubau / gut saniert</option>
+                                    <option value="normal" selected>normal – typisch 80er–2000er</option>
+                                    <option value="schlecht">schlecht – 60er/70er unsaniert</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="floorHeating">Fußbodenheizung</label>
+                                <select id="floorHeating" name="floorHeating">
+                                    <option value="Nein" selected>Nein</option>
+                                    <option value="Ja">Ja</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="aircon">Klimaanlage geplant</label>
+                                <select id="aircon" name="aircon">
+                                    <option value="Nein" selected>Nein</option>
+                                    <option value="Ja">Ja</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="wallbox">Wallbox geplant</label>
+                                <select id="wallbox" name="wallbox">
+                                    <option value="Nein" selected>Nein</option>
+                                    <option value="Ja">Ja</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Angaben optional zur Ermittlung von Förderprogrammen</legend>
+                        <div class="form-grid">
+                            <div>
+                                <label for="bundesland">Bundesland</label>
+                                <select id="bundesland" name="bundesland">
+                                    <option value="">bitte wählen</option>
+                                    <option value="BW">Baden-Württemberg</option>
+                                    <option value="BY">Bayern</option>
+                                    <option value="BE">Berlin</option>
+                                    <option value="BB">Brandenburg</option>
+                                    <option value="HB">Bremen</option>
+                                    <option value="HH">Hamburg</option>
+                                    <option value="HE">Hessen</option>
+                                    <option value="MV">Mecklenburg-Vorpommern</option>
+                                    <option value="NI">Niedersachsen</option>
+                                    <option value="NW">Nordrhein-Westfalen</option>
+                                    <option value="RP">Rheinland-Pfalz</option>
+                                    <option value="SL">Saarland</option>
+                                    <option value="SN">Sachsen</option>
+                                    <option value="ST">Sachsen-Anhalt</option>
+                                    <option value="SH">Schleswig-Holstein</option>
+                                    <option value="TH">Thüringen</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="houseAge">Baujahr</label>
+                                <input type="number" id="houseAge" name="houseAge" placeholder="z.B. 1995">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <p class="note">Die interaktive Berechnung steht auf der <a href="/">Hauptseite</a> zur Verfügung und erfordert JavaScript.</p>
+                </form>
+            </section>
+
+            <!-- ============================================================
+                 Statische Vorschau-Ergebnisse für Suchmaschinen und
+                 Barrierefreiheits-Tools (Beispielwerte für 150 m², 2 Personen,
+                 normale Isolierung, ohne Wärmepumpe)
+            ============================================================ -->
+            <div class="content-card" role="region" aria-labelledby="resultsHeading">
+                <h2 id="resultsHeading">Typische Berechnungsergebnisse (Beispiel)</h2>
+                <p>Die nachfolgenden Werte sind Richtwerte für ein Einfamilienhaus (150 m², 2 Personen, normale Isolierung). Der interaktive Rechner auf der <a href="/">Hauptseite</a> berechnet individuelle Werte für Ihre Angaben.</p>
+
+                <section aria-labelledby="scenarioHeading0">
+                    <h3 id="scenarioHeading0">Szenario 1 – Nur Photovoltaik</h3>
+                    <dl>
+                        <dt>Empfohlene PV-Leistung</dt><dd>7 kWp</dd>
+                        <dt>Jährliche PV-Erzeugung</dt><dd>ca. 6.650 kWh</dd>
+                        <dt>Jährlicher Stromverbrauch</dt><dd>ca. 3.500 kWh</dd>
+                        <dt>Eigenverbrauchsquote</dt><dd>ca. 35 %</dd>
+                        <dt>Autarkiegrad</dt><dd>ca. 67 %</dd>
+                        <dt>Geschätzte Investitionskosten PV</dt><dd>ca. 14.000 €</dd>
+                        <dt>Amortisationsdauer (Break-even)</dt><dd>ca. 10–12 Jahre</dd>
+                        <dt>CO₂-Einsparung pro Jahr</dt><dd>ca. 2,5 t</dd>
+                    </dl>
+                </section>
+
+                <section aria-labelledby="scenarioHeading1">
+                    <h3 id="scenarioHeading1">Szenario 2 – PV + Stromspeicher</h3>
+                    <dl>
+                        <dt>Empfohlene PV-Leistung</dt><dd>7 kWp</dd>
+                        <dt>Empfohlene Speicherkapazität</dt><dd>8 kWh</dd>
+                        <dt>Eigenverbrauchsquote</dt><dd>ca. 72 %</dd>
+                        <dt>Autarkiegrad</dt><dd>ca. 80 %</dd>
+                        <dt>Geschätzte Investitionskosten PV + Speicher</dt><dd>ca. 22.000 €</dd>
+                        <dt>Amortisationsdauer (Break-even)</dt><dd>ca. 13–15 Jahre</dd>
+                        <dt>CO₂-Einsparung pro Jahr</dt><dd>ca. 2,7 t</dd>
+                    </dl>
+                </section>
+
+                <section aria-labelledby="scenarioHeading2">
+                    <h3 id="scenarioHeading2">Szenario 3 – PV + Speicher + Wärmepumpe</h3>
+                    <dl>
+                        <dt>Empfohlene PV-Leistung</dt><dd>10 kWp</dd>
+                        <dt>Empfohlene Speicherkapazität</dt><dd>10 kWh</dd>
+                        <dt>Heizwärmebedarf</dt><dd>ca. 12.000 kWh/a</dd>
+                        <dt>Wärmepumpen-Jahresarbeitszahl (JAZ)</dt><dd>ca. 3,5</dd>
+                        <dt>Strombedarf Wärmepumpe</dt><dd>ca. 3.430 kWh/a</dd>
+                        <dt>Gesamtstromverbrauch</dt><dd>ca. 6.930 kWh/a</dd>
+                        <dt>Eigenverbrauchsquote</dt><dd>ca. 68 %</dd>
+                        <dt>Autarkiegrad</dt><dd>ca. 74 %</dd>
+                        <dt>Geschätzte Investitionskosten gesamt</dt><dd>ca. 37.000 €</dd>
+                        <dt>Amortisationsdauer (Break-even)</dt><dd>ca. 14–17 Jahre</dd>
+                        <dt>CO₂-Einsparung pro Jahr</dt><dd>ca. 5,8 t</dd>
+                    </dl>
+                </section>
+            </div>
+
+            <div id="subsidyBox" class="subsidy-box content-card">
+                <h3>Förderprogramme (unverbindlicher Hinweis)</h3>
+                <p class="note">
+                    Die angezeigten Förderprogramme sind beispielhafte Hinweise. Links führen zu offiziellen Förderportalen (Foerderdatenbank.de, Energiewechsel.de, co2online), da viele Programme keine direkten, stabilen Webseiten besitzen.
+                </p>
+                <div id="subsidyContent">
+                    <h4>Bundesweite Förderungen</h4>
+                    <ul>
+                        <li>
+                            <strong>BEG – Bundesförderung für effiziente Gebäude (KfW)</strong><br>
+                            Förderung von Wärmepumpen und Sanierungsmaßnahmen mit bis zu 70 % Förderanteil.<br>
+                            <a href="https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestandsimmobilien/Heizen-mit-erneuerbaren-Energien/" rel="noopener noreferrer" target="_blank">KfW – Heizen mit erneuerbaren Energien</a>
+                        </li>
+                        <li>
+                            <strong>Steuerliche Förderung energetischer Sanierung (§ 35c EStG)</strong><br>
+                            20 % der Sanierungskosten (max. 40.000 €) über 3 Jahre absetzbar.<br>
+                            <a href="https://www.bundesfinanzministerium.de/Content/DE/FAQ/2020-03-02-faq-steuerliche-foerderung-energetische-massnahmen.html" rel="noopener noreferrer" target="_blank">Bundesfinanzministerium – FAQ</a>
+                        </li>
+                        <li>
+                            <strong>Einspeisevergütung für Photovoltaik (EEG)</strong><br>
+                            Vergütung für eingespeisten Solarstrom durch Netzbetreiber (aktuell ca. 8 ct/kWh für Anlagen bis 10 kWp).<br>
+                            <a href="https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/ErneuerbareEnergien/Photovoltaik/start.html" rel="noopener noreferrer" target="_blank">Bundesnetzagentur – PV-Einspeisevergütung</a>
+                        </li>
+                        <li>
+                            <strong>Förderung Stromspeicher (Bundesförderung)</strong><br>
+                            Einige Bundesländer und Kommunen fördern Batteriespeicher zusätzlich. Informationen über die regionale Foerderdatenbank.<br>
+                            <a href="https://www.foerderdatenbank.de/" rel="noopener noreferrer" target="_blank">Foerderdatenbank.de</a>
+                        </li>
+                    </ul>
+                    <p class="note">Für länderspezifische Programme geben Sie bitte Ihr Bundesland im interaktiven Rechner auf der <a href="/">Hauptseite</a> an.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-links">
+                <a href="impressum.html">Impressum</a>
+                <a href="datenschutz.html">Datenschutz</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

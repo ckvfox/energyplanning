@@ -4,6 +4,12 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## [1.3.1] – In Entwicklung
 
+### Added
+- 🤖 Serverseitige Bot-Erkennung in `.htaccess` via `BrowserMatchNoCase`: Googlebot, Bingbot, DuckDuckBot, YandexBot, Baiduspider, AhrefsBot, SemrushBot, WAVE, Lighthouse und weitere Crawler/Accessibility-Tools werden erkannt
+- 📄 `index-static.html`: Script-freie, vorgerenderte HTML-Seite als Crawl-Target; enthält Formular, statische Beispielergebnisse für alle drei Szenarien und statische Förderprogramm-Übersicht
+- ↔️ `Vary: User-Agent`-Header für HTML-Responses, damit Proxies und CDNs Bot- und Nutzer-Antworten getrennt cachen
+- 🔍 `robots.txt`: `Allow: /index-static.html` und expliziter Eintrag für WAVE Accessibility Tool ergänzt
+
 ### Changed
 - 🔒 Webserver-Sicherheitsheader in `.htaccess` auf Härtungsprofil aktualisiert:
   - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`

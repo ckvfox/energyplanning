@@ -4,6 +4,7 @@
 User-agent: *
 Allow: /
 Allow: /data/data.json
+Allow: /index-static.html
 Disallow: /.git/
 Disallow: /.github/
 Disallow: /docs/
@@ -15,6 +16,10 @@ Allow: /
 
 # Bing
 User-agent: Bingbot
+Allow: /
+
+# Accessibility evaluation tools receive full access
+User-agent: WAVE
 Allow: /
 
 # Crawl Delay (optional, 1 Sekunde zwischen Requests)
