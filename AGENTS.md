@@ -44,3 +44,13 @@ Rules for both deployment folders:
 - Do not include non-productive repository artifacts (for example READMEs, docs, tests, local scripts, helper notes).
 - These folders are intended as FTP upload sources for productive data only.
 - Deployment packaging folders must be excluded from Git and must never be pushed to GitHub.
+
+## Strukturharmonisierung
+
+Dieses Repository ist ein Bestandsprojekt. Risikoarme Harmonisierung bedeutet Dokumentation und Inventarisierung.
+
+- `style.css`, `scripts/`, `data/`, `images/` und `builds/` bleiben bestehende Projektpfade.
+- Keine Migration nach `assets/` oder `build/deployment/`, solange produktive Referenzen und Deployments davon betroffen sein koennten.
+- Neue technische Dokumentation gehoert in `docs/`.
+- Abweichungen vom FPF-Zielstandard fuer neue Projekte werden in README oder TODO dokumentiert.
+

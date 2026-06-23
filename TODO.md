@@ -43,3 +43,10 @@ Offene Aufgaben nach Priorität. Abgeschlossene Punkte in CHANGELOG.md dokumenti
 - [x] SRI-Integrity-Hash für Chart.js CDN-Einbindung
 - [x] requirements.txt, .env.example ergänzt
 - [x] README Duplikate entfernt, CHANGELOG finalisiert
+
+## Strukturharmonisierung
+
+- [ ] Doppelte README-Struktur- und Konfigurationsabschnitte in einer separaten Dokumentationsbereinigung zusammenfuehren.
+- [ ] Deployment-Pfade `builds/full-deployment/` und `builds/delta-deployment/` im Deployment-Dokument gegen FPF-Zielstandard einordnen.
+- [ ] Produktive Browser-Skripte und lokale Fetch-/Testskripte in `scripts/` deutlicher dokumentieren.
+

@@ -417,3 +417,17 @@ Diese Anwendung bietet **orientierende Berechnungen** für die erste Planungspha
 
 **Zuletzt aktualisiert**: 2025-12-04  
 **Version**: 1.3.0
+
+## Strukturharmonisierung und Bestandsschutz
+
+Dieses Bestandsprojekt ist eine statische, clientseitige Webanwendung mit Daten- und Fetch-Skripten. Die produktiven Pfade `index.html`, `style.css`, `scripts/`, `data/` und `images/` bleiben bestehen, weil sie direkt von Seite, GitHub Pages/Hosting und Dokumentation referenziert werden.
+
+FPF-Zielstandard fuer neue Projekte:
+
+- neue Web-/PHP-Projekte bevorzugen `assets/css`, `assets/js` und `assets/img`
+- datengetriebene statische Projekte duerfen `data/`, `scripts/` und `images/` verwenden, wenn dies dokumentiert ist
+- lokale Fetcher und Tests bleiben unter `scripts/`; produktive Browser-Skripte muessen ausdruecklich dokumentiert sein
+- bestehende Deployment-Pakete unter `builds/full-deployment/` und `builds/delta-deployment/` werden nicht ohne separaten Migrationsplan verschoben
+
+Diese Hinweise sind Bestandsschutz. Sie ersetzen keine spaetere gezielte Bereinigung der doppelten README-Strukturabschnitte.
+

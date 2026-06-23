@@ -2,6 +2,12 @@
 
 Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
 
+## Unreleased
+
+### Docs
+- Dokumentationshinweise zur risikoarmen Strukturharmonisierung und zum Bestandsschutz bestehender Pfade ergänzt.
+- `docs/README.md` als Dokumentationsindex ergänzt.
+
 ## [1.3.1] – 2026-06-16
 
 ### Added
@@ -125,4 +131,6 @@ Dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - 🗑️ **Removed** – Entfernt
 - 🔧 **Technical** – Technische Änderungen
 - 📖 **Docs** – Dokumentation
+
+
 
