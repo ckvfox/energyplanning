@@ -4,6 +4,12 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+## [1.4.2] - 2026-07-04
+
+### Fixed
+- Veraltete Permissions-Policy-Feature-Namen entfernt, damit Browser keine Header-Warnungen mehr ausgeben.
+- CSP `connect-src` um `https://cdn.jsdelivr.net` ergänzt, damit Chart.js Source-Map-Anfragen nicht blockiert werden.
+
 ## [1.4.1] - 2026-07-04
 
 ### Changed
@@ -152,5 +158,4 @@ Dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - 🗑️ **Removed** – Entfernt
 - 🔧 **Technical** – Technische Änderungen
 - 📖 **Docs** – Dokumentation
-
 

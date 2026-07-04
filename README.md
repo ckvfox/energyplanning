@@ -3,7 +3,7 @@
 > 🏠 Ein leichter, kostenlos nutzbarer Web-Rechner zur **ersten Orientierung** für Strom- und Wärmeverbrauch, PV- und Speicher-Dimensionierung, Wärmepumpen-Auslegung sowie Kosten- und Break-even-Schätzung.
 
 **GitHub:** [ckvfox/energyplanning](https://github.com/ckvfox/energyplanning)  
-**Version:** 1.4.1
+**Version:** 1.4.2
 
 ### ♿ Accessibility Status
 ✅ **WCAG 2.1 Level AA** – Vollständig tastaturgesteuert, Screenreader-kompatibel, optimierte Farbkontraste
@@ -85,7 +85,7 @@ energyplanning/
 │   ├── CALCULATIONS.md                 ← Alle Formeln & Algorithmen
 │   └── DEPLOYMENT.md                   ← Installation & Server-Setup
 ├── datenschutz.html & impressum.html   ← Legal Pages
-├── CHANGELOG.md                        ← Version History (v1.3.0)
+├── CHANGELOG.md                        ← Version History
 ├── CONTRIBUTING.md                     ← Developer Guidelines
 ├── SECURITY.md                         ← Security Policy
 └── LICENSE                             ← MIT License
@@ -416,7 +416,7 @@ Diese Anwendung bietet **orientierende Berechnungen** für die erste Planungspha
 ---
 
 **Zuletzt aktualisiert**: 2025-12-04  
-**Version**: 1.3.0
+**Version**: 1.4.2
 
 ## Strukturharmonisierung und Bestandsschutz
 
