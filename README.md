@@ -3,7 +3,7 @@
 > 🏠 Ein leichter, kostenlos nutzbarer Web-Rechner zur **ersten Orientierung** für Strom- und Wärmeverbrauch, PV- und Speicher-Dimensionierung, Wärmepumpen-Auslegung sowie Kosten- und Break-even-Schätzung.
 
 **GitHub:** [ckvfox/energyplanning](https://github.com/ckvfox/energyplanning)  
-**Version:** 1.3.0
+**Version:** 1.4.0
 
 ### ♿ Accessibility Status
 ✅ **WCAG 2.1 Level AA** – Vollständig tastaturgesteuert, Screenreader-kompatibel, optimierte Farbkontraste
@@ -16,8 +16,8 @@
 
 ### 📊 Berechnungen
 - 🔋 **Verbrauchsabschätzung** nach Haustyp, Fläche, Personen, Dämmzustand
-- 🏘️ **3 Szenarien**: Nur PV, PV + Speicher, PV + Speicher + Wärmepumpe
-- ⚡ **Optionale Zusatzlasten**: Klimaanlage, Wallbox (E-Auto)
+- 🏘️ **3 Grundszenarien**: Nur PV, PV + Speicher, PV + Speicher + Wärmepumpe; gewählte Extras werden im Chart mitgeführt
+- ⚡ **Optionale Zusatzlasten**: Multisplit-Klimaanlage nach Anzahl Innengeräte, Wallbox (E-Auto)
 - 💰 **Kostenmodelle** inkl. Einspeisevergütung, Break-even-Berechnung
 - 🎯 **PV-Sizing**: 850 kWh/kWp, intelligente Limits nach Dachfläche & Haustyp
 - 💾 **Speicher-Dimensionierung**: 0,9 × täglicher Verbrauch, 4–15 kWh Clamp

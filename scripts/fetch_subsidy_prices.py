@@ -27,6 +27,46 @@ FIELD_MAP: Dict[str, Tuple[str, ...]] = {
     "heatpump_cost_per_kw": ("heatpump", "cost_per_kw"),
     "wallbox_cost": ("costs", "wallbox_cost"),
     "aircon_cost": ("costs", "aircon_cost"),
+    "aircon_annual_kwh_per_indoor_unit": ("aircon", "annual_kwh_per_indoor_unit"),
+    "aircon_single_split_purchase_cost": ("aircon", "single_split_purchase_cost"),
+    "aircon_single_split_installation_cost": ("aircon", "single_split_installation_cost"),
+    "aircon_multisplit_purchase_cost_2_units": ("aircon", "multisplit_purchase_costs", "2"),
+    "aircon_multisplit_purchase_cost_3_units": ("aircon", "multisplit_purchase_costs", "3"),
+    "aircon_multisplit_purchase_cost_4_units": ("aircon", "multisplit_purchase_costs", "4"),
+    "aircon_multisplit_extra_purchase_cost_per_indoor_unit": (
+        "aircon",
+        "multisplit_extra_purchase_cost_per_indoor_unit",
+    ),
+    "aircon_installation_base_cost": ("aircon", "installation_base_cost"),
+    "aircon_installation_extra_cost_per_indoor_unit": ("aircon", "installation_extra_cost_per_indoor_unit"),
+    "aircon_connection_and_leak_test_cost": ("aircon", "connection_and_leak_test_cost"),
+    "aircon_maintenance_cost_min": ("aircon", "maintenance_cost_min"),
+    "aircon_maintenance_cost_max": ("aircon", "maintenance_cost_max"),
+}
+
+AIRCON_NESTED_FIELD_MAP: Dict[str, str] = {
+    "annual_kwh_per_indoor_unit": "aircon_annual_kwh_per_indoor_unit",
+    "single_split_purchase_cost": "aircon_single_split_purchase_cost",
+    "single_split_installation_cost": "aircon_single_split_installation_cost",
+    "multisplit_extra_purchase_cost_per_indoor_unit": "aircon_multisplit_extra_purchase_cost_per_indoor_unit",
+    "installation_base_cost": "aircon_installation_base_cost",
+    "installation_extra_cost_per_indoor_unit": "aircon_installation_extra_cost_per_indoor_unit",
+    "connection_and_leak_test_cost": "aircon_connection_and_leak_test_cost",
+    "maintenance_cost_min": "aircon_maintenance_cost_min",
+    "maintenance_cost_max": "aircon_maintenance_cost_max",
+}
+
+ALIASES: Dict[str, str] = {
+    "electricity_eur_per_kwh": "electricity",
+    "gas_eur_per_kwh": "gas",
+    "feed_in_eur_per_kwh": "feed_in",
+    "aircon_single_split_total_cost": "aircon_cost",
+    "aircon_cost_single_split": "aircon_cost",
+    "aircon_purchase_cost_single_split": "aircon_single_split_purchase_cost",
+    "aircon_installation_cost_single_split": "aircon_single_split_installation_cost",
+    "aircon_multisplit_2_units": "aircon_multisplit_purchase_cost_2_units",
+    "aircon_multisplit_3_units": "aircon_multisplit_purchase_cost_3_units",
+    "aircon_multisplit_4_units": "aircon_multisplit_purchase_cost_4_units",
 }
 
 
@@ -115,13 +155,56 @@ def needs_update(current: Any, new: Any) -> bool:
     return abs(new - current) / abs(current) > 0.2
 
 
+def coerce_number(value: Any) -> float | int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return value
+    if isinstance(value, str):
+        cleaned = value.strip().replace("€", "").replace("EUR", "").replace("kWh", "")
+        cleaned = cleaned.replace(" ", "").replace(".", "").replace(",", ".")
+        try:
+            parsed = float(cleaned)
+        except ValueError:
+            return None
+        return int(parsed) if parsed.is_integer() else parsed
+    return None
+
+
+def flatten_aircon_values(raw: Dict[str, Any], normalized: Dict[str, Any]) -> None:
+    aircon = raw.get("aircon")
+    if not isinstance(aircon, dict):
+        return
+
+    for nested_key, flat_key in AIRCON_NESTED_FIELD_MAP.items():
+        if flat_key not in normalized and nested_key in aircon:
+            normalized[flat_key] = aircon[nested_key]
+
+    purchase_costs = aircon.get("multisplit_purchase_costs")
+    if isinstance(purchase_costs, dict):
+        for units in ("2", "3", "4"):
+            flat_key = f"aircon_multisplit_purchase_cost_{units}_units"
+            if flat_key not in normalized and units in purchase_costs:
+                normalized[flat_key] = purchase_costs[units]
+
+
 def normalize_source_values(raw: Dict[str, Any]) -> Dict[str, Any]:
     normalized = dict(raw)
-    # Allow suffixed keys from prompt results
-    for short, path in FIELD_MAP.items():
-        long_key = f"{short}_eur_per_kwh"
-        if short not in normalized and long_key in raw:
-            normalized[short] = raw[long_key]
+
+    for alias, canonical in ALIASES.items():
+        if canonical not in normalized and alias in raw:
+            normalized[canonical] = raw[alias]
+
+    flatten_aircon_values(raw, normalized)
+
+    for key in list(normalized):
+        if key in FIELD_MAP:
+            coerced = coerce_number(normalized[key])
+            if coerced is None:
+                normalized.pop(key, None)
+            else:
+                normalized[key] = coerced
+
     return normalized
 
 

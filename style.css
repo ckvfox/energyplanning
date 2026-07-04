@@ -77,6 +77,48 @@ h1 {
     word-break: break-word;
 }
 
+.technology-strip {
+    max-width: var(--max-container);
+    width: min(100%, var(--max-container));
+    margin: 0 auto 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+.technology-strip img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 6 / 1;
+    object-fit: cover;
+}
+
+.technology-labels {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    border-top: 1px solid #e5eaf2;
+    background: #fff;
+}
+
+.technology-labels span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 8px 6px;
+    color: #243247;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    border-left: 1px solid #e5eaf2;
+}
+
+.technology-labels span:first-child {
+    border-left: 0;
+}
+
 /* Formular-Container */
 .form-card {
     background: #fff;
@@ -1175,6 +1217,33 @@ button:active {
         padding: 12px 14px;
         margin: 0 0 12px;
         border-radius: 8px;
+    }
+
+    .technology-strip {
+        margin: 0 0 14px;
+        border-radius: 8px;
+    }
+
+    .technology-strip img {
+        aspect-ratio: 2 / 1;
+    }
+
+    .technology-labels {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .technology-labels span {
+        min-height: 34px;
+        font-size: 12px;
+        border-top: 1px solid #e5eaf2;
+    }
+
+    .technology-labels span:nth-child(odd) {
+        border-left: 0;
+    }
+
+    .technology-labels span:nth-child(-n+2) {
+        border-top: 0;
     }
     
     .intro-logo {

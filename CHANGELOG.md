@@ -4,6 +4,22 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+## [1.4.0] - 2026-07-04
+
+### Added
+- Multisplit-Klimaanlagen mit auswählbarer Anzahl Räume/Innengeräte ergänzt; Standardwert folgt der Personenanzahl.
+- Bildreihe für PV-Anlage, PV-Speicher, Wärmepumpe, Klima-Innengerät, Klima-Außengerät und Wallbox ergänzt.
+- Chart-Szenarien zeigen gewählte Extras wie Klima und Wallbox jetzt direkt in den Szenario-Namen.
+
+### Changed
+- Klimaanlagen-Kosten und -Verbrauch auf Multisplit-Logik nach Haus.de-Spannen umgestellt.
+- Kostenannahmen aus `data/data.json` und Preisvalidierungs-Prompts für PV, Speicher, Wallbox, Wärmepumpe, Energiepreise und Klimaanlagen erweitert.
+- Sichtbaren Hinweis zu Preisquellen aus der Nutzeroberfläche entfernt.
+
+### Technical
+- Tests für Multisplit-Kosten ergänzt.
+- Preis-Updater verarbeitet detaillierte Klimaanlagen-Kostendaten.
+
 ### Docs
 - Dokumentationshinweise zur risikoarmen Strukturharmonisierung und zum Bestandsschutz bestehender Pfade ergänzt.
 - `docs/README.md` als Dokumentationsindex ergänzt.

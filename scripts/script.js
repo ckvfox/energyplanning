@@ -30,6 +30,51 @@ function roofPvLimit(roofArea) {
     return Math.max(0, Math.floor(area / 7)); // 7 m² pro kWp laut Vorgabe
 }
 
+function getAirconIndoorUnits(hasAircon) {
+    const roomsEl = document.getElementById('airconRooms');
+    const rawRooms = Number(roomsEl?.value);
+    if (!hasAircon) return 0;
+    return clamp(Number.isFinite(rawRooms) && rawRooms > 0 ? Math.round(rawRooms) : getDefaultAirconIndoorUnits(), 1, 8);
+}
+
+function getDefaultAirconIndoorUnits() {
+    const peopleEl = document.getElementById('people');
+    const people = Number(peopleEl?.value);
+    return clamp(Number.isFinite(people) && people > 0 ? Math.round(people) : 1, 1, 8);
+}
+
+function syncAirconRoomsDefault(force = false) {
+    const roomsEl = document.getElementById('airconRooms');
+    if (!roomsEl) return;
+    if (force || roomsEl.dataset.userEdited !== 'true') {
+        roomsEl.value = String(getDefaultAirconIndoorUnits());
+        roomsEl.removeAttribute('data-user-edited');
+    }
+}
+
+function calculateAirconCost(indoorUnits, airconData = {}) {
+    if (!indoorUnits) return 0;
+
+    const connectionCost = airconData.connection_and_leak_test_cost ?? 475;
+    if (indoorUnits === 1) {
+        const purchase = airconData.single_split_purchase_cost ?? airconData.cost_per_unit ?? 2050;
+        const installation = airconData.single_split_installation_cost ?? airconData.installation_base_cost ?? 1500;
+        return purchase + installation + connectionCost;
+    }
+
+    const purchaseTable = airconData.multisplit_purchase_costs || {};
+    const knownUnits = Object.keys(purchaseTable).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
+    const maxKnownUnits = knownUnits.length ? knownUnits[knownUnits.length - 1] : 4;
+    const maxKnownPurchase = purchaseTable[String(maxKnownUnits)] ?? 4750;
+    const extraPurchasePerUnit = airconData.multisplit_extra_purchase_cost_per_indoor_unit ?? 1200;
+    const purchase = purchaseTable[String(indoorUnits)]
+        ?? (maxKnownPurchase + Math.max(0, indoorUnits - maxKnownUnits) * extraPurchasePerUnit);
+    const installation = (airconData.installation_base_cost ?? 1500)
+        + indoorUnits * (airconData.installation_extra_cost_per_indoor_unit ?? 300);
+
+    return purchase + installation + connectionCost;
+}
+
 function debounce(func, delay) {
     let timeoutId;
     return function(...args) {
@@ -141,6 +186,18 @@ function updateEVCombustionFieldsState() {
             el.disabled = !isWallboxEnabled;
         }
     });
+}
+
+function updateAirconRoomsFieldState() {
+    const airconEl = document.getElementById('aircon');
+    const roomsEl = document.getElementById('airconRooms');
+
+    if (!airconEl || !roomsEl) return;
+
+    const isAirconEnabled = airconEl.value === 'Ja';
+    roomsEl.disabled = !isAirconEnabled;
+    const rooms = Number(roomsEl.value);
+    syncAirconRoomsDefault(!Number.isFinite(rooms) || rooms < 1);
 }
 
 // ========== BAUJAHR FIELD DISABLE LOGIC ==========
@@ -319,6 +376,17 @@ function pickScenarioForCharts(scenarios) {
     return wpScenario || scenarios[scenarios.length - 1];
 }
 
+function buildScenarioDisplayLabel(baseLabel, includesAircon, includesWallbox) {
+    const parts = [baseLabel || 'Szenario'];
+    if (includesAircon) {
+        parts.push('Klima');
+    }
+    if (includesWallbox) {
+        parts.push('Wallbox');
+    }
+    return parts.join(' + ');
+}
+
 function generateScenarioCurves(scenario, base) {
     const labelsMonth = ['Jan', 'Feb', 'Mrz', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
     const pvMonthly = labelsMonth.map((_, idx) => scenario.pvKwp * 1000 * monthlyPVFactors[idx] * 1.05);
@@ -485,7 +553,7 @@ function updateChartsForScenario(scenarios) {
         scenario = pickScenarioForCharts(scenarios);
     }
     if (!scenario) return;
-    const name = scenario.name || scenario.label || 'berechnetes Szenario';
+    const name = scenario.displayLabel || scenario.name || scenario.label || 'berechnetes Szenario';
     const pvKwp = scenario.pvKwp;
     const hhKwh = scenario.householdElectric || scenario.householdKwh || scenario.annualConsumption;
     const hpKwh = scenario.heatpumpElectric || 0;
@@ -502,8 +570,20 @@ function enableScenarioSwitch(scenarios) {
     const switchEl = document.getElementById('scenario-switch');
     if (!switchEl) return;
     switchEl.classList.remove('hidden');
+    const labelEl = document.getElementById('scenarioLabel');
+    if (labelEl) {
+        const hasExtras = Array.isArray(scenarios) && scenarios.some((s) => s.includesAircon || s.includesWallbox);
+        labelEl.textContent = hasExtras
+            ? 'Diagramm anzeigen für (inkl. gewählter Extras):'
+            : 'Diagramm anzeigen für:';
+    }
     const buttons = switchEl.querySelectorAll('.scenario-btn');
     buttons.forEach((btn, idx) => {
+        const scenario = scenarios?.[idx];
+        if (scenario) {
+            btn.textContent = scenario.displayLabel || scenario.name || scenario.label || btn.textContent;
+            btn.setAttribute('aria-label', `Diagramm anzeigen für ${btn.textContent}`);
+        }
         btn.disabled = false;
         btn.onclick = () => {
             buttons.forEach((b) => {
@@ -812,7 +892,8 @@ function validateConsumptions() {
         input_preis_strom: 'Strompreis',
         input_preis_gas: 'Gaspreis',
         input_dachflaeche: 'bebaubare Dachfläche',
-        input_pv_kwp: 'PV-Leistung'
+        input_pv_kwp: 'PV-Leistung',
+        airconRooms: 'Räume / Innengeräte Klimaanlage'
     };
     const ids = [
         { id: 'input_stromverbrauch', min: 500, max: 15000 },
@@ -820,7 +901,8 @@ function validateConsumptions() {
         { id: 'input_preis_strom', min: 0.10, max: 1.00 },
         { id: 'input_preis_gas', min: 0.05, max: 0.50 },
         { id: 'input_dachflaeche', min: 20, max: 200 },
-        { id: 'input_pv_kwp', min: 2, max: 30, optional: true }
+        { id: 'input_pv_kwp', min: 2, max: 30, optional: true },
+        { id: 'airconRooms', min: 1, max: 8, optional: true }
     ];
     for (const f of ids) {
         const el = document.getElementById(f.id);
@@ -937,6 +1019,7 @@ async function calculateAll() {
 
         const airconValue = (document.getElementById('aircon').value || '').toLowerCase();
         const hasAircon = airconValue === 'ja';
+        const airconIndoorUnits = getAirconIndoorUnits(hasAircon);
 
         const floorHeatingValue = (document.getElementById('floorHeating').value || '').toLowerCase();
         const hasFloorHeating = floorHeatingValue === 'ja';
@@ -994,9 +1077,10 @@ async function calculateAll() {
             dachEl.value = roofArea;
         }
 
-        const airconUnitCost = data.costs?.aircon_cost ?? data.aircon?.cost_per_unit ?? 0;
         const wallboxUnitCost = data.costs?.wallbox_cost ?? data.wallbox?.cost_per_unit ?? 0;
-        const airconCost = hasAircon ? airconUnitCost : 0;
+        const airconCost = calculateAirconCost(airconIndoorUnits, data.aircon);
+        const airconMaintenanceMin = data.aircon?.maintenance_cost_min ?? 100;
+        const airconMaintenanceMax = data.aircon?.maintenance_cost_max ?? 400;
         const wallboxCost = hasWallbox ? wallboxUnitCost : 0;
 
 
@@ -1011,7 +1095,8 @@ async function calculateAll() {
 
 
         // Haushaltsstrom (Status quo: ohne Zusatzlasten)
-        const airconExtra = hasAircon ? data.consumption.aircon_extra : 0;
+        const airconKwhPerIndoorUnit = data.aircon?.annual_kwh_per_indoor_unit ?? data.consumption.aircon_extra ?? 250;
+        const airconExtra = hasAircon ? airconIndoorUnits * airconKwhPerIndoorUnit : 0;
         // wallboxExtra ist nur relevant, wenn Wallbox (EV) gewählt wurde
         // Es wird keine Vermischung von EV- und Verbrenner-Logik vorgenommen
 
@@ -1059,6 +1144,7 @@ async function calculateAll() {
 
             const includesAircon = hasAircon;
             const includesWallbox = hasWallbox;
+            const displayLabel = buildScenarioDisplayLabel(scenario.label, includesAircon, includesWallbox);
             const householdBlock = householdElectric;
             const acBlock = includesAircon ? airconExtra : 0;
             const evBlock = includesWallbox ? wallboxExtra : 0;
@@ -1126,7 +1212,7 @@ async function calculateAll() {
 
             const extrasLabel = hasAircon || hasWallbox
 
-                ? `${hasAircon ? `Klimaanlage ${formatNumber(airconCost, 0)} EUR` : ''}${hasAircon && hasWallbox ? ', ' : ''}${hasWallbox ? `Wallbox ${formatNumber(wallboxCost, 0)} EUR` : ''}`
+                ? `${hasAircon ? `Multisplit-Klimaanlage (${airconIndoorUnits} Innengerät${airconIndoorUnits === 1 ? '' : 'e'}) ${formatNumber(airconCost, 0)} EUR` : ''}${hasAircon && hasWallbox ? ', ' : ''}${hasWallbox ? `Wallbox ${formatNumber(wallboxCost, 0)} EUR` : ''}`
 
                 : 'Klimaanlage/Wallbox nicht ausgewählt';
 
@@ -1144,7 +1230,8 @@ async function calculateAll() {
 
             const scenarioResult = {
                 label: scenario.label,
-                name: scenario.label,
+                displayLabel,
+                name: displayLabel,
                 annualConsumption,
                 householdElectric: annualConsumption,
                 pvKwp,
@@ -1157,6 +1244,7 @@ async function calculateAll() {
                 batteryCost,
                 heatpumpCost,
                 airconCost,
+                airconIndoorUnits,
                 wallboxCost,
                 extrasLabel,
                 totalCost,
@@ -1296,6 +1384,7 @@ async function calculateAll() {
                     <ul style="margin-top: 8px; margin-left: 20px;">
                         <li>Die Standardwerte passen sich automatisch an Ihre Gebäudedaten an.</li>
                         <li>PV-Leistung wird automatisch bestimmt, falls Sie keinen Wert eintragen.</li>
+                        <li>Multisplit-Klimaanlagen werden nach Anzahl der Innengeräte berechnet.</li>
                         <li>Fahrzeugdaten gelten nur, wenn Sie eine Wallbox einplanen.</li>
                         <li>Eigene Eingaben haben Vorrang (Verbrauch, Preise, Flächen, Fahrzeugdaten).</li>
                     </ul>
@@ -1308,7 +1397,7 @@ async function calculateAll() {
             </div>
 
             <h3>Annahmen nach Modernisierung</h3>
-            <p>Verbrauchsblöcke (kWh/a): Haushalt ${formatNumber(householdElectric, 0)}, Klima ${formatNumber(airconExtra, 0)}, Wallbox ${formatNumber(wallboxExtra, 0)}, Wärmepumpe ${formatNumber(heatpumpElectric, 0)}.</p>
+            <p>Verbrauchsblöcke (kWh/a): Haushalt ${formatNumber(householdElectric, 0)}, Klima ${formatNumber(airconExtra, 0)}${hasAircon ? ` (${airconIndoorUnits} Innengerät${airconIndoorUnits === 1 ? '' : 'e'} à ${formatNumber(airconKwhPerIndoorUnit, 0)} kWh/a)` : ''}, Wallbox ${formatNumber(wallboxExtra, 0)}, Wärmepumpe ${formatNumber(heatpumpElectric, 0)}.</p>
             <p>Summe Strom (inkl. ggf. WP): ${formatNumber(totalElectricAll, 0)} kWh/a</p>
             <p>Heizwärmebedarf bleibt: ${formatNumber(heatingDemand, 0)} kWh/a;</p>
             <p>Wärmepumpen-Strom (falls WP): ${formatNumber(heatpumpElectric, 0)} kWh/a,</p>
@@ -1316,10 +1405,10 @@ async function calculateAll() {
             ${wallboxHintText ? `<p class="note">${wallboxHintText} Bevorzugte Nachtladung bei Speicher, um Netzlast zu senken. Zusätzlich ersetzt das E-Auto einen konventionellen Verbrenner (Annahme: ${combustionModel}, ${formatNumber(combustionAnnualKm, 0)} km/a, Verbrauch ${formatNumber(combustionLitresPer100km, 1)} l/100 km).</p>` : ''}
             ${warnings.length ? `<div class="warn-box">${warnings.map((w) => `<p>${w}</p>`).join('')}</div>` : ''}
 
-            <h3>Szenarien (${hasAircon ? 'mit Klimaanlage' : 'ohne Klimaanlage'}, ${hasWallbox ? 'mit Wallbox' : 'ohne Wallbox'})</h3>
+            <h3>Szenarien (${hasAircon ? `mit Multisplit-Klimaanlage (${airconIndoorUnits} Innengerät${airconIndoorUnits === 1 ? '' : 'e'})` : 'ohne Klimaanlage'}, ${hasWallbox ? 'mit Wallbox' : 'ohne Wallbox'})</h3>
             ${scenarios.map((s) => `
                 <div class="scenario scenario-block">
-                    <h4>${s.label}</h4>
+                    <h4>${s.displayLabel || s.label}</h4>
                     <p>Verbräuche (kWh/a): Haushalt ${formatNumber(s.householdBlock, 0)}, Klima ${formatNumber(s.climateBlock, 0)}, Wallbox ${formatNumber(s.evBlock, 0)}, Wärmepumpe ${formatNumber(s.heatpumpBlock, 0)}, Summe ${formatNumber(s.annualConsumption, 0)}</p>
                     <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a | Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a</p>
                     <p>Einspeisung: ${formatNumber(s.feedIn, 0)} kWh/a (Tarif ${formatNumber(feedInTariff, 2)} EUR/kWh)</p>
@@ -1329,10 +1418,11 @@ async function calculateAll() {
                     ${hasWallbox ? `<p>EV-Ladung: ${formatNumber(wallboxExtra, 0)} kWh/a</p>` : ''}
                     <div class="cost-block">
                         <strong>Kosten:</strong><br>
-                        PV (2025 Marktpreis ~1.850-2.400 EUR/kWp): ${formatNumber(s.pvCost, 0)} EUR<br>
-                        Speicher (ca. 650-750 EUR/kWh): ${formatNumber(s.batteryCost, 0)} EUR<br>
-                        Wärmepumpe: ${formatNumber(s.heatpumpCost, 0)} EUR<br>
+                        PV (${formatNumber(data.pv.cost_per_kwp, 0)} EUR/kWp): ${formatNumber(s.pvCost, 0)} EUR<br>
+                        Speicher (${formatNumber(data.battery.cost_per_kwh, 0)} EUR/kWh): ${formatNumber(s.batteryCost, 0)} EUR<br>
+                        Wärmepumpe (${formatNumber(data.heatpump.cost_per_kw, 0)} EUR/kW): ${formatNumber(s.heatpumpCost, 0)} EUR<br>
                         ${s.extrasLabel}<br>
+                        ${hasAircon ? `Hinweis Klimawartung: ${formatNumber(airconMaintenanceMin, 0)}-${formatNumber(airconMaintenanceMax, 0)} EUR je Service, nicht in Investitionssumme enthalten.<br>` : ''}
                         Gesamt: ${formatNumber(s.totalCost, 0)} EUR
                     </div>
                     ${(() => {
@@ -1488,7 +1578,7 @@ async function calculateAll() {
         if (recalcBtn) {
             recalcBtn.addEventListener('click', () => {
                 // Werte aus den Feldern übernehmen und als manuell markiert
-                ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche', 'input_pv_kwp', 'input_ev_km', 'input_ev_consumption', 'input_combustion_km', 'input_combustion_consumption'].forEach((id) => {
+                ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche', 'input_pv_kwp', 'input_ev_km', 'input_ev_consumption', 'input_combustion_km', 'input_combustion_consumption', 'airconRooms'].forEach((id) => {
                     const el = document.getElementById(id);
                     if (el && el.value) {
                         el.dataset.userEdited = 'true';
@@ -1503,7 +1593,7 @@ async function calculateAll() {
             pdfBtn.style.display = 'block';
         }
         // Markiere manuelle Eingaben
-        ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche', 'input_pv_kwp', 'input_ev_km', 'input_ev_consumption', 'input_combustion_km', 'input_combustion_consumption'].forEach((id) => {
+        ['input_stromverbrauch', 'input_heizwaerme', 'input_preis_strom', 'input_preis_gas', 'input_dachflaeche', 'input_pv_kwp', 'input_ev_km', 'input_ev_consumption', 'input_combustion_km', 'input_combustion_consumption', 'airconRooms'].forEach((id) => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('input', () => {
@@ -1557,6 +1647,10 @@ if (resetBtn) {
         document.getElementById('floorHeating').value = 'Nein';
 
         document.getElementById('aircon').value = 'Nein';
+        const airconRooms = document.getElementById('airconRooms');
+        if (airconRooms) airconRooms.value = '2';
+        syncAirconRoomsDefault(true);
+        updateAirconRoomsFieldState();
 
         const wallbox = document.getElementById('wallbox');
 
@@ -1599,6 +1693,25 @@ window.addEventListener('DOMContentLoaded', () => {
     const wallboxEl = document.getElementById('wallbox');
     if (wallboxEl) {
         wallboxEl.addEventListener('change', updateEVCombustionFieldsState);
+    }
+
+    updateAirconRoomsFieldState();
+    const airconEl = document.getElementById('aircon');
+    if (airconEl) {
+        airconEl.addEventListener('change', updateAirconRoomsFieldState);
+    }
+    const airconRoomsEl = document.getElementById('airconRooms');
+    if (airconRoomsEl) {
+        airconRoomsEl.addEventListener('input', () => {
+            airconRoomsEl.dataset.userEdited = 'true';
+        });
+    }
+    const peopleEl = document.getElementById('people');
+    if (peopleEl) {
+        peopleEl.addEventListener('change', () => {
+            syncAirconRoomsDefault();
+            updateAirconRoomsFieldState();
+        });
     }
     
     // 2. Initialize Baujahr field state (disabled until Bundesland is selected)

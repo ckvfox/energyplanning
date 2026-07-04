@@ -52,6 +52,22 @@
         </header>
 
         <main>
+            <section class="technology-strip" aria-label="Beispielhafte Technologien für energetische Modernisierung">
+                <img
+                    src="images/modernisierung-technologien.png"
+                    alt="Symbolische Beispiele für Photovoltaik auf einem Reihenhaus, Batteriespeicher, Wärmepumpe, Klima-Innengerät, Klima-Außengerät und Wallbox"
+                    loading="lazy"
+                    decoding="async">
+                <div class="technology-labels" aria-hidden="true">
+                    <span>PV-Anlage</span>
+                    <span>PV-Speicher</span>
+                    <span>Wärmepumpe</span>
+                    <span>Klima innen</span>
+                    <span>Klima außen</span>
+                    <span>Wallbox</span>
+                </div>
+            </section>
+
             <section class="form-card" role="region" aria-labelledby="inputHeading">
                 <h2 id="inputHeading">Eingabedaten</h2>
                 <form id="energyForm">
@@ -114,6 +130,10 @@
                                     <option value="Nein" selected>Nein</option>
                                     <option value="Ja">Ja</option>
                                 </select>
+                            </div>
+                            <div>
+                                <label for="airconRooms">Räume / Innengeräte Klimaanlage</label>
+                                <input id="airconRooms" name="airconRooms" type="number" min="1" max="8" step="1" value="2" disabled>
                             </div>
                             <div>
                                 <label for="wallbox">Wallbox geplant</label>

@@ -178,6 +178,25 @@ costCalculationTests.test('Cost scales linearly with size', () => {
     assert(largeCost === smallCost * 2, 'Double size should double cost');
 });
 
+costCalculationTests.test('Multisplit aircon cost uses indoor units', () => {
+    const airconData = {
+        single_split_purchase_cost: 2050,
+        single_split_installation_cost: 1500,
+        multisplit_purchase_costs: {
+            2: 1750,
+            3: 2350,
+            4: 4750
+        },
+        installation_base_cost: 1500,
+        installation_extra_cost_per_indoor_unit: 300,
+        connection_and_leak_test_cost: 475
+    };
+
+    assert(calculateAirconCost(0, airconData) === 0, 'No aircon should cost zero');
+    assert(calculateAirconCost(1, airconData) === 4025, 'Single split should include purchase, installation, and connection costs');
+    assert(calculateAirconCost(3, airconData) === 5225, 'Three-unit multisplit should use Haus.de midpoint purchase plus installation adders');
+});
+
 // ========== UTILITY FUNCTION TESTS ==========
 
 const utilityTests = new TestRunner('Utility Functions');
