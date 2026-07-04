@@ -1079,8 +1079,6 @@ async function calculateAll() {
 
         const wallboxUnitCost = data.costs?.wallbox_cost ?? data.wallbox?.cost_per_unit ?? 0;
         const airconCost = calculateAirconCost(airconIndoorUnits, data.aircon);
-        const airconMaintenanceMin = data.aircon?.maintenance_cost_min ?? 100;
-        const airconMaintenanceMax = data.aircon?.maintenance_cost_max ?? 400;
         const wallboxCost = hasWallbox ? wallboxUnitCost : 0;
 
 
@@ -1422,7 +1420,6 @@ async function calculateAll() {
                         Speicher (${formatNumber(data.battery.cost_per_kwh, 0)} EUR/kWh): ${formatNumber(s.batteryCost, 0)} EUR<br>
                         Wärmepumpe (${formatNumber(data.heatpump.cost_per_kw, 0)} EUR/kW): ${formatNumber(s.heatpumpCost, 0)} EUR<br>
                         ${s.extrasLabel}<br>
-                        ${hasAircon ? `Hinweis Klimawartung: ${formatNumber(airconMaintenanceMin, 0)}-${formatNumber(airconMaintenanceMax, 0)} EUR je Service, nicht in Investitionssumme enthalten.<br>` : ''}
                         Gesamt: ${formatNumber(s.totalCost, 0)} EUR
                     </div>
                     ${(() => {
@@ -1749,5 +1746,3 @@ window.addEventListener('DOMContentLoaded', () => {
     
 
 });
-
-

@@ -4,6 +4,11 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+## [1.4.1] - 2026-07-04
+
+### Changed
+- Inkonsistenten Klimawartungs-Hinweis aus der Kostenanzeige entfernt.
+
 ## [1.4.0] - 2026-07-04
 
 ### Added
@@ -147,6 +152,5 @@ Dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - 🗑️ **Removed** – Entfernt
 - 🔧 **Technical** – Technische Änderungen
 - 📖 **Docs** – Dokumentation
-
 
 
