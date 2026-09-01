@@ -40,7 +40,7 @@
   },
   "pv": {
     "yield_per_kwp": 950,
-    "cost_per_kwp": 1200
+    "cost_per_kwp": 900
   },
   "battery": {
     "recommended_factor_min": 0.6,
@@ -54,20 +54,20 @@
   "aircon": {
     "type": "multisplit",
     "default_indoor_units": 1,
-    "annual_kwh_per_indoor_unit": 600,
+    "annual_kwh_per_indoor_unit": 900,
     "operating_cost_eur_per_hour_per_indoor_unit": 0.17,
     "single_split_purchase_cost": 2500,
-    "single_split_installation_cost": 1500,
+    "single_split_installation_cost": 1000,
     "multisplit_purchase_costs": {
-      "2": 3400,
-      "3": 4800,
-      "4": 6000
+      "2": 4800,
+      "3": 6500,
+      "4": 8200
     },
     "multisplit_extra_purchase_cost_per_indoor_unit": 1500,
-    "installation_base_cost": 1500,
-    "installation_extra_cost_per_indoor_unit": 700,
+    "installation_base_cost": 900,
+    "installation_extra_cost_per_indoor_unit": 350,
     "connection_and_leak_test_cost": 300,
-    "maintenance_cost_min": 100,
+    "maintenance_cost_min": 150,
     "maintenance_cost_max": 300,
     "source": "Haus.de, Kosten einer Klimaanlage: Damit müssen Sie rechnen, 01.04.2025"
   },
@@ -79,7 +79,7 @@
     "factor_good": 1.2,
     "factor_bad": 0.9,
     "factor_fbh": 1.15,
-    "cost_per_kw": 1800,
+    "cost_per_kw": 1500,
     "full_load_hours": 2000
   },
   "co2": {
