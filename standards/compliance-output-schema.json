@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fox-project-framework.dev/schema/compliance-output-schema.json",
+  "title": "Fox Project Framework Compliance Output",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "green",
+        "yellow",
+        "red",
+        "framework-unverifizierbar"
+      ]
+    },
+    "critical_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "migration_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "potential_framework_improvements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "score",
+    "status",
+    "critical_findings",
+    "warnings",
+    "recommendations",
+    "migration_steps",
+    "potential_framework_improvements"
+  ]
+}

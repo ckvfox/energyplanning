@@ -1,6 +1,6 @@
 # Security Policy
 
-## Reporting Security Issues
+## Vulnerability Reporting
 
 **Bitte melden Sie Sicherheitslücken NICHT öffentlich via Issues.**
 
@@ -48,4 +48,28 @@ Bitte begeben Sie sich auf einen responsiblen Disclosure-Weg:
 
 ---
 
-**Zuletzt aktualisiert:** 2026-06-13
+## Secret Handling
+
+Keine Zugangsdaten, Tokens, Sitzungsdaten oder produktiven Konfigurationen in Repository, Reports oder Deployment-Pakete aufnehmen. Nur neutrale Beispieldateien verwenden.
+
+## Production Hardening
+
+HTTPS, restriktive Security-Header, aktuelle Abhaengigkeiten und eine gepruefte `.htaccess` sind fuer die produktive InfinityFree-Instanz verbindlich.
+
+## Backup Strategy
+
+Vor produktiven Aenderungen einen wiederherstellbaren Stand der veroeffentlichten Dateien sichern. Backups werden nicht im Repository oder im Webroot gespeichert.
+
+## Installer Policy
+
+Dieses statische Projekt benoetigt keinen oeffentlich erreichbaren Installer. Neu eingefuehrte Setup- oder Diagnosewerkzeuge duerfen nicht produktiv ausgeliefert werden.
+
+## Disclosure Policy
+
+Sicherheitsdetails werden bis zur Bereitstellung einer Abhilfe vertraulich behandelt. Oeffentliche Issues enthalten keine ausnutzbaren Details.
+
+## Response Targets
+
+Eingegangene Meldungen sollen innerhalb von fuenf Werktagen bestaetigt und nach Reproduzierbarkeit priorisiert werden.
+
+**Zuletzt aktualisiert:** 2026-09-27

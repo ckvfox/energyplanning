@@ -4,6 +4,9 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+### Governance
+- Adopted the Fox Project Framework v2.1 baseline, project master, security lifecycle, CI compliance check and portfolio monitoring metadata.
+
 ## [1.4.2] - 2026-07-04
 
 ### Fixed

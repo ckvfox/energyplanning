@@ -1,5 +1,19 @@
 # Project Agent Rules
 
+This repository follows Fox Project Framework v2.1.0.
+
+## Mandatory startup sequence
+
+- Read `PROJECT_MASTER.md`, `README.md`, `AGENTS.md`, `TODO.md`, `SECURITY.md` and the task-relevant files in `standards/` before changing code or deployment behavior.
+- Run the local FPF baseline check before commit and deployment.
+- Record reusable approaches and lessons instead of creating project-specific duplicates.
+
+## Local Toolchain and Setup Check
+
+- Use the repository's local Python environment when available.
+- Baseline: `python .github/scripts/fpf_project_compliance.py . --profile apache-shared-hosting --production`.
+- Preserve the existing `builds/full-deployment/` and `builds/delta-deployment/` handover paths.
+
 Do not read, open, inspect, summarize, quote, print, or expose secret-bearing files.
 
 Treat at least the following as restricted:
