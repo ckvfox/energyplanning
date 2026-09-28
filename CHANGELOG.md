@@ -7,6 +7,7 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 ### Governance
 - Adopted the Fox Project Framework v2.1 baseline, project master, security lifecycle, CI compliance check and portfolio monitoring metadata.
 - Restored the existing Ruff CI job by applying its safe modernizations and narrowing JSON parsing fallbacks to `JSONDecodeError`.
+- Updated GitHub Actions to their pinned Node.js 24 generations and corrected the executable bit of the analysis helper.
 
 ## [1.4.2] - 2026-07-04
 
