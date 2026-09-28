@@ -2,7 +2,6 @@ import itertools
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 import pandas as pd
 from openpyxl import load_workbook
@@ -22,13 +21,13 @@ MIN_FEEDIN_SHARE = 0.30
 
 @dataclass
 class TestResult:
-    inputs: Dict
+    inputs: dict
     scenario: str
-    outputs: Dict
-    issues: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
+    outputs: dict
+    issues: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
-def load_data() -> Dict:
+def load_data() -> dict:
     data_path = Path(__file__).resolve().parent.parent / "data" / "data.json"
     with data_path.open(encoding="utf-8") as f:
         return json.load(f)
@@ -55,7 +54,7 @@ def recommend_battery_kwh(total_load: float, pv_kwp: float, pv_yield: float) -> 
     return min(batt, daily_pv * 2)
 
 def estimate_energy_balance(pv_kwp: float, battery_kwh: float, annual_load: float, pv_yield: float,
-                            has_ev: bool, ev_load: float) -> Tuple[float, float, float]:
+                            has_ev: bool, ev_load: float) -> tuple[float, float, float]:
     pv_generation = pv_kwp * pv_yield
     direct_share = 0.32 if battery_kwh > 0 else 0.27
     direct_self = min(annual_load * direct_share, pv_generation * 0.9)
@@ -85,7 +84,7 @@ def estimate_energy_balance(pv_kwp: float, battery_kwh: float, annual_load: floa
 
     return grid, feed_in, autarky * 100, ev_from_batt
 
-def build_inputs_matrix() -> List[Dict]:
+def build_inputs_matrix() -> list[dict]:
     house_types = ["reihenhaus", "doppelhaus", "einfamilienhaus"]
     areas = [100, 150, 200]
     people = [1, 3, 5]
@@ -111,7 +110,7 @@ def build_inputs_matrix() -> List[Dict]:
         )
     return matrix
 
-def calc_consumption_blocks(base_data: Dict, inp: Dict) -> Dict:
+def calc_consumption_blocks(base_data: dict, inp: dict) -> dict:
     house_key = "freistehend" if inp["houseType"] == "einfamilienhaus" else inp["houseType"]
     heating_per_sqm = base_data["consumption"]["heating_per_sqm"][house_key][inp["insulation"]]
     household = inp["people"] * base_data["consumption"]["per_person"]
@@ -121,7 +120,7 @@ def calc_consumption_blocks(base_data: Dict, inp: Dict) -> Dict:
     hp = HEATPUMP_EXTRA
     return {"household": household, "heating": heating, "climate": climate, "ev": ev, "heatpump": hp}
 
-def scenario_calculations(base_data: Dict, inp: Dict) -> List[TestResult]:
+def scenario_calculations(base_data: dict, inp: dict) -> list[TestResult]:
     blocks = calc_consumption_blocks(base_data, inp)
     el_price = base_data["prices"]["electricity_eur_per_kwh"]
     gas_price = base_data["prices"]["gas_eur_per_kwh"]
@@ -141,7 +140,7 @@ def scenario_calculations(base_data: Dict, inp: Dict) -> List[TestResult]:
         ("PV + Speicher + Wärmepumpe", True, True),
     ]
 
-    results: List[TestResult] = []
+    results: list[TestResult] = []
     for label, use_batt, use_hp in scenarios:
         household_block = blocks["household"]
         climate_block = blocks["climate"]
@@ -210,7 +209,7 @@ def scenario_calculations(base_data: Dict, inp: Dict) -> List[TestResult]:
 
     return results
 
-def validate_rules(res: TestResult, inp: Dict, use_batt: bool, use_hp: bool, pv_yield: float) -> None:
+def validate_rules(res: TestResult, inp: dict, use_batt: bool, use_hp: bool, pv_yield: float) -> None:
     o = res.outputs
     roof_max = roof_limit_kwp(inp["roofArea"])
     if o["pv_kwp"] > roof_max + 1e-6:
@@ -254,7 +253,7 @@ def validate_rules(res: TestResult, inp: Dict, use_batt: bool, use_hp: bool, pv_
     elif be > 40:
         res.warnings.append("Break-even sehr lang (>40 Jahre) – wirtschaftlich schwach.")
 
-def to_dataframe(results: List[TestResult]) -> pd.DataFrame:
+def to_dataframe(results: list[TestResult]) -> pd.DataFrame:
     rows = []
     for r in results:
         row = {
@@ -324,7 +323,7 @@ def color_rows(path: Path, df: pd.DataFrame) -> None:
 def main() -> None:
     data = load_data()
     inputs = build_inputs_matrix()
-    all_results: List[TestResult] = []
+    all_results: list[TestResult] = []
     for inp in inputs:
         all_results.extend(scenario_calculations(data, inp))
 

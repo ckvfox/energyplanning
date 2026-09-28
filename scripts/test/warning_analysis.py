@@ -1,5 +1,6 @@
-import pandas as pd
 from collections import Counter
+
+import pandas as pd
 
 df = pd.read_excel('modernisierung_tests.xlsx')
 

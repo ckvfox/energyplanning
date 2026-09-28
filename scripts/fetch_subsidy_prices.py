@@ -6,19 +6,19 @@ from __future__ import annotations
 
 import json
 import os
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Dict, Iterable, Tuple
+from typing import Any
 
-from dotenv import load_dotenv
 import openai
+from dotenv import load_dotenv
 from openai import OpenAI
-
 from prompts import PRICE_SYSTEM_PROMPT
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "data" / "data.json"
 
-FIELD_MAP: Dict[str, Tuple[str, ...]] = {
+FIELD_MAP: dict[str, tuple[str, ...]] = {
     "electricity": ("prices", "electricity_eur_per_kwh"),
     "gas": ("prices", "gas_eur_per_kwh"),
     "feed_in": ("prices", "feed_in_eur_per_kwh"),
@@ -44,7 +44,7 @@ FIELD_MAP: Dict[str, Tuple[str, ...]] = {
     "aircon_maintenance_cost_max": ("aircon", "maintenance_cost_max"),
 }
 
-AIRCON_NESTED_FIELD_MAP: Dict[str, str] = {
+AIRCON_NESTED_FIELD_MAP: dict[str, str] = {
     "annual_kwh_per_indoor_unit": "aircon_annual_kwh_per_indoor_unit",
     "single_split_purchase_cost": "aircon_single_split_purchase_cost",
     "single_split_installation_cost": "aircon_single_split_installation_cost",
@@ -56,7 +56,7 @@ AIRCON_NESTED_FIELD_MAP: Dict[str, str] = {
     "maintenance_cost_max": "aircon_maintenance_cost_max",
 }
 
-ALIASES: Dict[str, str] = {
+ALIASES: dict[str, str] = {
     "electricity_eur_per_kwh": "electricity",
     "gas_eur_per_kwh": "gas",
     "feed_in_eur_per_kwh": "feed_in",
@@ -76,7 +76,7 @@ def ensure_client(existing: OpenAI | None = None) -> OpenAI:
     version = getattr(openai, "__version__", "0.0.0")
     try:
         major = int(version.split(".")[0])
-    except Exception:  # noqa: BLE001
+    except (ValueError, IndexError):
         major = 0
     if major < 1:
         raise SystemExit(
@@ -99,21 +99,22 @@ def ensure_client(existing: OpenAI | None = None) -> OpenAI:
         ) from exc
 
 
-def parse_prices_response(text: str) -> Dict[str, Any]:
+def parse_prices_response(text: str) -> dict[str, Any]:
     try:
         return json.loads(text)
-    except Exception:  # noqa: BLE001
+    except json.JSONDecodeError as exc:
+        parse_error = exc
         if "{" in text and "}" in text:
             try:
                 frag = text[text.index("{") : text.rindex("}") + 1]
                 return json.loads(frag)
-            except Exception:
-                pass
-        print(f"[WARN] Konnte Antwort nicht parsen: {text[:200]!r}")
+            except json.JSONDecodeError as fallback_exc:
+                parse_error = fallback_exc
+        print(f"[WARN] Konnte Antwort nicht parsen ({parse_error}): {text[:200]!r}")
         return {}
 
 
-def fetch_market_prices(client: OpenAI) -> Dict[str, Any]:
+def fetch_market_prices(client: OpenAI) -> dict[str, Any]:
     user_prompt = "Bitte liefere die Werte als kompaktes JSON mit klaren numerischen Feldern."
     response = client.responses.create(
         model="gpt-4.1-mini",
@@ -126,7 +127,7 @@ def fetch_market_prices(client: OpenAI) -> Dict[str, Any]:
     return parse_prices_response(text)
 
 
-def get_nested(data: Dict[str, Any], path: Iterable[str]) -> Any:
+def get_nested(data: dict[str, Any], path: Iterable[str]) -> Any:
     cur: Any = data
     for key in path:
         if not isinstance(cur, dict) or key not in cur:
@@ -135,8 +136,8 @@ def get_nested(data: Dict[str, Any], path: Iterable[str]) -> Any:
     return cur
 
 
-def set_nested(data: Dict[str, Any], path: Iterable[str], value: Any) -> None:
-    cur: Dict[str, Any] = data
+def set_nested(data: dict[str, Any], path: Iterable[str], value: Any) -> None:
+    cur: dict[str, Any] = data
     *parents, last = path
     for key in parents:
         if key not in cur or not isinstance(cur[key], dict):
@@ -171,7 +172,7 @@ def coerce_number(value: Any) -> float | int | None:
     return None
 
 
-def flatten_aircon_values(raw: Dict[str, Any], normalized: Dict[str, Any]) -> None:
+def flatten_aircon_values(raw: dict[str, Any], normalized: dict[str, Any]) -> None:
     aircon = raw.get("aircon")
     if not isinstance(aircon, dict):
         return
@@ -188,7 +189,7 @@ def flatten_aircon_values(raw: Dict[str, Any], normalized: Dict[str, Any]) -> No
                 normalized[flat_key] = purchase_costs[units]
 
 
-def normalize_source_values(raw: Dict[str, Any]) -> Dict[str, Any]:
+def normalize_source_values(raw: dict[str, Any]) -> dict[str, Any]:
     normalized = dict(raw)
 
     for alias, canonical in ALIASES.items():

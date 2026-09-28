@@ -8,14 +8,13 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
-from dotenv import load_dotenv
 import openai
-from openai import OpenAI
-
-from prompts import SUBSIDY_SYSTEM_PROMPT
+from dotenv import load_dotenv
 from fetch_subsidy_prices import update_price_data
+from openai import OpenAI
+from prompts import SUBSIDY_SYSTEM_PROMPT
 
 ROOT = Path(__file__).resolve().parent.parent
 SUBSIDY_PATH = ROOT / "data" / "subsidies.json"
@@ -33,13 +32,13 @@ MEASURES = [
     "building_envelope",
 ]
 
-def load_existing() -> Dict[str, Dict[str, List[Dict[str, Any]]]]:
+def load_existing() -> dict[str, dict[str, list[dict[str, Any]]]]:
     if SUBSIDY_PATH.exists():
         return json.loads(SUBSIDY_PATH.read_text(encoding="utf-8"))
     return {state: {m: [] for m in MEASURES} for state in BUNDESLAENDER}
 
 
-def validate_entries(raw: Any) -> List[Dict[str, Any]]:
+def validate_entries(raw: Any) -> list[dict[str, Any]]:
     if not isinstance(raw, list):
         return []
     valid = []
@@ -59,24 +58,25 @@ def validate_entries(raw: Any) -> List[Dict[str, Any]]:
     return valid
 
 
-def parse_response(text: str, bundesland: str, measure: str) -> List[Dict[str, Any]]:
+def parse_response(text: str, bundesland: str, measure: str) -> list[dict[str, Any]]:
     try:
         parsed = json.loads(text)
         return validate_entries(parsed)
-    except Exception as exc:  # noqa: BLE001
+    except json.JSONDecodeError as exc:
+        parse_error = exc
         # Fallback: versuche den erstbesten JSON-Array-Block herauszuschneiden
         if "[" in text and "]" in text:
             try:
                 frag = text[text.index("[") : text.rindex("]") + 1]
                 parsed = json.loads(frag)
                 return validate_entries(parsed)
-            except Exception:
-                pass
-        print(f"[WARN] Parsing-Fehler bei {bundesland}/{measure}: {exc}. Antwort (gekuerzt): {text[:200]!r}")
+            except json.JSONDecodeError as fallback_exc:
+                parse_error = fallback_exc
+        print(f"[WARN] Parsing-Fehler bei {bundesland}/{measure}: {parse_error}. Antwort (gekuerzt): {text[:200]!r}")
         return []
 
 
-def fetch_for(client: OpenAI, bundesland: str, measure: str) -> List[Dict[str, Any]]:
+def fetch_for(client: OpenAI, bundesland: str, measure: str) -> list[dict[str, Any]]:
     user_prompt = (
         f"Gib mir aktuelle Foerderprogramme in Deutschland fuer das Bundesland {bundesland} "
         f"und die Massnahme {measure} (z.B. Photovoltaik, Waermepumpe, Batteriespeicher, "
@@ -136,7 +136,7 @@ def main() -> None:
             data[state] = {m: [] for m in MEASURES}
         for measure in MEASURES:
             entries = fetch_for(client, state, measure)
-            cleaned_entries: List[Dict[str, Any]] = []
+            cleaned_entries: list[dict[str, Any]] = []
             for entry in entries:
                 entry_type = (entry.get("type") or "").strip()
                 type_lower = entry_type.lower()
