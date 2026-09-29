@@ -20,9 +20,7 @@ async function loadData() {
 
 
 function clamp(value, min, max) {
-
-    return Math.max(min, Math.min(max, value));
-
+    return window.EnergyCalculationCore.clamp(value, min, max);
 }
 
 function roofPvLimit(roofArea) {
@@ -103,41 +101,9 @@ function estimateEnergyBalance({
     hasEv = false,
     evLoadKwh = 0
 }) {
-    const roundtripEff = 0.85;
-    const pvGeneration = Math.max(0, pvKwp) * pvYieldPerKwp;
-    const directShare = batteryKwh > 0 ? 0.45 : 0.35;
-
-    const directSelf = Math.min(annualLoadKwh * directShare, pvGeneration * 0.9);
-    const pvSurplus = Math.max(pvGeneration - directSelf, 0);
-
-    let batteryDelivered = 0;
-    if (batteryKwh > 0) {
-        const dailyUsable = batteryKwh * 0.7;
-        const annualUsablePv = dailyUsable * 365; // max. 1 Vollzyklus pro Tag
-        const pvForBattery = Math.min(pvSurplus, annualUsablePv);
-        batteryDelivered = pvForBattery * roundtripEff;
-    }
-
-    const selfUse = Math.min(annualLoadKwh, directSelf + batteryDelivered);
-    const feedIn = Math.max(0, pvGeneration - selfUse);
-    const gridImport = Math.max(0, annualLoadKwh - selfUse);
-
-    const evFromBattery = hasEv && batteryKwh > 0
-        ? Math.round(Math.min(evLoadKwh * 0.5, batteryDelivered * 0.4))
-        : 0;
-
-    const autarkyPct = annualLoadKwh > 0 ? (selfUse / annualLoadKwh) * 100 : 0;
-
-    return {
-        pvGeneration,
-        directSelf,
-        batteryDelivered,
-        selfUse,
-        gridImport,
-        feedIn,
-        autarky: autarkyPct,
-        evFromBattery
-    };
+    return window.EnergyCalculationCore.estimateEnergyBalance({
+        pvKwp, batteryKwh, annualLoadKwh, pvYieldPerKwp, hasHeatpump, hasEv, evLoadKwh
+    });
 }
 
 
@@ -151,8 +117,6 @@ function formatNumber(value, digits = 1) {
 
 let chartScenarioIndex = 0;
 let daySeason = 'summer';
-let yearChartInstance = null;
-let dayChartInstance = null;
 let chartColors = {}; // Farben aus data.json
 
 const monthlyPVFactors = [0.03, 0.05, 0.11, 0.13, 0.14, 0.13, 0.12, 0.11, 0.09, 0.06, 0.025, 0.015];
@@ -455,96 +419,11 @@ function generateScenarioCurves(scenario, base) {
 }
 
 function renderYearChart(data, title) {
-    const ctxEl = document.getElementById('yearChart');
-    if (!ctxEl) return;
-    if (!Array.isArray(data) || data.length === 0) {
-        ctxEl.innerHTML = '';
-        return;
-    }
-    const ctx = ctxEl.getContext('2d');
-    if (yearChartInstance) {
-        yearChartInstance.destroy();
-    }
-    const maxValue = Math.max(
-        ...data.flatMap((r) => [r.pv, r.consumption, r.selfConsumption, r.gridImport].map(Number))
-    );
-    const roundedMax = Number.isFinite(maxValue) ? Math.ceil((maxValue * 1.15) / 250) * 250 : 0;
-    const yMax = Math.max(750, roundedMax || 0);
-    yearChartInstance = new Chart(ctx, {
-        type: 'line',
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top' },
-                title: { display: true, text: `Szenario: ${title || '-'}`, font: { size: 16 } }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: yMax,
-                    ticks: {
-                        stepSize: 250
-                    }
-                }
-            }
-        },
-        data: {
-            labels: ['Jan', 'Feb', 'Mrz', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-            datasets: [
-                { label: 'PV', data: data.map((r) => r.pv), borderColor: chartColors.pv, borderWidth: 2 },
-                { label: 'Verbrauch', data: data.map((r) => r.consumption), borderColor: chartColors.consumption, borderWidth: 2 },
-                { label: 'Eigenverbrauch', data: data.map((r) => r.selfConsumption), borderColor: chartColors.selfConsumption, borderWidth: 2 },
-                { label: 'Netzbezug', data: data.map((r) => r.gridImport), borderColor: chartColors.gridImport, borderWidth: 2 }
-            ]
-        }
-    });
+    window.EnergyChartUI.renderYearChart(data, title, chartColors);
 }
 
 function renderDayChart(data, title) {
-    const ctxEl = document.getElementById('dayChart');
-    if (!ctxEl) return;
-    if (!Array.isArray(data) || data.length === 0) {
-        ctxEl.innerHTML = '';
-        return;
-    }
-    const ctx = ctxEl.getContext('2d');
-    if (dayChartInstance) {
-        dayChartInstance.destroy();
-    }
-    const maxValue = Math.max(...data.flatMap((r) => [r.pv, r.load, r.selfConsumption, r.gridImport].map(Number)));
-    const roundedMax = Number.isFinite(maxValue) ? Math.ceil((maxValue * 1.2) / 0.5) * 0.5 : 0;
-    const yMax = Math.max(1.5, roundedMax || 0);
-    dayChartInstance = new Chart(ctx, {
-        type: 'line',
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top' },
-                title: { display: true, text: `Szenario: ${title || '-'}`, font: { size: 16 } }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: yMax,
-                    ticks: {
-                        stepSize: 0.5,
-                        precision: 1
-                    }
-                }
-            }
-        },
-        data: {
-            labels: data.map((r) => r.hour),
-            datasets: [
-                { label: 'PV', data: data.map((r) => r.pv), borderColor: chartColors.pv, borderWidth: 2 },
-                { label: 'Last', data: data.map((r) => r.load), borderColor: chartColors.load, borderWidth: 2 },
-                { label: 'Eigenverbrauch', data: data.map((r) => r.selfConsumption), borderColor: chartColors.eigenverbrauch, borderWidth: 2 },
-                { label: 'Netzbezug', data: data.map((r) => r.gridImport), borderColor: chartColors.netzbezug, borderWidth: 2 }
-            ]
-        }
-    });
+    window.EnergyChartUI.renderDayChart(data, title, chartColors);
 }
 
 function updateChartsForScenario(scenarios) {
@@ -678,7 +557,7 @@ async function determineSubsidies(houseAge, bundesland, userSelections) {
 
     if (!bundesland) {
 
-        return { baseMessages: [], stateHtml: '' };
+        return { baseMessages: [], statePrograms: [] };
 
     }
 
@@ -720,7 +599,7 @@ async function determineSubsidies(houseAge, bundesland, userSelections) {
 
 
 
-    let stateHtml = '';
+    const selectedPrograms = [];
 
     if (statePrograms) {
 
@@ -740,8 +619,6 @@ async function determineSubsidies(houseAge, bundesland, userSelections) {
 
 
 
-        const entries = [];
-
         categories.forEach((cat) => {
 
             const items = statePrograms[cat.key] || [];
@@ -749,37 +626,16 @@ async function determineSubsidies(houseAge, bundesland, userSelections) {
             if (items.length > 0) {
 
                 items.forEach((item) => {
-                    entries.push(`
-                        <div class="subsidy-entry">
-                            <strong>${item.title}</strong> (${item.type})
-                            <p>${item.description}</p>
-                            <a href="${item.link_portal}" target="_blank" rel="noopener noreferrer">Zum Förderportal</a>
-                        </div>
-                    `);
+                    selectedPrograms.push(item);
                 });
             }
         });
-
-
-        if (entries.length > 0) {
-
-            stateHtml = entries.join('');
-
-        } else {
-
-            stateHtml = `<p>Für ${bundesland} sind derzeit keine spezifischen Landesprogramme gespeichert.</p>`;
-
-        }
-
-    } else {
-
-        stateHtml = `<p>Für ${bundesland} sind derzeit keine spezifischen Landesprogramme gespeichert.</p>`;
 
     }
 
 
 
-    return { baseMessages, stateHtml };
+    return { baseMessages, statePrograms: selectedPrograms };
 
 }
 
@@ -801,7 +657,7 @@ async function showSubsidies(houseAgeValue, bundesland) {
 
         box.style.display = 'none';
 
-        content.innerHTML = '';
+        content.replaceChildren();
 
         return;
 
@@ -827,57 +683,25 @@ async function showSubsidies(houseAgeValue, bundesland) {
 
 
 
-    let baseMessages = [];
-
-    let stateHtml = '';
-
     try {
 
         const result = await determineSubsidies(houseAgeValue, bundesland, userSelections);
 
-        baseMessages = result.baseMessages;
-
-        stateHtml = result.stateHtml;
+        window.EnergySubsidyUI.renderSubsidies(content, result, bundesland);
 
     } catch (e) {
 
         box.style.display = 'block';
 
-        content.innerHTML = '<p>Förderdaten nicht verfügbar.</p>';
+        const message = document.createElement('p');
+        message.textContent = 'Förderdaten nicht verfügbar.';
+        content.replaceChildren(message);
 
         return;
 
     }
 
 
-
-    const staticHtml = `
-
-        <div class="subsidy-static">
-
-            <h4>Bundesweite Hinweise</h4>
-
-            <ul>
-
-                ${baseMessages.map((m) => `<li>${m}</li>`).join('')}
-
-            </ul>
-
-        </div>
-
-    `;
-
-
-
-    const dynamicHtml = stateHtml
-
-        ? `<div class="subsidy-dynamic"><h4>Programme im Bundesland ${bundesland}</h4>${stateHtml}</div>`
-
-        : `<p>Für dieses Bundesland sind derzeit keine spezifischen Programme hinterlegt. Prüfe zusätzlich die Webseite deiner Landesbank oder Kommune.</p>`;
-
-
-
-    content.innerHTML = staticHtml + dynamicHtml;
 
     box.style.display = 'block';
 
@@ -1736,8 +1560,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // 4. Throttle für Window Resize (Chart Redraw)
     const redrawChartsThrottled = throttle(() => {
-        if (yearChartInstance) yearChartInstance.resize();
-        if (dayChartInstance) dayChartInstance.resize();
+        window.EnergyChartUI.resizeAll();
     }, 500);
     
     window.addEventListener('resize', redrawChartsThrottled);

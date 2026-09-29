@@ -9,6 +9,11 @@ Vielen Dank für dein Interesse, zum Energetische-Modernisierung-Rechner beizutr
 - Feature-Branches: `feature/beschreibung`
 - Bugfix-Branches: `bugfix/problembeschreibung`
 
+Neue Arbeit beginnt immer auf einem eigenen `feature/*`- oder `bugfix/*`-Branch
+vom aktuellen `develop`. Nach Review wird nach `develop` integriert; nur getestete
+Stände werden per Pull Request nach `main` übernommen. Direkte Funktionscommits
+auf `main` sind nicht vorgesehen.
+
 ## Development Setup
 
 ```bash

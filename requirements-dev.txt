@@ -1,0 +1,2 @@
+csscompressor==0.9.5
+rjsmin==1.2.4

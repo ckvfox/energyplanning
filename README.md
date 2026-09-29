@@ -71,14 +71,17 @@ energyplanning/
 ├── style.css                           ← Vollständiges Styling (Responsive)
 ├── scripts/
 │   ├── script.js                       ← Berechnungen & Orchestration
-│   ├── performance.js                  ← Caching, Debouncing, Lazy Loading (NEU)
+│   ├── calculation-core.js             ← Reine Kernberechnungen
+│   ├── chart-ui.js                     ← Chart.js-Darstellung
+│   ├── pdf-export.js                   ← Browser-PDF-/Druckexport
+│   ├── performance.js                  ← Caching, Lazy Loading & Offline-Fallback
+│   ├── subsidy-ui.js                   ← Sichere DOM-Ausgabe der Förderprogramme
 │   ├── tests.js                        ← Unit Test Framework (NEU)
 │   ├── fetch_subsidies.py              ← Förderdaten-Updater
 │   └── prompts.py                      ← Prompt-Templates
 ├── data/
 │   ├── data.json                       ← Verbrauchs- & Kostenannahmen + Colors
 │   ├── subsidies.json                  ← Förderprogramme (lazy loaded)
-│   └── tmp/                            ← Temporäre Dateien
 ├── images/                             ← Logo, Icons
 ├── docs/                               ← Dokumentation (NEU)
 │   ├── ARCHITECTURE.md                 ← System Design & Data Flow
@@ -165,6 +168,11 @@ Siehe [ACCESSIBILITY.md](ACCESSIBILITY.md)
 
 ## 📈 Performance Metriken
 
+Die produktive Seite wird regelmäßig durch das zentrale Webcheck-Projekt
+geprüft. Die dortigen PageSpeed-/Lighthouse-Werte sind die maßgebliche,
+zeitgestempelte Quelle; die folgende Tabelle ist nur ein dokumentierter
+Referenzstand.
+
 | Metrik | Wert | Status |
 |--------|------|--------|
 | Initial Load | 1,5s | ✓ |
@@ -199,6 +207,10 @@ git push origin main  # Auto-deployed via GitHub Pages
 ```
 
 Siehe [DEPLOYMENT.md](docs/DEPLOYMENT.md) für alle Deployment-Optionen.
+
+Ein minifizierter Upload-Payload wird mit den gepinnten Werkzeugen aus
+`requirements-dev.txt` und `scripts/build_deployment.py` in einen neuen Ordner
+außerhalb des Repositories gebaut. Der Build startet kein Deployment.
 
 ---
 

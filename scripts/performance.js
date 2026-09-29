@@ -225,7 +225,7 @@ const lazySubsidyLoader = new LazySubsidyLoader();
  * Triggert Subsidy-Laden wenn Results-Container sichtbar wird
  */
 function initializeSubsidyLazyLoading() {
-    const resultContainer = document.getElementById('result');
+    const resultContainer = document.getElementById('results');
     if (!resultContainer) return;
 
     const observer = new IntersectionObserver((entries) => {
@@ -249,6 +249,15 @@ function initializeSubsidyLazyLoading() {
 function createThrottledResizeListener(callback) {
     return throttle(callback, 500);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeSubsidyLazyLoading();
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        navigator.serviceWorker.register('service-worker.js').catch((err) => {
+            console.warn('Service Worker registration failed:', err);
+        });
+    }
+});
 
 // Exportieren für script.js
 if (typeof module !== 'undefined' && module.exports) {

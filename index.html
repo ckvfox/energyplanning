@@ -9,13 +9,13 @@
     <meta property="og:title" content="Energetische Modernisierung – Kostenkalkulation">
     <meta property="og:description" content="Berechnen Sie Ihre Investitionskosten und Amortisation für PV, Speicher und Wärmepumpe.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="images/logo.png">
+    <meta property="og:image" content="images/og-energyplanning.png">
     <meta property="og:url" content="https://energyplanning.great-site.net/">
     <link rel="canonical" href="https://energyplanning.great-site.net/">
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="favicon.ico">
     <title>Energetische Modernisierung – Rechner & Kostenanalyse</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2026-09-29">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -172,7 +172,8 @@
                             </div>
                             <div>
                                 <label for="houseAge">Baujahr</label>
-                                <input type="number" id="houseAge" name="houseAge" placeholder="z.B. 1995" disabled>
+                                <input type="number" id="houseAge" name="houseAge" placeholder="z.B. 1995" disabled aria-describedby="houseAgeHint">
+                                <small id="houseAgeHint" class="field-hint">Wird aktiviert, sobald ein Bundesland ausgewählt ist.</small>
                             </div>
                         </div>
                     </fieldset>
@@ -229,6 +230,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-JUh163oCRItcbPme8pYnROHQMC6fNKTBWtRG3I3I0erJkzNgL7uxKlNwcrcFKeqF" crossorigin="anonymous"></script>
-    <script src="scripts/script.js"></script>
+    <script src="scripts/performance.js?v=2026-09-29"></script>
+    <script src="scripts/calculation-core.js?v=2026-09-29"></script>
+    <script src="scripts/chart-ui.js?v=2026-09-29"></script>
+    <script src="scripts/pdf-export.js?v=2026-09-29"></script>
+    <script src="scripts/subsidy-ui.js?v=2026-09-29"></script>
+    <script src="scripts/script.js?v=2026-09-29"></script>
 </body>
 </html>

@@ -80,6 +80,28 @@ docker run -p 8080:80 energyplanning
 
 ## 📦 Production Deployment
 
+Die bestehenden Verzeichnisse `builds/full-deployment/` und
+`builds/delta-deployment/` sind lokale Übergabebereiche und kein produktiver
+Webroot. Sie werden nicht versioniert. Der FPF-Zielstandard bleibt ein extern
+erzeugtes, reproduzierbares Paket; Quellcode, Tests und temporäre Dateien werden
+nicht zusammen mit der Website ausgeliefert.
+
+Produktive Browser-Dateien sind `index.html`, `style.css`, `service-worker.js`,
+`scripts/*.js`, `data/*.json`, Bilder und die rechtlichen Seiten. Python-Dateien
+unter `scripts/` sind ausschließlich lokale bzw. CI-Werkzeuge zum Aktualisieren
+der Daten und Sitemap und gehören nicht in den öffentlichen Webroot.
+
+Minifizierter, externer Build:
+
+```powershell
+pip install -r requirements-dev.txt
+python scripts/build_deployment.py --output-dir <neuer-ordner-ausserhalb-des-repositories>
+```
+
+Das Skript minifiziert die produktiven JavaScript- und CSS-Dateien, kopiert nur
+den statischen Webroot und nimmt weder Python-Werkzeuge, Tests noch `data/tmp/`
+auf. Es überschreibt keinen bestehenden Zielordner und deployt nicht.
+
 ### **Option 1: GitHub Pages (kostenlos, einfach)**
 
 #### **Schritt 1: Repository Setup**

@@ -57,6 +57,20 @@ Das Projekt ist ein vollständig clientseitiger, reaktiver Web-Rechner für ener
   - `debounce()` - Input-Event Optimierung
   - `throttle()` - Fenster-Resize Optimierung
   - `initializeSubsidyLazyLoading()` - Intersection Observer
+- registriert den Service Worker für den Offline-Fallback
+
+### **2a. Sichere Förderprogramm-UI**
+- **File:** `scripts/subsidy-ui.js`
+- erzeugt Überschriften, Listen, Programmkarten und Links ausschließlich über
+  DOM-Methoden und `textContent`
+- `scripts/script.js` liefert nur strukturierte Förderdaten; HTML aus den
+  aktualisierbaren JSON-Dateien wird nicht interpretiert
+
+### **2b. Berechnung, Charts und PDF**
+- `scripts/calculation-core.js`: reine, DOM-unabhängige Kernberechnungen
+- `scripts/chart-ui.js`: Chart.js-Instanzen, Achsen und responsive Größenanpassung
+- `scripts/pdf-export.js`: browserbasierter PDF-/Druckexport
+- `scripts/script.js`: Formularzustand und Orchestrierung der Module
 
 **Performance Impact:**
 - Cache-Hit Zeit: ~1ms (Memory) vs ~100ms (JSON Parse)
@@ -408,13 +422,16 @@ energyplanning/
 ├── style.css                  # Responsive styling
 ├── scripts/
 │   ├── script.js             # Core calculations & orchestration
-│   ├── performance.js        # Caching, debouncing, lazy loading
+│   ├── calculation-core.js   # DOM-unabhängiger Berechnungskern
+│   ├── chart-ui.js           # Chart-Darstellung
+│   ├── pdf-export.js         # Browser-PDF-/Druckexport
+│   ├── performance.js        # Caching, debouncing, lazy loading, Service Worker
+│   ├── subsidy-ui.js         # Sichere Darstellung der Förderprogramme
 │   ├── prompts.py            # Python utilities (fetch, process)
 │   └── tests.js              # Unit test framework
 ├── data/
 │   ├── data.json             # Configuration & colors
 │   ├── subsidies.json        # Subsidy programs (lazy loaded)
-│   └── tmp/                  # Temporary files
 ├── images/
 │   └── logo.png              # Logo
 ├── docs/

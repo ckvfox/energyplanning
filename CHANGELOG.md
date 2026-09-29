@@ -4,6 +4,15 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+### Security and performance
+- Rendered subsidy data with safe DOM APIs instead of HTML strings.
+- Activated the performance helpers, corrected the lazy-loading target and added an offline service-worker fallback.
+- Added cache-busted asset URLs, pinned updater dependencies and automated sitemap `lastmod` maintenance.
+- Split calculation, chart, subsidy UI and PDF responsibilities into browser modules and added an external minified deployment build.
+
+### Documentation
+- Clarified the repository structure, browser/runtime boundaries, branch workflow and FPF deployment paths.
+
 ### Governance
 - Adopted the Fox Project Framework v2.1 baseline, project master, security lifecycle, CI compliance check and portfolio monitoring metadata.
 - Restored the existing Ruff CI job by applying its safe modernizations and narrowing JSON parsing fallbacks to `JSONDecodeError`.

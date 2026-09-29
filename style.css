@@ -1306,3 +1306,10 @@ button:active {
     }
 }
 
+.field-hint {
+    display: block;
+    margin-top: 0.35rem;
+    color: #59636e;
+    font-size: 0.82rem;
+}
+
