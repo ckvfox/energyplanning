@@ -9,6 +9,7 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 - Activated the performance helpers, corrected the lazy-loading target and added an offline service-worker fallback.
 - Added cache-busted asset URLs, pinned updater dependencies and automated sitemap `lastmod` maintenance.
 - Split calculation, chart, subsidy UI and PDF responsibilities into browser modules and added an external minified deployment build.
+- Pinned NumPy to an ABI-compatible version for the pandas-based CI test matrix.
 
 ### Documentation
 - Clarified the repository structure, browser/runtime boundaries, branch workflow and FPF deployment paths.

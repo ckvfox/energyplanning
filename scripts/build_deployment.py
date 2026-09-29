@@ -7,7 +7,6 @@ from pathlib import Path
 import csscompressor
 import rjsmin
 
-
 ROOT = Path(__file__).resolve().parents[1]
 ROOT_FILES = ["index.html", "datenschutz.html", "impressum.html", "robots.txt", "sitemap.xml", ".htaccess", "service-worker.js"]
 

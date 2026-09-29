@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
-import xml.etree.ElementTree as ET
-
 
 ROOT = Path(__file__).resolve().parents[1]
 SITEMAP = ROOT / "sitemap.xml"
