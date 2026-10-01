@@ -54,7 +54,7 @@
   "aircon": {
     "type": "multisplit",
     "default_indoor_units": 1,
-    "annual_kwh_per_indoor_unit": 900,
+    "annual_kwh_per_indoor_unit": 700,
     "operating_cost_eur_per_hour_per_indoor_unit": 0.17,
     "single_split_purchase_cost": 2500,
     "single_split_installation_cost": 1000,
@@ -64,11 +64,11 @@
       "4": 8200
     },
     "multisplit_extra_purchase_cost_per_indoor_unit": 1500,
-    "installation_base_cost": 900,
-    "installation_extra_cost_per_indoor_unit": 350,
+    "installation_base_cost": 1400,
+    "installation_extra_cost_per_indoor_unit": 600,
     "connection_and_leak_test_cost": 300,
-    "maintenance_cost_min": 150,
-    "maintenance_cost_max": 300,
+    "maintenance_cost_min": 100,
+    "maintenance_cost_max": 250,
     "source": "Haus.de, Kosten einer Klimaanlage: Damit müssen Sie rechnen, 01.04.2025"
   },
   "wallbox": {
@@ -92,7 +92,7 @@
     "car_kg_per_1000km": 180
   },
   "prices": {
-    "electricity_eur_per_kwh": 0.35,
+    "electricity_eur_per_kwh": 0.42,
     "gas_eur_per_kwh": 0.12,
     "feed_in_eur_per_kwh": 0.08
   },
