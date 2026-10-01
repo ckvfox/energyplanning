@@ -6,13 +6,10 @@ Requires OPENAI_API_KEY to be set. Updates data/subsidies.json in-place.
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 from typing import Any
 
-import openai
-from dotenv import load_dotenv
-from fetch_subsidy_prices import update_price_data
+from fetch_subsidy_prices import ensure_client, update_price_data
 from openai import OpenAI
 from prompts import SUBSIDY_SYSTEM_PROMPT
 
@@ -103,31 +100,7 @@ def fetch_for(client: OpenAI, bundesland: str, measure: str) -> list[dict[str, A
 
 
 def main() -> None:
-    # Load .env if present so OPENAI_API_KEY is available
-    load_dotenv()
-
-    # Basic version check to avoid legacy 0.x installs
-    version = getattr(openai, "__version__", "0.0.0")
-    try:
-        major = int(version.split(".")[0])
-    except Exception:  # noqa: BLE001
-        major = 0
-    if major < 1:
-        raise SystemExit(
-            f"Inkompatible openai-Version ({version}). Bitte `pip install --upgrade openai httpx` ausfuehren."
-        )
-
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        raise SystemExit("OPENAI_API_KEY not set")
-
-    try:
-        client = OpenAI(api_key=api_key)
-    except TypeError as exc:
-        raise SystemExit(
-            "Fehler beim Initialisieren des OpenAI-Clients (moeglicherweise alte httpx/openai-Version). "
-            "Bitte `pip install --upgrade openai httpx` und erneut versuchen."
-        ) from exc
+    client = ensure_client()
     data = load_existing()
 
     for state in BUNDESLAENDER:

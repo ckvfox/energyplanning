@@ -80,10 +80,11 @@ def ensure_client(existing: OpenAI | None = None) -> OpenAI:
         major = 0
     if major < 1:
         raise SystemExit(
-            f"Inkompatible openai-Version ({version}). Bitte `pip install --upgrade openai httpx` ausfuehren."
+            f"Inkompatible openai-Version ({version}). Bitte `python -m pip install -r requirements.txt` ausfuehren."
         )
 
-    if existing:
+    if existing is not None:
+        validate_responses_client(existing)
         return existing
 
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -91,12 +92,22 @@ def ensure_client(existing: OpenAI | None = None) -> OpenAI:
         raise SystemExit("OPENAI_API_KEY not set")
 
     try:
-        return OpenAI(api_key=api_key)
+        client = OpenAI(api_key=api_key)
     except TypeError as exc:
         raise SystemExit(
             "Fehler beim Initialisieren des OpenAI-Clients (moeglicherweise alte httpx/openai-Version). "
-            "Bitte `pip install --upgrade openai httpx` und erneut versuchen."
+            "Bitte `python -m pip install -r requirements.txt` und erneut versuchen."
         ) from exc
+    validate_responses_client(client)
+    return client
+
+
+def validate_responses_client(client: OpenAI) -> None:
+    if not callable(getattr(getattr(client, "responses", None), "create", None)):
+        raise SystemExit(
+            "Die installierte openai-Version unterstuetzt die Responses API nicht. "
+            "Bitte `python -m pip install -r requirements.txt` ausfuehren."
+        )
 
 
 def parse_prices_response(text: str) -> dict[str, Any]:

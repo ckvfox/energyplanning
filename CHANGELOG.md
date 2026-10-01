@@ -4,6 +4,9 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+### Fixed
+- Updated the OpenAI SDK pin for the Responses API used by both data updaters; reject incompatible clients before subsidy data is read or overwritten. Added offline SDK regression tests to CI.
+
 ### Security and performance
 - Rendered subsidy data with safe DOM APIs instead of HTML strings.
 - Activated the performance helpers, corrected the lazy-loading target and added an offline service-worker fallback.
