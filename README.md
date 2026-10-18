@@ -210,7 +210,7 @@ Siehe [DEPLOYMENT.md](docs/DEPLOYMENT.md) für alle Deployment-Optionen.
 
 Ein minifizierter Upload-Payload wird mit den gepinnten Werkzeugen aus
 `requirements-dev.txt` und `scripts/build_deployment.py` in einen neuen Ordner
-außerhalb des Repositories gebaut. Der Build startet kein Deployment.
+außerhalb des Repositories gebaut. Der Build startet kein Deployment. Full und Delta in den bestehenden FTP-Ordnern werden gemeinsam mit `python scripts/build_deployment.py --base-ref <Commit-vor-dem-Aenderungssatz>` erneuert. Der Vergleichsstand muss den gesamten auszuliefernden Aenderungssatz abdecken; siehe docs/DEPLOYMENT.md.
 
 ---
 

@@ -82,8 +82,8 @@ docker run -p 8080:80 energyplanning
 
 Die bestehenden Verzeichnisse `builds/full-deployment/` und
 `builds/delta-deployment/` sind lokale Übergabebereiche und kein produktiver
-Webroot. Sie werden nicht versioniert. Der FPF-Zielstandard bleibt ein extern
-erzeugtes, reproduzierbares Paket; Quellcode, Tests und temporäre Dateien werden
+Webroot. Sie werden nicht versioniert. Die bestehenden lokalen Pfade bleiben
+die verbindliche FTP-Uebergabe; Quellcode, Tests und temporaere Dateien werden
 nicht zusammen mit der Website ausgeliefert.
 
 Produktive Browser-Dateien sind `index.html`, `style.css`, `service-worker.js`,
@@ -578,3 +578,26 @@ Dependencies:
 - Chart.js (MIT)
 - html2pdf (MIT)
 ```
+
+### Reproduzierbare lokale Full-/Delta-Uebergabe
+
+Beide bestehenden FTP-Ordner werden gemeinsam frisch erzeugt:
+
+```powershell
+.venv/Scripts/python.exe scripts/build_deployment.py --base-ref bcf072e
+```
+
+Der Ref bezeichnet hier den Stand vor der Website-Ueberarbeitung vom
+29.09.2026 (85dd6f9) inklusive anschliessendem CI-Fix (fa0a171).
+Fuer spaetere Pakete den tatsaechlichen vorherigen Auslieferungsstand angeben.
+Dies bestaetigt keinen Upload: der produktive Serverstand ist separat zu pruefen.
+
+Das Skript baut zuerst temporaer, validiert die Zielpfade und leert danach
+beide Ordner builds/full-deployment und builds/delta-deployment.
+Nur die expliziten produktiven Browser-Skripte werden aufgenommen;
+scripts/tests.js, Python, Dokumentation und Testdaten bleiben ausgeschlossen.
+Favicon, Google-Verifikation und .well-known/security.txt sind enthalten.
+Bei CSS-Aenderungen werden Bildabhaengigkeiten mitgegeben.
+Ein leeres Delta oder produktive Loeschungen brechen vor dem Leeren ab;
+Loeschungen benoetigen einen gesonderten, nachvollziehbaren Entfernungsplan.
+Die Konsole nennt Basis, HEAD und Delta-Dateiliste. Pakete bleiben gitignored.
