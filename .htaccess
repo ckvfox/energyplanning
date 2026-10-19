@@ -2,22 +2,30 @@
 
 DirectoryIndex index.html
 
+# Override the inherited external InfinityFree 403 ErrorDocument so project
+# denials retain their HTTP status and diagnostic headers instead of a 302.
+ErrorDocument 403 default
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Enforce HTTPS before other rewrites. The proxy headers keep HTTPS
-  # requests from looping on shared hosting/CDN setups.
+  # Normalize explicit index requests directly to the HTTPS canonical root.
+  # THE_REQUEST excludes the internal DirectoryIndex/fallback rewrite.
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^index\.html$ https://energyplanning.great-site.net/ [L,R=301,NE]
+
+  # Use a fixed canonical host; never reflect an arbitrary Host header.
+  RewriteCond %{HTTP_HOST} !^energyplanning\.great-site\.net$ [NC]
+  RewriteRule ^ https://energyplanning.great-site.net%{REQUEST_URI} [L,R=301,NE]
+
+  # Proxy headers prevent HTTPS loops on the shared host.
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
   RewriteCond %{HTTP:X-Forwarded-SSL} !on [NC]
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-  # Canonical root URL: /index.html should resolve to / server-side.
-  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
-  RewriteRule ^index\.html$ / [L,R=301]
+  RewriteRule ^ https://energyplanning.great-site.net%{REQUEST_URI} [L,R=301,NE]
 
   # Block access to hidden files/folders except .well-known
-  RewriteRule (^|/)\.(?!well-known/) - [F]
+  RewriteRule (^|/)\.(?!well-known/) - [F,E=EP_DENIED:1]
 
   # Keep direct access for existing files/folders, fallback unknown routes to index.html
   RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -27,15 +35,18 @@ DirectoryIndex index.html
 </IfModule>
 
 <IfModule mod_headers.c>
-  # Vary: User-Agent ensures proxies/CDNs cache bot and user responses separately
-  <FilesMatch "\.html$">
-    Header append Vary "User-Agent"
-  </FilesMatch>
+  # Diagnostic identifiers contain no request or session data. No UA branching.
+  Header always set X-EnergyPlanning-Policy "apache-v1"
+  Header always set X-EnergyPlanning-Denial "hidden-path" env=EP_DENIED
+  Header always set X-EnergyPlanning-Denial "hidden-path" env=REDIRECT_EP_DENIED
+  <Files "index.html">
+    Header always set Link "<https://energyplanning.great-site.net/>; rel=\"canonical\""
+  </Files>
 
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-CywHK84X/71mHYAlmAAq2D7nzWIKT1lGNsh6/fOTu+w=' 'sha256-xRSsD5Rn0WvYYlCE9JLbGG54da+9MrOExdBJcGGi2YU=' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-CywHK84X/71mHYAlmAAq2D7nzWIKT1lGNsh6/fOTu+w=' https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net; frame-src 'none'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "DENY"
-  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Referrer-Policy "same-origin"
   Header always set Permissions-Policy "accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), usb=(), web-share=(), xr-spatial-tracking=()"
   Header always set Cross-Origin-Opener-Policy "same-origin"
   Header always set Cross-Origin-Resource-Policy "same-origin"
@@ -49,6 +60,10 @@ DirectoryIndex index.html
   <FilesMatch "\.(?:html|json)$">
     Header set Cache-Control "public, max-age=3600, must-revalidate"
   </FilesMatch>
+
+  <Files "service-worker.js">
+    Header set Cache-Control "no-cache, max-age=0, must-revalidate"
+  </Files>
 </IfModule>
 
 <IfModule mod_expires.c>

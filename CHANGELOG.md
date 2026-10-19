@@ -12,6 +12,11 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 - Excluded browser test helpers and included favicon, Google verification and security.txt in the productive allowlist.
 
 ### Security and performance
+- Restricted service-worker interception to same-origin HTTP GETs, handled cache-write failures, limited HTML offline fallback to navigations and refreshed the scoped cache. Disabled immutable caching for the worker script.
+- Overrode the inherited external hosting 403 ErrorDocument in the project webroot to preserve Forbidden responses for security measurements; hosting-root configuration stays unchanged.
+- Added a cookie-free HTTP audit that separates hosting challenges, evidenced project denials, unknown access failures and application header findings, with offline CI coverage.
+- Canonicalized explicit index requests directly to the fixed HTTPS root, added diagnostic/canonical headers and removed unused project-side User-Agent cache variation.
+- Restricted CSP scripts to the pinned Chart.js resource, explicitly blocked inline handlers and frames, retained dynamic styles and CDN source-map compatibility, and raised Referrer-Policy to same-origin.
 - Rendered subsidy data with safe DOM APIs instead of HTML strings.
 - Activated the performance helpers, corrected the lazy-loading target and added an offline service-worker fallback.
 - Added cache-busted asset URLs, pinned updater dependencies and automated sitemap `lastmod` maintenance.
