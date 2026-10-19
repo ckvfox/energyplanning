@@ -127,7 +127,7 @@ class ResourcePolicyTests(unittest.TestCase):
             page = (ROOT / name).read_text(encoding="utf-8")
             self.assertNotRegex(page, r"(?i)\son[a-z]+\s*=")
             self.assertNotRegex(page, r"(?i)<iframe\b|http-equiv=[\"']refresh")
-            for attrs, body in re.findall(r"<script\b([^>]*)>(.*?)</script>", page, re.S):
+            for attrs, body in re.findall(r"<script\b([^>]*)>(.*?)</script>", page, re.DOTALL):
                 src = re.search(r'src="([^"]+)"', attrs)
                 if src and src[1].startswith("https:"):
                     self.assertIn(src[1], csp)

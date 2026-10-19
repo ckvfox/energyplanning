@@ -89,7 +89,7 @@ def classify(status, headers, body):
             "frames_blocked": directives.get("frame-src") == ["'none'"],
             "client_redirect_detected": identity.refresh or bool(re.search(
                 r"(?:window\.|document\.)?location\s*(?:\.\s*(?:href\s*=|replace\s*\(|assign\s*\()|=)",
-                body, re.I)),
+                body, re.IGNORECASE)),
         }
     return result
 
