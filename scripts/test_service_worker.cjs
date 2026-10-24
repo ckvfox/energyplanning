@@ -30,7 +30,7 @@ function setup(options = {}) {
         },
         caches: {
             open: async () => cache,
-            keys: async () => ['energyplanning-v2', 'energyplanning-v3', 'another-app'],
+            keys: async () => ['energyplanning-v2', 'energyplanning-v3', 'energyplanning-v4', 'another-app'],
             delete: async (key) => { deleted.push(key); },
         },
         fetch: async () => {
@@ -110,6 +110,6 @@ test('activation retires only old EnergyPlanning caches and claims after cleanup
     worker.listeners.activate({ waitUntil: (promise) => pending.push(promise) });
     assert.equal(worker.claimed(), false);
     await Promise.all(pending);
-    assert.deepEqual(worker.deleted, ['energyplanning-v2']);
+    assert.deepEqual(worker.deleted, ['energyplanning-v2', 'energyplanning-v3']);
     assert.equal(worker.claimed(), true);
 });

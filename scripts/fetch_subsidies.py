@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from fetch_subsidy_prices import ensure_client, update_price_data
+from fetch_subsidy_prices import ensure_client
 from openai import OpenAI
 from prompts import SUBSIDY_SYSTEM_PROMPT
 
@@ -136,9 +136,6 @@ def main() -> None:
     SUBSIDY_PATH.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"[DONE] subsidies.json aktualisiert: {SUBSIDY_PATH}")
 
-    price_changed = update_price_data(client)
-    if price_changed:
-        print("[DONE] data.json (Preisannahmen) aktualisiert.")
 
 
 if __name__ == "__main__":

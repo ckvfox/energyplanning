@@ -1,3 +1,5 @@
+// Legacy smoke tests with explicit synthetic fixtures (not configured model defaults).
+// Current configuration, balance and DOM regression coverage: npm test.
 /**
  * tests.js - Unit Tests für Energy Calculator Berechnungen
  * 

@@ -1,13 +1,13 @@
-const CACHE_NAME = 'energyplanning-v3';
+const CACHE_NAME = 'energyplanning-v4';
 const APP_SHELL = [
     './',
-    './style.css?v=2026-09-29',
-    './scripts/performance.js?v=2026-09-29',
-    './scripts/calculation-core.js?v=2026-09-29',
-    './scripts/chart-ui.js?v=2026-09-29',
-    './scripts/pdf-export.js?v=2026-09-29',
-    './scripts/subsidy-ui.js?v=2026-09-29',
-    './scripts/script.js?v=2026-09-29',
+    './style.css?v=2026-10-24',
+    './scripts/performance.js?v=2026-10-24',
+    './scripts/calculation-core.js?v=2026-10-24',
+    './scripts/chart-ui.js?v=2026-10-24',
+    './scripts/pdf-export.js?v=2026-10-24',
+    './scripts/subsidy-ui.js?v=2026-10-24',
+    './scripts/script.js?v=2026-10-24',
     './data/subsidies.json',
     './data/data.json'
 ];

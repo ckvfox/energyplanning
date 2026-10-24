@@ -4,6 +4,16 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+### Calculation consistency (2026-10-24)
+- Replaced divergent annual/chart heuristics with a shared normalized synthetic hourly balance; account for PV charging, discharge losses, load limits and year-end battery inventory.
+- Removed forced autarky ranges; derive WP PV share from simultaneous energy supply rather than gas replacement. Charge investment for the same storage capacity used in the model.
+- Use configured PV yield for sizing and generation; preserve the effective floor-heating factor (1.1) in configuration. Remove unused storage recommendation factors.
+- Label simple payback correctly; escalate electricity and gas separately, hold fuel and feed-in tariff constant, expose excluded lifecycle costs. Keep physical CO2 quantities independent of price inflation.
+- Disable automatic model-price mutation in both entry points and monthly workflow; suggestions require explicit --propose and never write files. Existing costs remain explicitly unverified.
+- Preserve script.js verbatim in deployment builds: the legacy minifier alters whitespace in nested UI templates; run DOM integration against the actual payload.
+- Add pinned DOM integration tests, energy-conservation/boundary regressions and mutation-policy tests; refresh offline/result cache versions.
+
+
 ### Documentation
 - Reconciled PV, battery and heat-pump assumptions with configuration and actual runtime paths; removed duplicate README calculation sections and unsupported examples.
 - Documented price provenance, uncertain cost scope and known energy-flow, chart, autarky and payback limitations without changing runtime logic or model values.

@@ -43,8 +43,6 @@
     "cost_per_kwp": 900
   },
   "battery": {
-    "recommended_factor_min": 0.6,
-    "recommended_factor_max": 0.8,
     "cost_per_kwh": 750
   },
   "costs": {
@@ -78,7 +76,7 @@
     "base_cop": 3.0,
     "factor_good": 1.2,
     "factor_bad": 0.9,
-    "factor_fbh": 1.15,
+    "factor_fbh": 1.1,
     "cost_per_kw": 1500,
     "full_load_hours": 2000
   },
@@ -113,5 +111,23 @@
   "ui": {
     "dateFormat": "de-DE",
     "language": "de"
+  },
+  "assumption_review": {
+    "reviewed_on": "2026-10-24",
+    "status": "indicative_unverified_cost_scope",
+    "policy": "Manual review only; source URL, source date and included works required before treating prices as validated.",
+    "cost_scope": "PV, battery and heatpump installation/retrofit/tax scope not evidenced; no extra installation surcharge.",
+    "excluded_costs": [
+      "maintenance",
+      "replacement",
+      "financing",
+      "taxes",
+      "subsidies",
+      "degradation"
+    ],
+    "sources_for_plausibility_only": [
+      "https://www.verbraucherzentrale.nrw/wissen/energie/erneuerbare-energien/was-kostet-eine-photovoltaikanlage-49155",
+      "https://www.verbraucherzentrale.de/wissen/energie/heizen-und-warmwasser/waermepumpe-alles-was-sie-wissen-muessen-5439"
+    ]
   }
 }

@@ -601,3 +601,23 @@ Bei CSS-Aenderungen werden Bildabhaengigkeiten mitgegeben.
 Ein leeres Delta oder produktive Loeschungen brechen vor dem Leeren ab;
 Loeschungen benoetigen einen gesonderten, nachvollziehbaren Entfernungsplan.
 Die Konsole nennt Basis, HEAD und Delta-Dateiliste. Pakete bleiben gitignored.
+
+
+### Berechnungskorrektur vom 24.10.2026
+
+Full/Delta für diesen Änderungssatz: `python scripts/build_deployment.py --base-ref 5f1d3d7`.
+Dieser Ref ist die Codebasis vor der Korrektur, kein Nachweis des derzeitigen
+Serverstands. Vor einem Upload den tatsächlich ausgelieferten Stand prüfen.
+`scripts/script.js` bleibt im Paket unverändert: rjsmin 1.2.4 verändert bei
+verschachtelten Template-Literalen sichtbare Text-Leerzeichen. Andere JS-Dateien
+und CSS werden weiterhin minifiziert. Diese gezielte Ausnahme verhindert
+abweichende Ausgaben zwischen Quellstand und Upload-Paket.
+
+Paketprüfung (zusätzlich zu `npm test`):
+
+```bash
+ENERGY_TEST_ROOT="$PWD/builds/full-deployment" node --test scripts/test_frontend.cjs
+```
+
+Die DOM-Prüfung validiert Formulare, Kennzahlen und Diagrammdaten am tatsächlichen
+Payload. Sie ersetzt keine visuelle Desktop-/Mobilabnahme und bestätigt keinen FTP-Upload.

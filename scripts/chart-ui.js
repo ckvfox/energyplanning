@@ -20,7 +20,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: { legend: { position: 'top' }, title: { display: true, text: `Szenario: ${title || '-'}`, font: { size: 16 } } },
-                scales: { y: { beginAtZero: true, max: yMax, ticks: { stepSize: step, precision: dayMode ? 1 : 0 } } }
+                scales: { y: { beginAtZero: true, title: {display: true, text: dayMode ? 'kWh je Stunde' : 'kWh je Monat'}, max: yMax, ticks: { stepSize: step, precision: dayMode ? 1 : 0 } } }
             },
             data: {
                 labels: dayMode ? data.map((row) => row.hour) : ['Jan', 'Feb', 'Mrz', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],

@@ -58,8 +58,22 @@ jobs:
       - name: Test security audit and resource policy (offline)
         run: python -m unittest discover -s scripts -p "test_security_audit.py"
 
-      - name: Test service worker request isolation (offline)
-        run: node --test scripts/test_service_worker.cjs
+      - name: Install pinned DOM test dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Test calculation core, frontend integration and service worker (offline)
+        run: npm test
+
+      - name: Install deployment tools
+        run: pip install -r requirements-dev.txt
+
+      - name: Build productive payload without deployment
+        run: python scripts/build_deployment.py --output-dir "$RUNNER_TEMP/energyplanning-payload"
+
+      - name: Test actual productive payload (offline DOM integration)
+        env:
+          ENERGY_TEST_ROOT: ${{ runner.temp }}/energyplanning-payload
+        run: node --test scripts/test_frontend.cjs
 
   validate-json:
     name: JSON – Schema-Validierung

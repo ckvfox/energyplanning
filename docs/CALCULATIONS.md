@@ -1,9 +1,8 @@
 # Berechnungsgrundlagen und Modellgrenzen
 
-Prüfstand: 24.10.2026. Referenz: `data/data.json`, `scripts/script.js` und
-`scripts/calculation-core.js`. Beschreibung des Ist-Zustands, keine Bestätigung
-seiner fachlichen Genauigkeit. Rechenlogik und Konfiguration wurden in diesem
-Dokumentationsabgleich nicht geändert.
+Prüfstand: 24.10.2026. Konfiguration: `data/data.json`; produktiver Rechenkern:
+`scripts/calculation-core.js`; Eingaben, Dimensionierung und Ausgabe: `scripts/script.js`.
+Der Rechner liefert eine erste Orientierung, keine Fachplanung oder verbindliche Kostenprognose.
 
 ## Konfigurierte Annahmen
 
@@ -12,13 +11,11 @@ Dokumentationsabgleich nicht geändert.
 |---|---:|
 | `pv.yield_per_kwp` | 950 |
 | `pv.cost_per_kwp` | 900 |
-| `battery.recommended_factor_min` | 0.6 |
-| `battery.recommended_factor_max` | 0.8 |
 | `battery.cost_per_kwh` | 750 |
 | `heatpump.base_cop` | 3.0 |
 | `heatpump.factor_good` | 1.2 |
 | `heatpump.factor_bad` | 0.9 |
-| `heatpump.factor_fbh` | 1.15 |
+| `heatpump.factor_fbh` | 1.1 |
 | `heatpump.cost_per_kw` | 1500 |
 | `heatpump.full_load_hours` | 2000 |
 | `prices.electricity_eur_per_kwh` | 0.42 |
@@ -28,162 +25,215 @@ Dokumentationsabgleich nicht geändert.
 | `inflation.gas_rate` | 0.03 |
 <!-- assumptions:end -->
 
-Alle Werte sind Modellannahmen. Kostenumfang (Gerät, Montage, Elektroarbeiten,
-Umbau, Steuern) ist für PV, Speicher und Wärmepumpe nicht belastbar abgegrenzt.
+Alle Werte sind Modellannahmen, keine zugesicherten Marktpreise. Die bestehenden
+Preiswerte bleiben unverändert. PV-, Speicher- und WP-Kosten sind bezüglich
+Gerät, Montage, Elektroarbeiten, Umbau und Steuern nicht belastbar abgegrenzt.
+Die Oberfläche kennzeichnet sie als ungeprüfte Investitionsansätze.
 Es gibt keinen zusätzlichen pauschalen Installationsaufschlag von 15 %.
 Förderhinweise werden angezeigt, aber nicht von der Investition abgezogen.
-Wartung, Ersatz, Finanzierung, Diskontierung und Degradation fehlen in der
-Wirtschaftlichkeitsrechnung. Strom- und Gaspreis können im Formular überschrieben werden.
+Wartung, Ersatz, Finanzierung, Steuern und Degradation sind nicht eingerechnet.
 
 ## Verbrauch und Wärmepumpe
 
 Haushaltsstrom = Personen × `consumption.per_person`, sofern nicht überschrieben.
 Heizwärmebedarf Q = Fläche × `consumption.heating_per_sqm[Haustyp][Dämmung]`,
-sofern nicht überschrieben. Einfamilienhaus nutzt den Schlüssel `freistehend`.
-Dämmung ist darin bereits enthalten; `insulation_factors` wird hier nicht erneut angewendet.
+sofern nicht überschrieben. Einfamilienhaus nutzt `freistehend`.
+Dämmung ist darin bereits enthalten; `insulation_factors` wird nicht erneut angewendet.
 
-Der als COP benannte Jahresfaktor wird wie eine vereinfachte Jahresarbeitszahl benutzt:
+Der im Code COP genannte Jahresfaktor dient als vereinfachte Jahresarbeitszahl:
 `c = clamp(base_cop × Dämmfaktor × Fußbodenheizungsfaktor, 2.5, 3.5)`.
 Dämmfaktor: `factor_good` bei gut, `factor_bad` bei schlecht, sonst 1.
-Fußbodenheizung: fest **1.1**, sonst 1; `heatpump.factor_fbh` wird nicht verwendet.
+Fußbodenheizungsfaktor: `factor_fbh` falls vorhanden, sonst 1.
+Die zuvor ungenutzte Konfiguration 1,15 wurde auf den bisher effektiven
+Laufzeitwert 1,1 vereinheitlicht; keine stillschweigende Effizienzsteigerung.
 WP-Strom = Q / c; WP-Leistung = Q / `full_load_hours`;
 WP-Investition = WP-Leistung × `cost_per_kw`.
 Kein 70-%-Zuschlag auf Haushaltsstrom, keine Verdopplung und keine 250 €/m².
 
 Beispiel: 150 m² Reihenhaus, normale Dämmung, keine Fußbodenheizung:
-Q = 150 × 110 = 16.500 kWh/a; c = 3; WP-Strom = 5.500 kWh/a;
-Leistung = 8,25 kW; Investition = 12.375 €. Das ist keine Heizlastberechnung
-und kein belegter Komplettpreis für einen Heizungstausch. Warmwasser und
-Wirkungsgrad der bisherigen Gasheizung sind nicht separat modelliert.
+Q = 16.500 kWh/a; c = 3; WP-Strom = 5.500 kWh/a;
+Leistung = 8,25 kW; Investitionsansatz = 12.375 €.
+Q/2.000 ersetzt keine Heizlastberechnung. Warmwasser und Wirkungsgrad der
+bisherigen Gasheizung werden nicht separat modelliert.
 
 ## PV- und Speicherdimensionierung
 
 Je Szenario: L = Haushalt + gewählte Klimaanlage + E-Auto + ggf. WP-Strom.
-PV-Kandidat = L / **850** (fest codierte Dimensionierungsheuristik).
-Mit Speicher oder WP mindestens 7 kWp, anschließend begrenzt durch
+PV-Kandidat = L / `pv.yield_per_kwp`. Dimensionierung und Jahresertrag
+verwenden denselben konfigurierten Wert; der feste Divisor 850 entfällt.
+Mit Speicher oder WP mindestens 7 kWp, danach begrenzt durch
 `floor(Dachfläche / 6)` und Haustyp (Reihenhaus 14, Doppelhaus 18,
 Einfamilienhaus 24 kWp), dann Rundung auf 0,1 kWp.
-Ein positiver Nutzer-Override wird übernommen und bei Dachüberschreitung markiert;
+Diese Limits und 6 m²/kWp sind Planungsheuristiken, keine Dachbelegungsplanung.
+Ein positiver PV-Nutzerwert wird übernommen und bei Dachüberschreitung markiert;
 er wird nicht automatisch auf Dach- oder Haustypgrenze gekappt.
-Die Hilfsfunktion `roofPvLimit` rechnet dagegen mit 7 m²/kWp; sie ist
-nicht die Dachbegrenzung im aktuellen Szenariopfad.
 
-**850 für die Dimensionierung ist nicht der konfigurierte Jahresertrag.**
-Jahresertrag G = PV-kWp × `pv.yield_per_kwp`.
-Die beabsichtigte fachliche Begründung dieser unterschiedlichen Werte ist unbelegt.
-
-Speicherempfehlung B = `clamp(0.9 × L / 365, 4, 15)` kWh, sonst 0.
-In der Energiebilanz verwendete Kapazität S = `min(B, 2 × G / 365)`.
+G = PV-kWp × `pv.yield_per_kwp`.
+Speicherziel B = `clamp(0.9 × L / 365, 4, 15)` kWh, sonst 0.
+Empfohlener und berechneter Speicher S = `min(B, 2 × G / 365)`.
+Investition und Energiebilanz verwenden dieselbe Kapazität S.
 Dies ist keine Regel „Batterie ≤ 2 × PV-kWp“.
-Investition verwendet **B**, nicht S. `recommended_factor_min/max` werden
-hier nicht verwendet. Die Kapazitätsbegrenzung ist eine Heuristik, keine
-zeitaufgelöste Auslegung anhand von Last und PV-Produktion.
+Die ungenutzten `recommended_factor_min/max` sind entfernt.
+Bei fehlender PV-Erzeugung wird S = 0; kein nutzloser Speicher wird berechnet.
 
-## Jahresenergiebilanz im Berechnungskern
+## Gemeinsame Stundenbilanz für Kennzahlen und Diagramme
+
+Ein synthetisches Nichtschaltjahr mit 8.760 Stunden wird einmal je Szenario
+berechnet. Jahreskennzahlen, Monatsdiagramm und Modelltage stammen aus
+denselben Energieflüssen. WP, Klima und E-Auto werden genau einmal addiert.
+Es gibt keine separaten Chart-Erträge von 1.000 oder 1.050 kWh/kWp und
+keine nachträglichen Autarkiekorridore.
+
+Die im Kern explizit hinterlegten Profile sind **ungeprüfte Heuristiken**:
+
+- PV-Monatsgewichte `[3,5,11,13,14,13,12,11,9,6,2.5,1.5]`, auf Summe 1 normiert.
+  Monatliche Tageslichtdauer `[8,10,12,14,16,17,16,14,12,10,8,7]` Stunden;
+  positiver Cosinusbogen um 12 Uhr, auf Tagesertrag normiert.
+- Haushaltsstrom nach normiertem Stundenprofil mit Morgen-/Abendspitzen,
+  auf Jahressumme normiert; E-Auto gleichmäßig 18–06 Uhr.
+- WP-Monatsgewichte `[18,15,13,8,4,1,1,1,4,9,12,14]`, auf Summe 1 normiert;
+  innerhalb eines Tages gleichmäßige Last.
+- Klima-Monatsgewichte `[0,0,0,0,1,2,3,3,1,0,0,0]`, normiert;
+  innerhalb eines Tages gleichmäßig 12–21 Uhr.
+
+Keine Wetterstreuung, keine realen Messlastgänge, keine Regelung von WP oder
+E-Auto. Die neue Konsistenz ist kein Nachweis prognostischer Genauigkeit.
+Tagesdiagramme zeigen den 15. Januar und 15. Juli dieses Modelljahres,
+mit dem tatsächlichen fortgeschriebenen Modell-Speicherfüllstand.
+
+Stündlich, mit P = PV-Erzeugung und L = Last:
 
 ```text
-G = max(0, PV-kWp) × konfigurierter Ertrag
-D = min(L × (S > 0 ? 0.45 : 0.35), G × 0.9)
-U = max(G - D, 0)
-Batterieabgabe = S > 0 ? min(U, S × 0.7 × 365) × 0.85 : 0
-Eigenverbrauch E = min(L, D + Batterieabgabe)
-Netzbezug = max(L - E, 0)
-Einspeisung (aktuell) = max(G - E, 0)
-Autarkie im Kern = L > 0 ? 100 × E / L : 0
-EV aus Batterie = round(min(EV-Last × 0.5, Batterieabgabe × 0.4))
-                 nur bei E-Auto und S > 0, sonst 0
+D = min(P, L)                         direkter Verbrauch
+C = min(P - D, freie Speicherkapazität) Ladung aus PV
+Speicherinhalt += C
+A = min(L - D, Speicherinhalt × 0.85)   nutzbare Abgabe
+V = A / 0.85 - A                     Speicherverluste
+Speicherinhalt -= A / 0.85
+E = D + A                            PV-Eigenverbrauch
+Netzbezug = L - E
+Einspeisung = P - D - C
 ```
 
-Beispiel (vorgegebene 5 kWp, S = 5 kWh, L = 5.000 kWh/a):
-G = 4.750; D = 2.250; U = 2.500; Batterieabgabe = 1.085,875;
-E = 3.335,875; Netzbezug = 1.664,125; aktuelle Einspeisung = 1.414,125 kWh/a;
-Kernautarkie = 66,7175 %. Ohne Speicher: E = 1.750 kWh/a.
+70 % der nominellen Kapazität gelten als nutzbar; 85 % Roundtrip-Wirkungsgrad,
+rechnerisch vollständig bei Entladung angesetzt. Keine Lade-/Entladeleistungs-
+grenze, kein Standbyverbrauch und keine Netzladung. Diese Vereinfachungen
+bleiben Unsicherheiten der Speicherauslegung. Der Speicher startet leer;
+Jahresendbestand wird als `storageChange` separat bilanziert, nicht als Verbrauch
+oder Einspeisung. Eine stationäre, zyklische Jahresrechnung wird nicht behauptet.
 
-**Nachgewiesene fachliche Grenze:** Die aktuelle Einspeiseformel zählt
-Speicherverluste als Einspeisung. Im Beispiel fehlen 191,625 kWh Verluste in
-der PV-Bilanz; ohne Lastbegrenzung wäre die Einspeisung 1.222,5 kWh/a.
-Bei Lastbegrenzung muss zusätzlich die tatsächlich benötigte Batterieladung
-bestimmt werden. Eine Korrektur benötigt zusammenhängende Energiefluss- und
-Kostenregressionstests; sie ist nicht Bestandteil dieses Dokumentationsabgleichs.
+Kontrollgleichungen (auch monatlich, mit jeweiliger Bestandsänderung):
 
-Die Anzeige begrenzt die Kernautarkie zusätzlich: zunächst 5–90 %, dann
-nur PV 25–40 %, PV+Speicher 50–75 %, mit WP 70–85 %, anschließend gerundet.
-Damit kann die angezeigte Autarkie dem Netzbezug widersprechen.
-„Heizautarkie 100 %“ bei WP bedeutet im Code nur Gasablösung, keine
-Unabhängigkeit vom Stromnetz. Diese Anzeigen sind kein physikalischer Nachweis.
+```text
+PV = Eigenverbrauch + Einspeisung + Speicherverluste + Speicherbestandsänderung
+Last = Eigenverbrauch + Netzbezug
+Speicherladung = Speicherabgabe + Verluste + Speicherbestandsänderung
+```
+
+Beispiel: 5 kWp, 5 kWh Speicher, 5.000 kWh Last, konfigurierter Ertrag,
+keine WP/Klima/EV, Ergebnisse gerundet:
+
+| Kennzahl | Ergebnis |
+|---|---:|
+| PV-Ertrag | 4.750,00 kWh/a |
+| Eigenverbrauch | 3.060,75 kWh/a |
+| Netzbezug | 1.939,25 kWh/a |
+| Einspeisung | 1.537,41 kWh/a |
+| Speicherverluste | 151,84 kWh/a |
+| Stromautarkie | 61,22 % |
+
+Die Werte ändern sich bei anderen Lastprofilen. Eine höhere Genauigkeit als
+zwei Nachkommastellen wäre angesichts der Annahmen irreführend; intern wird
+für Energie- und Kostenrechnung nicht vorzeitig gerundet.
+
+Stromautarkie = 100 × Eigenverbrauch / Stromlast (bei 0 Last: 0).
+Der PV-Anteil am WP-Strom wird pro Stunde proportional zu den gleichzeitigen
+Lasten zugeordnet. Er ersetzt die frühere irreführende „Heizautarkie 100 %“.
+EV-Speicherabgabe wird ebenso anteilig zugeordnet, ohne fiktive zusätzliche Energie.
+Der PV-Anteil am Endenergiebezug = Eigenverbrauch / (Stromlast + verbleibendes Gas).
+Umweltwärme ist kein Bestandteil dieser Endenergiekennzahl.
 
 ## Investition und Wirtschaftlichkeit
 
-PV-Kosten = kWp × `pv.cost_per_kwp`; Speicherkosten = B × `battery.cost_per_kwh`.
-Gesamt = PV + Speicher + ggf. WP + gewählte Klima-/Wallboxkosten.
-Beispiel: 8 kWp und 10 kWh ohne Extras: 7.200 + 7.500 = 14.700 €;
-mit der oben berechneten WP: 27.075 €. Kein Installationsaufschlag.
+PV = kWp × `pv.cost_per_kwp`; Speicher = S × `battery.cost_per_kwh`;
+WP wie oben; Gesamt = PV + Speicher + ggf. WP + gewählte Klima-/Wallboxkosten.
+Beispiel für vorgegebene 8 kWp und 10 kWh ohne Extras:
+7.200 + 7.500 = 14.700 €; mit der Beispiel-WP: 27.075 €.
+Das sind Rechenbeispiele mit ungeprüften Ansätzen, keine Angebote.
 
 Baseline = Haushaltsstrom × Strompreis + Q × Gaspreis + ggf. bisherige Kraftstoffkosten.
-Nachher = gerundeter Netzbezug × Strompreis − gerundete Einspeisung × Vergütung
-+ verbleibender Gasbedarf × Gaspreis. Ersparnis = Baseline − Nachher.
-Bei WP ist verbleibender Gasbedarf 0. E-Auto und Klima werden in allen drei
-Szenarien berücksichtigt, wenn gewählt.
+Nachher = Netzbezug × Strompreis − Einspeisung × Vergütung + verbleibendes Gas × Gaspreis.
+Ersparnis = Baseline − Nachher. Bei WP ist verbleibendes Gas 0.
+Klimaanlage und E-Auto werden bei Auswahl in allen drei Szenarien berücksichtigt.
+Strom- und Gaspreise sind im Formular überschreibbar.
 
-Der angezeigte Wert `breakEvenDynamic` ist tatsächlich **einfache Amortisation**:
-Investition / jährliche Ersparnis, bei nichtpositiver Ersparnis null.
-Die Funktion `calculateBreakEvenDynamic` mit kumulierter Preissteigerung
-ist nicht die hierfür verwendete Berechnung. NPV wird nicht berechnet.
-20-Jahres-Ersparnis = Summe für n=0…19 von Ersparnis × (1+Stromsteigerung)^n.
-Dabei wird auch ein etwaiger Gas-/Kraftstoffanteil mit dem Stromfaktor gesteigert;
-der konfigurierte Gassteigerungsfaktor wird hier nicht angewendet.
+**Einfache Amortisation:** Investition / jährliche Ersparnis, konstante Preise,
+keine Folgekosten. Bei Ersparnis ≤ 0 wird keine Amortisation ausgewiesen.
+Keine dynamische oder diskontierte Amortisation und kein NPV.
 
-## Diagramme sind separate Näherungen
+**20-Jahres-Summe:** Für n=0…19 werden die jährlichen Komponenten getrennt summiert:
 
-`updateChartsForScenario` nutzt `simulateYear` und `simulateDay`.
-`simulateYear` rechnet mit fest 1.000 kWh/kWp, monatlichen Faktoren und
-Eigenverbrauchsanteilen 0,75/0,35. Der übergebene Haushaltswert enthält bereits
-alle Szenariolasten; WP und Klima werden zusätzlich modelliert. Damit sind
-Diagramme nicht mit der Jahresbilanz abgestimmt. Die Tageskurve ist eine
-heuristische Stundenform, keine normierte stündliche Jahressimulation.
-`generateScenarioCurves` enthält wiederum 1.000 × 1,05 als PV-Faktor, wird aber
-von diesem Chartpfad nicht genutzt. Frühere tägliche/monatliche Beispielkurven
-und pauschale Best-/Realistic-/Conservative-Case-Ergebnisse sind entfernt,
-weil sie keine reproduzierbaren Ergebnisse der aktuellen Szenarien waren.
+```text
+vermiedene Strombezugskosten × (1 + Stromsteigerung)^n
++ vermiedene Gaskosten × (1 + Gassteigerung)^n
++ vermiedene Kraftstoffkosten (konstant)
++ Einspeiseerlöse (konstante Vergütung)
+```
 
-## Herkunft und Plausibilität (24.10.2026)
+Die Stromkomponente kann negativ sein, wenn z. B. eine WP den Netzstrombezug erhöht.
+Kraftstoff- und Vergütungssteigerung sind bewusst 0, kein unbemerkter Strompreisfaktor.
+Die Summe ist nominal und nicht abgezinst; Investition wird darin nicht abgezogen.
+Wartung, Ersatz, Finanzierung, Förderung, Steuern und Degradation sind nicht enthalten.
+Das ist keine vollständige Lebenszykluskostenrechnung.
+CO₂-Einsparung über 20 Jahre nutzt konstante Emissionsfaktoren; monetäre
+Preissteigerung wird nicht mehr auf physische Emissionsmengen angewendet.
+Nachher-Emissionen = tatsächlicher Netzstrombezug × konfigurierter Stromfaktor
++ verbleibendes Gas × Gasfaktor. E-Auto-Strom wird nicht noch einmal separat
+als vollständiger Netzbezug angesetzt; seine Last ist bereits in der Stundenbilanz.
 
-- PV-Ertrag 950 bereits in Initialkonfiguration `c966fdf`; kein gespeicherter
-  standortbezogener PVGIS-Lauf. Plausible Pauschalannahme, kein Deutschland-
-  oder Standortnachweis. PVGIS berücksichtigt Standort, Ausrichtung und Neigung [1].
+## Herkunft, Plausibilität und Pflege der Preise
+
+- Ertrag 950 bereits in Initialkonfiguration `c966fdf`; kein gespeicherter
+  standortbezogener PVGIS-Lauf. Plausible Pauschalannahme, kein Standortnachweis.
+  PVGIS berücksichtigt Standort, Ausrichtung und Neigung [1].
 - Speicherpreis 550 → 750 im automatisierten Commit `f9913d7` (01.08.2026).
-  PV-Preis 1.200 → 900 und WP-Preis 1.800 → 1.500 im automatisierten Commit
-  `71b17f2` (01.09.2026). Strompreis 0,35 → 0,42 in `3936f1a` (01.10.2026).
-- Der Preis-Updater fragt ein Sprachmodell nach Durchschnittswerten ohne
-  aktiviertes Recherchewerkzeug und ohne Quellen-/Stichtagsnachweis je Wert.
-  Abweichungen über 20 % werden übernommen; diese Schwelle validiert keine
-  Marktpreise. Commitdatum ist kein Erhebungsdatum. Keine belastbare Herkunft
-  für Leistungsumfang und Preisqualität der aktuellen Ansätze.
-- Verbraucherzentrale NRW zeigt größenabhängige Angebotspreise [2].
+  PV-Preis 1.200 → 900 und WP-Preis 1.800 → 1.500 in `71b17f2` (01.09.2026).
+  Strompreis 0,35 → 0,42 in `3936f1a` (01.10.2026).
+- Der bisherige Updater übernahm Sprachmodellwerte ohne Recherchewerkzeug,
+  Quellen-/Stichtagsnachweis oder definierten Kostenumfang bei >20 % Abweichung.
+  Diese Schwelle validierte keine Marktpreise. Commitdatum ist kein Erhebungsdatum.
+- Die Verbraucherzentrale zeigt größenabhängige Angebotspreise [2].
   900 €/kWp ist als pauschaler Komplettansatz kritisch niedrig; 750 €/kWh
-  liegt über den dortigen mittleren Paketpreisen. Daraus folgt weder ein
-  verbindlicher Ersatzpreis noch, dass ein Einzelangebot falsch ist.
-- Jahres-WP-Effizienz muss als JAZ verstanden werden [3]. Basis 3 ist als
-  Orientierung vertretbar; feste Gebäudefaktoren und der Korridor 2,5–3,5
-  sind keine Fachplanung. 1.500 €/kW ist ohne definierten Umfang kein
-  belastbarer Komplettkostenansatz. Q/2.000 ersetzt keine Heizlastberechnung.
+  liegt über dortigen mittleren Paketpreisen. Das begründet keinen verbindlichen
+  Ersatzpreis. WP-Kosten pro kW sind ohne Leistungsumfang nicht belastbar.
+- Basis-Jahreseffizienz 3 ist als Orientierung vertretbar [3]; feste Faktoren
+  und Korridore ersetzen keine Auslegung anhand von Gebäude und Vorlauftemperatur.
+
+**Automatische Preisübernahme ist deaktiviert**, sowohl im Förder-Updater als
+auch im Workflow. Der frühere Programmeinstieg `update_price_data()` bleibt
+als wirkungslose Kompatibilitätsfunktion erhalten. `fetch_subsidy_prices.py --propose`
+liefert ausschließlich ausdrücklich ungeprüfte Vorschläge an stdout; keine Datei
+wird geschrieben. Ein Sprachmodellvorschlag ist keine recherchierte Quelle.
+
+Manuelle Änderung über PR: pro geändertem Preis Quellen-URL, Erhebungs-/Angebotsdatum,
+Anlagengröße/Region, Leistungsumfang inklusive Montage, Umbau und Steuerbehandlung
+angeben. Erst nach Prüfung als validiert kennzeichnen. `assumption_review` in der
+Konfiguration hält den derzeit **ungeprüften** Status und ausgeschlossene Kosten fest.
+Die dort verlinkten Quellen dienen nur der Plausibilisierung, nicht als Herkunft
+oder Freigabe der eingetragenen Einzelpreise.
 
 [1] [EU JRC: PVGIS](https://joint-research-centre.ec.europa.eu/photovoltaic-geographical-information-system-pvgis_en)
 
-[2] [Verbraucherzentrale NRW: PV- und Speicher-Angebotspreise, Stand 28.08.2026](https://www.verbraucherzentrale.nrw/wissen/energie/erneuerbare-energien/was-kostet-eine-photovoltaikanlage-49155)
+[2] [Verbraucherzentrale NRW: Angebotspreise, Stand 28.08.2026](https://www.verbraucherzentrale.nrw/wissen/energie/erneuerbare-energien/was-kostet-eine-photovoltaikanlage-49155)
 
 [3] [Verbraucherzentrale: Wärmepumpe, Stand 14.04.2026](https://www.verbraucherzentrale.de/wissen/energie/heizen-und-warmwasser/waermepumpe-alles-was-sie-wissen-muessen-5439)
 
-## Konsistenzprüfung und Pflege
+## Konsistenzprüfung
 
-`python scripts/check_calculation_docs.py` vergleicht die generierte Tabelle
-mit allen skalaren PV-, Speicher-, WP-, Preis- und Inflationswerten sowie den
-Prüfstand der beiden Berechnungsdateien. Änderungen lassen CI fehlschlagen.
-Nach fachlichem Abgleich aller betroffenen Formeln und Beispiele kann
-`--write` Tabelle und Prüfstand erneuern. Der Quelltext-Prüfstand ist bewusst
-konservativ: auch reine UI-Änderungen in script.js erfordern eine Bestätigung.
-Dies ist eine Review-Schranke, kein automatischer Beweis der Prosa-Richtigkeit.
-Die Node-Tests führen den echten Berechnungskern aus und prüfen das Beispiel.
-Das bestehende Python-Skript modernisierung_tests.py erzeugt dagegen eine
-separate Modellmatrix mit abweichenden Heuristiken (u. a. 7 m²/kWp und
-anderen Haustypgrenzen); es ist kein Nachweis der Browser-Rechenlogik.
+`python scripts/check_calculation_docs.py` prüft die Konfigurationstabelle und
+Quelltext-Prüfsummen. Erst nach Abgleich von Formeln und Beispielen mit `--write`
+erneuern. Die Schranke verlangt Review, beweist aber nicht automatisch die Prosa.
+`node --test scripts/test_calculation_docs.cjs` prüft Beispiele, Energieerhaltung,
+Grenzfälle, monatliche Summen, Zusatzlasten und getrennte Preissteigerung am echten Kern.
+Das bestehende Python-Skript `modernisierung_tests.py` erzeugt eine separate
+historische Modellmatrix mit abweichenden Heuristiken; es validiert nicht die Browserlogik.

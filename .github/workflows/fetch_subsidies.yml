@@ -33,16 +33,11 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/fetch_subsidies.py
 
-      - name: Update price assumptions
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python scripts/fetch_subsidy_prices.py
-
       - name: Check for changes
         id: changes
         run: |
           python scripts/update_sitemap.py
-          if git diff --quiet -- data/subsidies.json data/data.json sitemap.xml; then
+          if git diff --quiet -- data/subsidies.json sitemap.xml; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -55,6 +50,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/subsidies.json data/data.json sitemap.xml
-          git commit -m "Update subsidies.json und Datenannahmen (automated)"
+          git add data/subsidies.json sitemap.xml
+          git commit -m "Update subsidies.json (automated; model assumptions unchanged)"
           git push

@@ -1,5 +1,5 @@
 """
-Fetch market price assumptions and update data.json when deviations exceed tolerance.
+Generate unverified price proposals only. Never update calculation assumptions automatically.
 """
 
 from __future__ import annotations
@@ -221,34 +221,28 @@ def normalize_source_values(raw: dict[str, Any]) -> dict[str, Any]:
 
 
 def update_price_data(client: OpenAI | None = None) -> bool:
+    """Compatibility entry point: automatic price mutation is intentionally disabled."""
+    print("[INFO] Automatische Preisuebernahme deaktiviert; data.json bleibt unveraendert.")
+    return False
+
+
+def propose_prices(client: OpenAI | None = None) -> dict[str, Any]:
+    """Return unverified suggestions, with no configuration or filesystem writes."""
     client = ensure_client(client)
-    market_values = fetch_market_prices(client)
-    if not market_values:
-        print("[WARN] Keine neuen Marktwerte erhalten.")
-        return False
-
-    normalized_values = normalize_source_values(market_values)
-
-    data = json.loads(DATA_PATH.read_text(encoding="utf-8"))
-    changed = False
-
-    for key, path in FIELD_MAP.items():
-        if key not in normalized_values:
-            continue
-        new_value = normalized_values[key]
-        current_value = get_nested(data, path)
-        if needs_update(current_value, new_value):
-            set_nested(data, path, new_value)
-            changed = True
-            print(f"[INFO] Aktualisiere {'.'.join(path)}: {current_value} -> {new_value}")
-
-    if changed:
-        DATA_PATH.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    else:
-        print("[INFO] Keine Aenderungen erforderlich (alle Werte innerhalb +-20%).")
-
-    return changed
+    return {
+        "status": "unverified_model_proposal_do_not_apply",
+        "required_review": ["source_url", "source_date", "cost_scope", "regional_and_size_fit"],
+        "values": normalize_source_values(fetch_market_prices(client)),
+    }
 
 
 if __name__ == "__main__":
-    update_price_data()
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--propose", action="store_true", help="Request unverified suggestions; no file writes")
+    args = parser.parse_args()
+    if args.propose:
+        print(json.dumps(propose_prices(), indent=2, ensure_ascii=False))
+    else:
+        update_price_data()

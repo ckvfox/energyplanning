@@ -25,7 +25,7 @@ function clamp(value, min, max) {
 
 function roofPvLimit(roofArea) {
     const area = Number.isFinite(roofArea) ? roofArea : 0;
-    return Math.max(0, Math.floor(area / 7)); // 7 m² pro kWp laut Vorgabe
+    return Math.max(0, Math.floor(area / 6)); // Planungsheuristik: 6 m² pro kWp
 }
 
 function getAirconIndoorUnits(hasAircon) {
@@ -97,12 +97,13 @@ function estimateEnergyBalance({
     batteryKwh,
     annualLoadKwh,
     pvYieldPerKwp,
-    hasHeatpump = false,
+    heatpumpLoadKwh = 0,
+    airconLoadKwh = 0,
     hasEv = false,
     evLoadKwh = 0
 }) {
     return window.EnergyCalculationCore.estimateEnergyBalance({
-        pvKwp, batteryKwh, annualLoadKwh, pvYieldPerKwp, hasHeatpump, hasEv, evLoadKwh
+        pvKwp, batteryKwh, annualLoadKwh, pvYieldPerKwp, heatpumpLoadKwh, airconLoadKwh, hasEv, evLoadKwh
     });
 }
 
@@ -118,13 +119,6 @@ function formatNumber(value, digits = 1) {
 let chartScenarioIndex = 0;
 let daySeason = 'summer';
 let chartColors = {}; // Farben aus data.json
-
-const monthlyPVFactors = [0.03, 0.05, 0.11, 0.13, 0.14, 0.13, 0.12, 0.11, 0.09, 0.06, 0.025, 0.015];
-
-const dailyPVShape = [
-    0, 0, 0, 0, 0.05, 0.15, 0.30, 0.55, 0.75, 0.95, 1.0, 1.0,
-    0.95, 0.85, 0.65, 0.45, 0.25, 0.12, 0.05, 0, 0, 0, 0, 0
-];
 
 // ========== EV/COMBUSTION FIELD DISABLE LOGIC ==========
 /**
@@ -179,23 +173,6 @@ function updateBaujahrFieldState() {
     baujahrEl.disabled = !isBundeslandSelected;
 }
 
-const dailyHouseholdShape = [
-    0.12, 0.10, 0.08, 0.07, 0.08, 0.20, 0.35, 0.25, 0.10, 0.08, 0.10, 0.12,
-    0.15, 0.20, 0.25, 0.30, 0.40, 0.45, 0.35, 0.25, 0.20, 0.18, 0.15, 0.12
-];
-
-function calculateBreakEvenDynamic(investCost, annualSavingElectric, annualSavingGas, inflationElectric, inflationGas) {
-    let sum = 0;
-    let years = 0;
-    while (sum < investCost && years < 40) {
-        const savingElectric = annualSavingElectric * Math.pow(1 + inflationElectric, years);
-        const savingGas = annualSavingGas * Math.pow(1 + inflationGas, years);
-        sum += savingElectric + savingGas;
-        years++;
-    }
-    return years;
-}
-
 function calculateCO2Today(householdElectric, heatingDemand, data) {
     return householdElectric * data.co2.electricity_factor
         + heatingDemand * data.co2.gas_factor;
@@ -227,109 +204,6 @@ function calculateCO2SavingsOverYears(initialSaving, inflationRate, years = 20) 
     return total;
 }
 
-function calculateSavingsOverYearsDynamic(annualSavingElectric, annualSavingGas, inflationElectric, inflationGas, years = 20) {
-    let total = 0;
-    for (let n = 0; n < years; n++) {
-        const savingElectric = annualSavingElectric * Math.pow(1 + inflationElectric, n);
-        const savingGas = annualSavingGas * Math.pow(1 + inflationGas, n);
-        total += savingElectric + savingGas;
-    }
-    return total;
-}
-
-function simulateYear(pvKwp, householdKwh, heatpumpElectric, storageKwh, includeHP, includeAC) {
-    const results = [];
-    const annualPV = pvKwp * 1000;
-
-    for (let m = 0; m < 12; m++) {
-        const pv = annualPV * monthlyPVFactors[m];
-
-        let consumption = householdKwh / 12;
-
-        if (includeHP) {
-            const winterFactor = [11, 0, 1].includes(m) ? 2.8 : (m < 3 || m > 8 ? 1.2 : 0.3);
-            consumption += (heatpumpElectric / 12) * winterFactor;
-        }
-
-        if (includeAC && m >= 5 && m <= 8) {
-            consumption += 40;
-        }
-
-        let selfConsumption;
-        if (storageKwh > 0) {
-            selfConsumption = Math.min(consumption, pv * 0.75);
-        } else {
-            selfConsumption = Math.min(consumption, pv * 0.35);
-        }
-
-        const gridImport = Math.max(0, consumption - selfConsumption);
-        const feedIn = Math.max(0, pv - selfConsumption);
-
-        results.push({
-            month: m,
-            pv,
-            consumption,
-            selfConsumption,
-            gridImport,
-            feedIn
-        });
-    }
-    return results;
-}
-
-function simulateDay(pvKwp, householdKwh, hpKwh, storageKwh, includeHP, includeAC) {
-    const hours = [...Array(24).keys()];
-    const pv = [];
-    const load = [];
-    const selfUse = [];
-    const grid = [];
-
-    const sunrise = daySeason === 'summer' ? 5 : 8.5;
-    const sunset = daySeason === 'summer' ? 21 : 16;
-    const pvPeakFactor = daySeason === 'summer' ? 1.0 : 0.3;
-
-    hours.forEach((h) => {
-        if (h < sunrise || h > sunset) {
-            pv[h] = 0;
-        } else {
-            const midday = (sunrise + sunset) / 2;
-            const daylightHours = sunset - sunrise;
-            const x = Math.abs(h - midday);
-            const bell = Math.max(0, 1 - (x / (daylightHours / 2)) ** 2);
-            pv[h] = bell * pvKwp * 0.22 * pvPeakFactor;
-        }
-
-        let consumption = (householdKwh / 365 / 24);
-        if (h >= 6 && h <= 9) consumption *= 1.4;
-        if (h >= 17 && h <= 21) consumption *= 1.7;
-
-        if (includeHP) {
-            const hpFactor = (h >= 5 && h <= 9) || (h >= 17 && h <= 23) ? 1.6 : 1.0;
-            consumption += (hpKwh / 365 / 24) * hpFactor;
-        }
-        if (includeAC && h >= 14 && h <= 18) {
-            consumption += 0.2 * (householdKwh / 365 / 24);
-        }
-
-        const storageBoost = storageKwh > 0 ? 0.75 : 0.35;
-        const self = Math.min(consumption, pv[h] * storageBoost);
-        const gridImport = consumption - self;
-
-        load[h] = consumption;
-        selfUse[h] = self;
-        grid[h] = gridImport;
-    });
-
-    return hours.map((h) => ({
-        hour: h,
-        pv: pv[h],
-        load: load[h],
-        selfConsumption: selfUse[h],
-        gridImport: grid[h],
-        feedIn: Math.max(0, pv[h] - selfUse[h])
-    }));
-}
-
 function pickScenarioForCharts(scenarios) {
     if (!Array.isArray(scenarios) || scenarios.length === 0) {
         return null;
@@ -351,73 +225,6 @@ function buildScenarioDisplayLabel(baseLabel, includesAircon, includesWallbox) {
     return parts.join(' + ');
 }
 
-function generateScenarioCurves(scenario, base) {
-    const labelsMonth = ['Jan', 'Feb', 'Mrz', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-    const pvMonthly = labelsMonth.map((_, idx) => scenario.pvKwp * 1000 * monthlyPVFactors[idx] * 1.05);
-    const loadMonthly = labelsMonth.map(() => base.householdElectric / 12);
-
-    const heatMonthly = labelsMonth.map((_, idx) => {
-        if (!scenario.includeHeatpump) return 0;
-        if ([10, 11, 0, 1].includes((idx + 1) % 12)) {
-            return base.heatpumpElectric * 0.7 / 4;
-        }
-        return base.heatpumpElectric * 0.3 / 8;
-    });
-
-    for (let i = 0; i < loadMonthly.length; i++) {
-        loadMonthly[i] += heatMonthly[i];
-        if (scenario.includeAircon && i >= 5 && i <= 8) {
-            loadMonthly[i] += 60;
-        }
-    }
-
-    const selfUseMonthly = [];
-    const gridMonthly = [];
-    for (let i = 0; i < 12; i++) {
-        const pv = pvMonthly[i];
-        const load = loadMonthly[i];
-        const storageBoost = scenario.storageKwh > 0 ? 0.75 : 0.35;
-        const self = Math.min(load, pv * storageBoost);
-        selfUseMonthly.push(self);
-        gridMonthly.push(Math.max(0, load - self));
-    }
-
-    const pvDaily = dailyPVShape.map((f) => scenario.pvKwp * 1000 / 365 * f * 1.05);
-    const baseDaily = base.householdElectric / 365;
-    const loadDaily = dailyHouseholdShape.map((f) => baseDaily * f);
-
-    for (let h = 0; h < 24; h++) {
-        if (scenario.includeHeatpump) {
-            loadDaily[h] += (base.heatpumpElectric / 365) * ((h >= 5 && h <= 9) || (h >= 17 && h <= 23) ? 1.6 : 1.0);
-        }
-        if (scenario.includeAircon && h >= 14 && h <= 18) {
-            loadDaily[h] += 0.2 * baseDaily;
-        }
-    }
-
-    const selfUseDaily = [];
-    const gridDaily = [];
-    for (let h = 0; h < 24; h++) {
-        const pv = pvDaily[h];
-        const load = loadDaily[h];
-        const storageBoost = scenario.storageKwh > 0 ? 0.75 : 0.35;
-        const self = Math.min(load, pv * storageBoost);
-        selfUseDaily.push(self);
-        gridDaily.push(Math.max(0, load - self));
-    }
-
-    return {
-        pvMonthly,
-        loadMonthly,
-        selfUseMonthly,
-        gridMonthly,
-        pvDaily,
-        loadDaily,
-        selfUseDaily,
-        gridDaily
-    };
-}
-
 function renderYearChart(data, title) {
     window.EnergyChartUI.renderYearChart(data, title, chartColors);
 }
@@ -433,14 +240,8 @@ function updateChartsForScenario(scenarios) {
     }
     if (!scenario) return;
     const name = scenario.displayLabel || scenario.name || scenario.label || 'berechnetes Szenario';
-    const pvKwp = scenario.pvKwp;
-    const hhKwh = scenario.householdElectric || scenario.householdKwh || scenario.annualConsumption;
-    const hpKwh = scenario.heatpumpElectric || 0;
-    const storage = scenario.batteryRecommended || scenario.storageKwh || 0;
-    const useHP = !!scenario.includeHeatpump;
-    const useAC = !!scenario.includeAC;
-    const yearData = simulateYear(pvKwp, hhKwh, hpKwh, storage, useHP, useAC);
-    const dayData = simulateDay(pvKwp, hhKwh, hpKwh, storage, useHP, useAC);
+    const yearData = scenario.energyBalance.monthly;
+    const dayData = scenario.energyBalance.daily[daySeason];
     renderYearChart(yearData, name);
     renderDayChart(dayData, name);
 }
@@ -866,7 +667,6 @@ async function calculateAll() {
         const combustionCo2Factor = combustionData.co2_per_litre ?? 2.3;
         const combustionLitres = hasWallbox ? (combustionAnnualKm / 100) * combustionLitresPer100km : 0;
         const combustionCo2Annual = combustionLitres * combustionCo2Factor;
-        const evCo2Factor = 0.35; // kg CO2/kWh Strommix
         const evFuelCost = combustionLitres * combustionFuelPrice;
         const wallboxHintText = hasWallbox
             ? `Wallbox-Mehrverbrauch: ${formatNumber(wallboxExtra, 0)} kWh/a (Annahme: ${evModel}, ca. ${formatNumber(evAnnualKm, 0)} km/a, ~${formatNumber(evKwhPer100Km, 1)} kWh/100 km).`
@@ -931,7 +731,7 @@ async function calculateAll() {
             cop *= data.heatpump.factor_bad;
         }
         if (hasFloorHeating) {
-            cop *= 1.1;
+            cop *= data.heatpump.factor_fbh;
         }
         cop = clamp(cop, 2.5, 3.5);
         const heatpumpElectric = heatingDemand / cop;
@@ -987,19 +787,19 @@ async function calculateAll() {
             if (Number.isFinite(prevValues.pvKwp) && prevValues.pvKwp > 0) {
                 // Nutzer hat einen festen Wert eingegeben
                 pvKwp = prevValues.pvKwp;
-                const maxKwpFromRoof = Math.max(0, Math.floor((Number.isFinite(roofArea) ? roofArea : 0) / 6));
+                const maxKwpFromRoof = roofPvLimit(roofArea);
                 if (pvKwp > maxKwpFromRoof) {
                     pvExceedsRoof = true;
                 }
             } else {
                 // Automatische Berechnung
-                let pvKwpCandidate = totalElectricDemand / 850;
+                let pvKwpCandidate = totalElectricDemand / data.pv.yield_per_kwp;
                 // Mindestgröße bei Speicher oder WP: mindestens 7 kWp
                 if (scenario.includeBattery || scenario.includeHeatpump) {
                     pvKwpCandidate = Math.max(pvKwpCandidate, 7);
                 }
                 // Dachfläche: moderner Faktor 6 m²/kWp
-                const maxKwpFromRoof = Math.max(0, Math.floor((Number.isFinite(roofArea) ? roofArea : 0) / 6));
+                const maxKwpFromRoof = roofPvLimit(roofArea);
                 if (pvKwpCandidate > maxKwpFromRoof) {
                     warnings.push(`Die maximal mögliche PV-Leistung liegt bei ${formatNumber(maxKwpFromRoof, 0)} kWp; mehr ist auf der verfügbaren Dachfläche nicht realisierbar.`);
                 }
@@ -1013,11 +813,12 @@ async function calculateAll() {
 
             // Speicher sizing: empfohlen = 0,9 × täglicher Verbrauch, Clamp 4–15 kWh
             const dailyUse = annualConsumption / 365;
-            const batteryRecommended = scenario.includeBattery
+            const batteryTarget = scenario.includeBattery
                 ? clamp(dailyUse * 0.9, 4, 15)
                 : 0;
             const dailyPv = pvKwp * data.pv.yield_per_kwp / 365;
-            const storageKwh = scenario.includeBattery ? Math.min(batteryRecommended, dailyPv * 2) : 0;
+            const storageKwh = scenario.includeBattery ? Math.min(batteryTarget, dailyPv * 2) : 0;
+            const batteryRecommended = storageKwh;
 
 
             // Kosten
@@ -1045,12 +846,14 @@ async function calculateAll() {
                 batteryKwh: storageKwh,
                 annualLoadKwh: totalElectricDemand,
                 pvYieldPerKwp: data.pv.yield_per_kwp,
-                hasHeatpump: scenario.includeHeatpump,
+                heatpumpLoadKwh: heatpumpBlock,
+                airconLoadKwh: acBlock,
                 hasEv: includesWallbox,
                 evLoadKwh: evBlock
             });
 
             const scenarioResult = {
+                energyBalance,
                 label: scenario.label,
                 displayLabel,
                 name: displayLabel,
@@ -1084,20 +887,11 @@ async function calculateAll() {
                 heatpumpBlock
             };
 
-            let autarkyPct = clamp(energyBalance.autarky, 5, 90);
-            if (!scenario.includeBattery && !scenario.includeHeatpump) {
-                autarkyPct = clamp(autarkyPct, 25, 40);
-            } else if (scenario.includeBattery && !scenario.includeHeatpump) {
-                autarkyPct = clamp(autarkyPct, 50, 75);
-            } else {
-                autarkyPct = clamp(autarkyPct, 70, 85);
-            }
-            scenarioResult.stromAutarky = Math.round(autarkyPct);
-
-            scenarioResult.gridImportKwh = Math.round(energyBalance.gridImport);
-            scenarioResult.gridElectric = scenarioResult.gridImportKwh;
-            scenarioResult.feedIn = Math.round(energyBalance.feedIn);
-            scenarioResult.heizAutarky = scenario.includeHeatpump ? 100 : 0;
+            scenarioResult.stromAutarky = energyBalance.autarky;
+            scenarioResult.gridImportKwh = energyBalance.gridImport;
+            scenarioResult.gridElectric = energyBalance.gridImport;
+            scenarioResult.feedIn = energyBalance.feedIn;
+            scenarioResult.heizAutarky = energyBalance.heatpumpAutarky;
             scenarioResult.evFromBattery = energyBalance.evFromBattery;
             scenarioResult.evAnnual = hasWallbox ? wallboxExtra : 0;
 
@@ -1108,24 +902,20 @@ async function calculateAll() {
             const annualSaving = baselineCost - annualCost;
             scenarioResult.annualCost = annualCost;
             scenarioResult.savings = annualSaving;
-            scenarioResult.savings20yr = calculateSavingsOverYearsDynamic(
-                annualSaving,
-                0,
-                data.inflation.electricity_rate,
-                0,
-                20
-            );
-            scenarioResult.breakEvenDynamic = scenarioResult.savings > 0
-                ? Math.max(0, totalCost) / scenarioResult.savings
-                : null;
+            scenarioResult.savings20yr = window.EnergyCalculationCore.projectSavings({
+                electricity: (baselineElectric - energyBalance.gridImport) * elPrice,
+                gas: (baselineGas - gasUse) * gasPrice,
+                fuel: baselineFuel,
+                feedIn: energyBalance.feedIn * feedInTariff,
+                electricityRate: data.inflation.electricity_rate,
+                gasRate: data.inflation.gas_rate
+            });
+            scenarioResult.simplePaybackYears = annualSaving > 0 ? Math.max(0, totalCost) / annualSaving : null;
 
             // CO₂ mit realistischem Netzbezug
-            const gridEvShare = hasWallbox ? Math.min(scenarioResult.gridImportKwh, wallboxExtra) : 0;
-            const gridOther = Math.max(0, scenarioResult.gridImportKwh - gridEvShare);
-            const electricityCO2 = (hasWallbox ? wallboxExtra * evCo2Factor : 0) + gridOther * data.co2.electricity_factor;
-            const co2_after = electricityCO2 + (scenario.includeHeatpump ? 0 : heatingDemand) * data.co2.gas_factor;
+            const co2_after = calculateCO2After(energyBalance.gridImport, heatingDemand, scenario, data);
             const co2_saving = co2Today - co2_after;
-            const co2_saving_20yr = calculateCO2SavingsOverYears(co2_saving, data.inflation.electricity_rate, 20);
+            const co2_saving_20yr = calculateCO2SavingsOverYears(co2_saving, 0, 20);
             const equivalents = calculateCO2Equivalents(co2_saving_20yr, data);
             scenarioResult.co2_today = co2Today;
             scenarioResult.co2_after = co2_after;
@@ -1234,12 +1024,13 @@ async function calculateAll() {
                     <p>Verbräuche (kWh/a): Haushalt ${formatNumber(s.householdBlock, 0)}, Klima ${formatNumber(s.climateBlock, 0)}, Wallbox ${formatNumber(s.evBlock, 0)}, Wärmepumpe ${formatNumber(s.heatpumpBlock, 0)}, Summe ${formatNumber(s.annualConsumption, 0)}</p>
                     <p>Netzstrombezug: ${formatNumber(s.gridElectric, 0)} kWh/a | Gasbedarf: ${formatNumber(s.gasUse, 0)} kWh/a</p>
                     <p>Einspeisung: ${formatNumber(s.feedIn, 0)} kWh/a (Tarif ${formatNumber(feedInTariff, 2)} EUR/kWh)</p>
+                    <p>Speicherverluste: ${formatNumber(s.energyBalance.batteryLosses, 0)} kWh/a; Speicherbestand am Jahresende: ${formatNumber(s.energyBalance.storageChange, 1)} kWh.</p>
                     <p>PV-Empfehlung: ${formatNumber(s.pvKwp, 1)} kWp ${s.pvExceedsRoof ? '<span class="warn">⚠️ ACHTUNG: Übersteigt verfügbaren Platz auf der Dachfläche.</span>' : ''}</p>
                     ${s.batteryRecommended ? `<p>Speicher-Empfehlung: ${formatNumber(s.batteryRecommended, 1)} kWh</p>` : ''}
                     ${s.heatpumpPower ? `<p>Wärmepumpe: ${formatNumber(s.heatpumpPower, 1)} kW (Strom ${formatNumber(s.heatpumpElectric, 0)} kWh/a)</p>` : ''}
                     ${hasWallbox ? `<p>EV-Ladung: ${formatNumber(wallboxExtra, 0)} kWh/a</p>` : ''}
                     <div class="cost-block">
-                        <strong>Kosten:</strong><br>
+                        <strong>Indikative Investitionsansätze (ungeprüfte Preise):</strong><br>
                         PV (${formatNumber(data.pv.cost_per_kwp, 0)} EUR/kWp): ${formatNumber(s.pvCost, 0)} EUR<br>
                         Speicher (${formatNumber(data.battery.cost_per_kwh, 0)} EUR/kWh): ${formatNumber(s.batteryCost, 0)} EUR<br>
                         Wärmepumpe (${formatNumber(data.heatpump.cost_per_kw, 0)} EUR/kW): ${formatNumber(s.heatpumpCost, 0)} EUR<br>
@@ -1253,9 +1044,11 @@ async function calculateAll() {
                         return `
                             <div class="economy-box">
                                 <h4>💶 Wirtschaftlichkeit</h4>
+                                <p class="note">Planungsmodell, kein Angebot: Montage-/Umbauumfang der PV-, Speicher- und WP-Preise ist nicht belegt. Wartung, Ersatz, Finanzierung, Steuern, Förderung und Degradation sind nicht eingerechnet. Die 20-Jahres-Summe ist nominal, nicht abgezinst; Strom- und Gaspreise steigen gemäß Modell, Kraftstoffpreis und Vergütung bleiben konstant.</p>
                                 <p>Betriebskosten mit ${techLabel}: ${formatNumber(s.annualCost, 0)} EUR/a</p>
                                 <p>Einsparung gegenüber heute: ${formatNumber(s.savings, 0)} EUR/a</p>
-                                ${s.breakEvenDynamic ? `<p>Break-even (inkl. Energiepreissteigerung): ca. ${formatNumber(s.breakEvenDynamic, 1)} Jahre</p>` : ''}
+                                <p>20-Jahres-Ersparnissumme (nominal, vor Investition und Folgekosten): ${formatNumber(s.savings20yr, 0)} EUR</p>
+                                ${s.simplePaybackYears !== null ? `<p>Einfache Amortisation (konstante Preise): ca. ${formatNumber(s.simplePaybackYears, 1)} Jahre</p>` : '<p>Keine einfache Amortisation bei nichtpositiver jährlicher Ersparnis.</p>'}
                             </div>
                         `;
                     })()}
@@ -1273,7 +1066,7 @@ async function calculateAll() {
                                 <p>Heute: ${formatNumber(s.co2_today, 0)} kg CO₂/a</p>
                                 <p>Nachher: ${formatNumber(s.co2_after, 0)} kg CO₂/a</p>
                                 <p><strong>Einsparung: ${formatNumber(s.co2_saving, 0)} kg CO₂/a</strong></p>
-                                <p>20-Jahres-Einsparung (mit Energiepreissteigerung): ${formatNumber(s.co2_saving_20yr, 0)} kg</p>
+                                <p>20-Jahres-Einsparung (konstante Emissionsfaktoren): ${formatNumber(s.co2_saving_20yr, 0)} kg</p>
                                 <hr>
                                 <p>Entspricht der CO₂-Bindung von etwa ${treesRounded} Bäumen über ein Jahr.</p>
                                 <p>~ ${formatNumber(flightsRounded, 0)} Mallorca-Flüge (Hin- und Rückflug)</p>
@@ -1294,7 +1087,7 @@ async function calculateAll() {
                         </div>
                         <div class="autarkie-row">
                             <span class="autarkie-icon">🔥</span>
-                            <span class="autarkie-label">Heiz-Autarkie</span>
+                            <span class="autarkie-label">PV-Anteil am Wärmepumpenstrom</span>
                             <span class="autarkie-value">${formatNumber(s.heizAutarky, 0)} %</span>
                         </div>
                         <div class="autarkie-bar">
@@ -1302,7 +1095,7 @@ async function calculateAll() {
                         </div>
                         <div class="autarkie-row">
                             <span class="autarkie-icon">🏠</span>
-                            <span class="autarkie-label">Haushalts-Autarkie (Strom + Heizung)</span>
+                            <span class="autarkie-label">PV-Anteil am Endenergiebezug (Strom + Gas)</span>
                             <span class="autarkie-value">${formatNumber(s.haushaltAutarky, 0)} %</span>
                         </div>
                         <div class="autarkie-bar">
@@ -1314,8 +1107,8 @@ async function calculateAll() {
 <div class="autarkie-info">
                 <strong>Hinweis zur Autarkie:</strong><br>
                 Die Strom-Autarkie zeigt, wie viel des Strombedarfs du selbst deckst.<br>
-                Die Heiz-Autarkie zeigt, ob deine Wärmeversorgung autark ist.<br>
-                Die Haushalts-Autarkie kombiniert Strom und Heizung und zeigt deine energetische Gesamtsouveränität.
+                Der PV-Anteil am Wärmepumpenstrom berücksichtigt direkten PV-Strom und Speicherabgabe; Netzstrom bleibt möglich.<br>
+                Der Endenergieanteil vergleicht PV-Eigenverbrauch mit Strom- und Gasbedarf. Umweltwärme ist dabei nicht enthalten.
             </div>
             <div class="zaehler-info">
                 <strong>Hinweis: Elektro / Zählerschrank:</strong><br>
