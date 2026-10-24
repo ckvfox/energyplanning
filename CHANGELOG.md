@@ -4,6 +4,12 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+### Documentation
+- Reconciled PV, battery and heat-pump assumptions with configuration and actual runtime paths; removed duplicate README calculation sections and unsupported examples.
+- Documented price provenance, uncertain cost scope and known energy-flow, chart, autarky and payback limitations without changing runtime logic or model values.
+- Added offline CI checks for configuration-table drift, reviewed source hashes and executable core examples.
+
+
 ### Fixed
 - Updated the OpenAI SDK pin for the Responses API used by both data updaters; reject incompatible clients before subsidy data is read or overwritten. Added offline SDK regression tests to CI.
 

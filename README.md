@@ -19,7 +19,7 @@
 - 🏘️ **3 Grundszenarien**: Nur PV, PV + Speicher, PV + Speicher + Wärmepumpe; gewählte Extras werden im Chart mitgeführt
 - ⚡ **Optionale Zusatzlasten**: Multisplit-Klimaanlage nach Anzahl Innengeräte, Wallbox (E-Auto)
 - 💰 **Kostenmodelle** inkl. Einspeisevergütung, Break-even-Berechnung
-- 🎯 **PV-Sizing**: 850 kWh/kWp, intelligente Limits nach Dachfläche & Haustyp
+- 🎯 **PV-Sizing**: Verbrauchs- und Dachheuristik; Details und Abweichungen zur Ertragsannahme siehe Berechnungsdokumentation
 - 💾 **Speicher-Dimensionierung**: 0,9 × täglicher Verbrauch, 4–15 kWh Clamp
 - 📊 **Szenarien-Vergleich** mit Autarkie-, Kosten- & CO₂-Visualisierung
 - 🌱 **CO₂-Einsparung** in Bäumen, Flügen, Autofahrten (20 Jahre)
@@ -96,48 +96,20 @@ energyplanning/
 
 ---
 
-## ⚙️ Konfiguration
+## ⚙️ Modell und Berechnungsgrundlagen
 
-### data.json – Zentrale Konfiguration
-```json
-{
-  "assumptions": {
-    "pvYieldPerKwp": 850,
-    "batteryRoundtripEff": 0.85,
-    "gridPrice": 0.35,
-    "feedInPrice": 0.08
-  },
-  "colors": {
-    "pv": "#fbc02d",
-    "consumption": "#1976d2",
-    "selfConsumption": "#388e3c"
-  }
-}
-```
+Die verbindliche Beschreibung der implementierten Formeln, der konfigurierten
+Modellwerte und ihrer Grenzen steht in [docs/CALCULATIONS.md](docs/CALCULATIONS.md).
+`data/data.json` enthält editierbare Annahmen, keine zugesicherten Marktpreise.
+Fest codierte Heuristiken stehen zusätzlich in `scripts/script.js` und
+`scripts/calculation-core.js`; insbesondere sind Dimensionierung und Ertrag
+unterschiedliche Berechnungsschritte.
 
----
-
-## 📊 Berechnungsgrundlagen
-
-### PV-Sizing
-- **Formel**: `Jahresstromverbrauch / 850 kWh/kWp`
-- **Dachfläche-Limit**: `floor(roofArea / 7)` kWp
-- **Haustyp-Limits**: Reihenhaus ≤14 kWp, Doppelhaus ≤18 kWp, EFH ≤24 kWp
-
-### Speicher-Dimensionierung
-- **Empfehlung**: `täglicher Verbrauch × 0.9`
-- **Grenzen**: Clamp(4, 15) kWh
-
-### Energiebilanz
-```
-PV_Generation = pvKwp × 850
-directSelf = min(load × 0.35, pvGen × 0.9)
-batteryDelivered = pvSurplus × 0.85  // Mit 85% Wirkungsgrad
-selfUse = min(load, directSelf + batteryDelivered)
-autarky = (selfUse / load) × 100  [%]
-```
-
-Siehe [CALCULATIONS.md](docs/CALCULATIONS.md) für komplette Mathematik.
+Konsistenzprüfung: `python scripts/check_calculation_docs.py` und
+`node --test scripts/test_calculation_docs.cjs`.
+Nach fachlicher Prüfung geänderter Annahmen die Tabelle und den Prüfstand mit
+`python scripts/check_calculation_docs.py --write` aktualisieren. Der Befehl
+bestätigt keine fachliche Richtigkeit und ersetzt keine Prüfung der Formeln.
 
 ---
 
@@ -238,177 +210,6 @@ Contributions sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md):
 
 ---
 
-## 📁 Projektstruktur
-
-```
-energyplanning/
-├── index.html              ← UI & Formular
-├── style.css               ← Vollständiges Styling
-├── scripts/
-│   ├── script.js           ← Berechnungen & Logik
-│   ├── fetch_subsidies.py  ← Förderdaten-Updater (OpenAI-basiert)
-│   ├── modernisierung_tests.py  ← Unit Tests
-│   └── prompts.py          ← Prompt-Templates für OpenAI
-├── data/
-│   ├── data.json           ← Verbrauchs- & Kostenannahmen
-│   ├── subsidies.json      ← Förderprogramme (automatisch aktualisiert)
-│   └── tmp/                ← Temporäre Dateien (Updater)
-├── images/                 ← Logo, Icons
-├── datenschutz.html        ← Privacy Policy
-├── impressum.html          ← Legal Notice
-├── docs/                   ← Dokumentation
-├── tests/                  ← Unit Tests
-├── .github/
-│   └── workflows/
-│       └── fetch_subsidies.yml  ← Wöchentlicher Update-Job
-├── CHANGELOG.md            ← Version History
-├── CONTRIBUTING.md         ← Contributor Guide
-├── SECURITY.md             ← Security Policy
-└── LICENSE                 ← MIT License
-```
-
----
-
-## ⚙️ Konfiguration
-
-### data.json – Verbrauchsannahmen
-```json
-{
-  "consumption": {
-    "per_person": 1000,
-    "aircon_extra": 450,
-    "wallbox_extra": 1800,
-    "ev": {
-      "model": "VW ID.4",
-      "annual_km": 15000,
-      "kwh_per_100km": 17
-    },
-    "combustion": {
-      "model": "VW Passat 1.5 TSI",
-      "litres_per_100km": 7.0,
-      "co2_per_litre": 2.3
-    }
-  },
-  "pv": {
-    "yield_per_kwp": 950,
-    "cost_per_kwp": 1600
-  },
-  "battery": {
-    "cost_per_kwh": 550
-  }
-}
-```
-
-### Förderdaten aktualisieren
-```bash
-# .env mit OPENAI_API_KEY
-OPENAI_API_KEY=sk-... python scripts/fetch_subsidies.py
-```
-
-Oder automatisch via GitHub Actions (`.github/workflows/fetch_subsidies.yml`)
-
----
-
-## 📊 Berechnungsgrundlagen
-
-### PV-Sizing
-- **Grundlogik**: `Jahresstromverbrauch / 850 kWh/kWp`
-- **Mindestgröße**: 7 kWp bei Speicher oder Wärmepumpe
-- **Dachfläche-Limit**: 6 m² pro kWp (moderne Module)
-- **Haustyp-Limits**: Reihenhaus 14 kWp, Doppelhaus 18 kWp, EFH 24 kWp
-
-### Speicher-Dimensionierung
-- **Empfehlung**: 0,9 × täglicher Stromverbrauch
-- **Clamp**: 4–15 kWh
-
-### Wärmepumpe
-- **COP-Berechnung**: Basis 3,0, Faktoren je Dämmung & Fußbodenheizung
-- **Leistung**: Heizwärmebedarf / 2.000 Vollbenutzungsstunden
-
-### Break-even-Analyse
-- Dynamische Amortisationsrechnung mit Energiepreissteigerung
-- Standardannahmen: Strom +2 %/a, Gas +3 %/a
-
----
-
-## 🔒 Datenschutz & Sicherheit
-
-- ✅ **Keine Datenerhebung** – Vollständig clientseitig
-- ✅ **Keine Cookies** – Außer technisch notwendigen
-- ✅ **Open Source** – Quellcode transparent auf GitHub
-- ✅ **GDPR-konform** – Keine Übertragung persönlicher Daten
-
-Siehe [SECURITY.md](SECURITY.md) & [datenschutz.html](datenschutz.html)
-
----
-
-## ♿ Barrierefreiheit
-
-- ✅ WCAG 2.1 Level AA angestrebt
-- ✅ Keyboard-Navigation
-- ✅ ARIA-Labels für Screenreader
-- ✅ Responsive Design für Zoombarkeit
-
----
-
-## 📈 Performance
-
-- 📦 < 100 KB (Gzipped)
-- ⚡ Keine External APIs (außer OpenAI-Updater)
-- 🎯 ~50ms Szenarien-Berechnung
-- 📊 Chart.js für Visualisierung
-
----
-
-## 🛠️ Development
-
-### Setup
-```bash
-git clone https://github.com/ckvfox/energyplanning.git
-cd energyplanning
-python -m http.server 8000
-```
-
-### Tests ausführen
-```bash
-python scripts/modernisierung_tests.py
-```
-
-### Code Audit
-Siehe [AUDIT_AND_IMPROVEMENTS.md](AUDIT_AND_IMPROVEMENTS.md)
-
-### Style Guide
-- JavaScript: camelCase, Funktionen 20-40 Zeilen
-- CSS: kebab-case, Mobile-First
-- JSON: 2-Space, kommentierbar via `// dummy`
-
----
-
-## 🤝 Mitarbeit
-
-Contributions sind willkommen! Bitte siehe [CONTRIBUTING.md](CONTRIBUTING.md) für:
-- Branch-Strategie
-- Code-Style
-- Pull-Request Prozess
-- Issue-Reporting
-
----
-
-## 📝 Lizenz
-
-[MIT License](LICENSE) – Frei nutzbar & weiterverwendbar
-
----
-
-## 🙏 Danksagungen
-
-- **Chart.js** – Datenvisualisierung
-- **html2pdf** – PDF-Export
-- **OpenAI API** – Förderdaten-Aggregation
-- Alle Contributors & Feedback-Geber
-
----
-
 ## ⚠️ Hinweise zur Nutzung
 
 Diese Anwendung bietet **orientierende Berechnungen** für die erste Planungsphase:
@@ -441,4 +242,4 @@ FPF-Zielstandard fuer neue Projekte:
 - lokale Fetcher und Tests bleiben unter `scripts/`; produktive Browser-Skripte muessen ausdruecklich dokumentiert sein
 - bestehende Deployment-Pakete unter `builds/full-deployment/` und `builds/delta-deployment/` werden nicht ohne separaten Migrationsplan verschoben
 
-Diese Hinweise sind Bestandsschutz. Sie ersetzen keine spaetere gezielte Bereinigung der doppelten README-Strukturabschnitte.
+Die Berechnungsgrundlagen werden ausschließlich in docs/CALCULATIONS.md gepflegt.

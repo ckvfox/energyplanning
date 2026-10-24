@@ -50,3 +50,14 @@ Offene Aufgaben nach Priorität. Abgeschlossene Punkte in CHANGELOG.md dokumenti
 - [x] Deployment-Pfade `builds/full-deployment/` und `builds/delta-deployment/` im Deployment-Dokument gegen FPF-Zielstandard einordnen.
 - [x] Produktive Browser-Skripte und lokale Fetch-/Testskripte in `scripts/` deutlicher dokumentieren.
 
+
+## Fachliche Modellprüfung (Audit 24.10.2026)
+
+- [ ] Energieflüsse korrigieren: Speicherverluste nicht als Einspeisung zählen; Lastbegrenzung und Kostenfolgen testen.
+- [ ] Autarkieanzeige aus Energieflüssen ableiten statt Szenario-Clamps; Heizautarkie eindeutig benennen.
+- [ ] Diagramme mit Jahresbilanz abgleichen (1.000 statt konfiguriertem Ertrag, doppelte Zusatzlasten).
+- [ ] Dimensionierungsheuristik 850 gegenüber Ertragsannahme fachlich entscheiden; ungenutzte WP-/Speicherparameter bereinigen.
+- [ ] Preis-Updater mit überprüfbaren Quellen, Stichtag und definiertem Kostenumfang absichern; Modellwerte sind derzeit nicht marktvalidiert.
+- [ ] Wirtschaftlichkeit: einfache Amortisation korrekt benennen; Preissteigerung je Energieträger und fehlende Folgekosten prüfen.
+
+Details und reproduzierbares Beispiel: docs/CALCULATIONS.md. Diese Punkte wurden dokumentiert, nicht als Teil des Dokumentationsabgleichs implementiert.

@@ -67,6 +67,12 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Check calculation documentation drift
+        run: python scripts/check_calculation_docs.py
+
+      - name: Check documented calculation examples
+        run: node --test scripts/test_calculation_docs.cjs
+
       - name: Validate data.json
         run: python -c "import json; json.load(open('data/data.json'))"
 
