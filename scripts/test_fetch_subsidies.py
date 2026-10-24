@@ -49,5 +49,23 @@ class UpdaterCompatibilityTests(unittest.TestCase):
             load_existing.assert_not_called()
 
 
+class PriceMutationPolicyTests(unittest.TestCase):
+    def test_legacy_entry_point_never_reads_writes_or_calls_api(self):
+        with patch.object(fetch_subsidy_prices, "ensure_client") as client, \
+                patch.object(fetch_subsidy_prices.DATA_PATH.__class__, "write_text") as write:
+            self.assertFalse(fetch_subsidy_prices.update_price_data())
+            client.assert_not_called()
+            write.assert_not_called()
+
+    def test_proposals_are_marked_unverified_and_do_not_write(self):
+        with patch.object(fetch_subsidy_prices, "ensure_client", return_value=object()), \
+                patch.object(fetch_subsidy_prices, "fetch_market_prices", return_value={"electricity": .4}), \
+                patch.object(fetch_subsidy_prices.DATA_PATH.__class__, "write_text") as write:
+            proposal = fetch_subsidy_prices.propose_prices()
+            self.assertEqual(proposal["status"], "unverified_model_proposal_do_not_apply")
+            self.assertEqual(proposal["values"], {"electricity": .4})
+            write.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,5 @@
 {
-  "scripts/script.js": "1ecae5bec7ba94149d32eaf02d66e6393ef8fb3530eac913b9cf75fb738dd7b2",
-  "scripts/calculation-core.js": "5f035eb55280d9a767840c29d07d321d323d0b3bd3b4bb3c80e43349c0d60778"
+  "scripts/script.js": "e66a9c931779669203713052acaacd8a84f05c6b4eb245de3eae1be08858a995",
+  "scripts/calculation-core.js": "cf4eb9867ffd75aaa64290023b6c2ab49c7464fecc09ce756d0233d4145dd225",
+  "scripts/chart-ui.js": "63f526356b43dfb4362bcd9b52ee543a33a864c0f8facdfaaa2295b925b152b3"
 }

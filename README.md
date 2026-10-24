@@ -39,7 +39,7 @@
 - 📦 **Kompakt** – 2.5 MB Gesamtgröße, ~1.5s Initial Load
 
 ### 🧪 Qualität
-- ✅ **16 Unit Tests** – Energy Balance, Costs, Utilities, Caching, Debouncing
+- ✅ **Automatisierte Prüfungen** – Energieerhaltung, Konfigurationsabgleich, DOM-Integration, Preisübernahmesperre und Service Worker
 - 📚 **Umfassende Dokumentation** – Architecture, Calculations, Deployment, Accessibility
 - 🔐 **Sichere Code-Basis** – No XSS, no external APIs (außer für Subsidies-Update)
 
@@ -55,11 +55,16 @@ python -m http.server 8000
 ```
 Dann öffnen: **http://localhost:8000**
 
-### Tests ausführen (Browser-Konsole)
-```javascript
-// Alle Unit Tests
-runAllTests();
+### Tests ausführen
+```bash
+npm ci --ignore-scripts
+npm test
+python scripts/check_calculation_docs.py
+python -m unittest discover -s scripts -p "test_fetch*.py"
 ```
+Node.js 18 oder neuer; Python-Abhängigkeiten gemäß `requirements.txt`
+(CI: Python 3.11). `npm test` prüft die echten Browser-Skripte in einer
+DOM-Testumgebung, ersetzt jedoch keine visuelle Browserabnahme.
 
 ---
 
@@ -106,7 +111,7 @@ Fest codierte Heuristiken stehen zusätzlich in `scripts/script.js` und
 unterschiedliche Berechnungsschritte.
 
 Konsistenzprüfung: `python scripts/check_calculation_docs.py` und
-`node --test scripts/test_calculation_docs.cjs`.
+`npm test`.
 Nach fachlicher Prüfung geänderter Annahmen die Tabelle und den Prüfstand mit
 `python scripts/check_calculation_docs.py --write` aktualisieren. Der Befehl
 bestätigt keine fachliche Richtigkeit und ersetzt keine Prüfung der Formeln.
@@ -160,13 +165,7 @@ Referenzstand.
 
 ## 🛠️ Development & Deployment
 
-### Tests ausführen
-```javascript
-// In Browser-Konsole:
-runAllTests();
-
-// Output: ✅ 16 Tests passed
-```
+Tests: siehe Quick Start und [Berechnungsgrundlagen](docs/CALCULATIONS.md).
 
 ### Cache-Performance monitoring
 ```javascript

@@ -24,7 +24,7 @@ def expected_table():
 def source_hashes():
     return {
         path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-        for path in ('scripts/script.js', 'scripts/calculation-core.js')
+        for path in ('scripts/script.js', 'scripts/calculation-core.js', 'scripts/chart-ui.js')
     }
 
 

@@ -1,0 +1,10 @@
+{
+  "name": "energyplanning-tests",
+  "private": true,
+  "scripts": {
+    "test": "node --test scripts/test_calculation_docs.cjs scripts/test_frontend.cjs scripts/test_service_worker.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

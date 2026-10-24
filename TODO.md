@@ -53,11 +53,14 @@ Offene Aufgaben nach Priorität. Abgeschlossene Punkte in CHANGELOG.md dokumenti
 
 ## Fachliche Modellprüfung (Audit 24.10.2026)
 
-- [ ] Energieflüsse korrigieren: Speicherverluste nicht als Einspeisung zählen; Lastbegrenzung und Kostenfolgen testen.
-- [ ] Autarkieanzeige aus Energieflüssen ableiten statt Szenario-Clamps; Heizautarkie eindeutig benennen.
-- [ ] Diagramme mit Jahresbilanz abgleichen (1.000 statt konfiguriertem Ertrag, doppelte Zusatzlasten).
-- [ ] Dimensionierungsheuristik 850 gegenüber Ertragsannahme fachlich entscheiden; ungenutzte WP-/Speicherparameter bereinigen.
-- [ ] Preis-Updater mit überprüfbaren Quellen, Stichtag und definiertem Kostenumfang absichern; Modellwerte sind derzeit nicht marktvalidiert.
-- [ ] Wirtschaftlichkeit: einfache Amortisation korrekt benennen; Preissteigerung je Energieträger und fehlende Folgekosten prüfen.
+- [x] Speicherverluste, Lastbegrenzung und Restfüllstand konsistent bilanzieren und testen.
+- [x] Autarkie aus Energieflüssen ableiten; WP-Stromanteil statt irreführender Heizautarkie.
+- [x] Diagramme und Jahreskennzahlen aus einem normierten Stundenmodell erzeugen; keine doppelten Lasten.
+- [x] Dimensionierung und Ertrag vereinheitlichen; wirksamen WP-Faktor in Konfiguration übernehmen.
+- [x] Automatische Preisübernahme stoppen und Quellen-/Stichtags-/Umfangsreview dokumentieren.
+- [x] Einfache Amortisation korrekt benennen; Preissteigerung je Energieträger trennen und fehlende Folgekosten anzeigen.
+- [ ] PV-, Speicher- und WP-Komplettpreise anhand passender, datierter Angebote mit abgegrenztem Leistungsumfang validieren (derzeit ungeprüfte Modellwerte).
+- [ ] Synthetische Last-/PV-Profile anhand regionaler Wetter- und Messdaten validieren; Ladeleistung, Standby und Degradation ergänzen, falls Genauigkeit benötigt wird.
+- [ ] Vollständige Lebenszykluskostenrechnung inkl. Wartung, Ersatz, Finanzierung und Förderung nur mit belegten Eingaben entwickeln.
 
-Details und reproduzierbares Beispiel: docs/CALCULATIONS.md. Diese Punkte wurden dokumentiert, nicht als Teil des Dokumentationsabgleichs implementiert.
+Details, Modellgrenzen und Herkunft: docs/CALCULATIONS.md.

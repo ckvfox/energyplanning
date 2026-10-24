@@ -15,7 +15,7 @@
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="favicon.ico">
     <title>Energetische Modernisierung – Rechner & Kostenanalyse</title>
-    <link rel="stylesheet" href="style.css?v=2026-09-29">
+    <link rel="stylesheet" href="style.css?v=2026-10-24">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -202,12 +202,14 @@
 
                 <div class="chart-container">
                     <div class="chart-area">
+                        <p class="note">Synthetische, normierte Last- und PV-Profile: keine Wetterprognose. Monatswerte und Kennzahlen stammen aus derselben Stundenbilanz.</p>
                         <canvas id="yearChart" role="img" aria-label="Jährliche Energiebilanz mit PV-Erzeugung, Verbrauch, Eigenverbrauch und Netzbezug"></canvas>
                         <div id="day-toggle" class="day-toggle hidden" role="group" aria-label="Jahreszeit für Tagesansicht">
                           <button data-season="summer" class="day-btn active" aria-pressed="true">Sommer</button>
                           <button data-season="winter" class="day-btn" aria-pressed="false">Winter</button>
                         </div>
-                        <canvas id="dayChart" role="img" aria-label="Tägliche Energiebilanz mit stündlichen Werten"></canvas>
+                        <p class="note">Modelltage: 15. Januar bzw. 15. Juli, mit fortgeschriebenem Speicherfüllstand. Keine Messwerte.</p>
+                        <canvas id="dayChart" role="img" aria-label="Synthetischer Modelltag mit stündlichen Energiewerten"></canvas>
                     </div>
                 </div>
             </div>
@@ -230,11 +232,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-JUh163oCRItcbPme8pYnROHQMC6fNKTBWtRG3I3I0erJkzNgL7uxKlNwcrcFKeqF" crossorigin="anonymous"></script>
-    <script src="scripts/performance.js?v=2026-09-29"></script>
-    <script src="scripts/calculation-core.js?v=2026-09-29"></script>
-    <script src="scripts/chart-ui.js?v=2026-09-29"></script>
-    <script src="scripts/pdf-export.js?v=2026-09-29"></script>
-    <script src="scripts/subsidy-ui.js?v=2026-09-29"></script>
-    <script src="scripts/script.js?v=2026-09-29"></script>
+    <script src="scripts/performance.js?v=2026-10-24"></script>
+    <script src="scripts/calculation-core.js?v=2026-10-24"></script>
+    <script src="scripts/chart-ui.js?v=2026-10-24"></script>
+    <script src="scripts/pdf-export.js?v=2026-10-24"></script>
+    <script src="scripts/subsidy-ui.js?v=2026-10-24"></script>
+    <script src="scripts/script.js?v=2026-10-24"></script>
 </body>
 </html>

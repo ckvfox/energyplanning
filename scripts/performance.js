@@ -10,7 +10,7 @@
 // ========== CACHING SYSTEM ==========
 
 class ResultCache {
-    constructor(storageKey = 'energyCalcCache', maxSize = 50) {
+    constructor(storageKey = 'energyCalcCache-v2', maxSize = 50) {
         this.storageKey = storageKey;
         this.maxSize = maxSize;
         this.memoryCache = new Map();

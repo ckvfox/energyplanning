@@ -44,7 +44,9 @@ def build(output: Path, files: list[Path]) -> None:
     for relative in files:
         source, target = ROOT / relative, output / relative
         target.parent.mkdir(parents=True, exist_ok=True)
-        if source.suffix == ".js":
+        # rjsmin 1.2.4 changes literal whitespace in script.js nested templates.
+        # Preserve this orchestration source verbatim until a parser-based minifier is adopted.
+        if source.suffix == ".js" and relative != Path("scripts/script.js"):
             target.write_text(rjsmin.jsmin(source.read_text(encoding="utf-8")), encoding="utf-8")
         elif source.suffix == ".css":
             target.write_text(csscompressor.compress(source.read_text(encoding="utf-8")), encoding="utf-8")
