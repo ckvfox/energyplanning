@@ -58,7 +58,7 @@ ErrorDocument 403 default
   </FilesMatch>
 
   <FilesMatch "\.(?:html|json)$">
-    Header set Cache-Control "public, max-age=3600, must-revalidate"
+    Header set Cache-Control "no-cache, max-age=0, must-revalidate"
   </FilesMatch>
 
   <Files "service-worker.js">
@@ -68,8 +68,8 @@ ErrorDocument 403 default
 
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/html "access plus 1 hour"
-  ExpiresByType application/json "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/json "access plus 0 seconds"
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType text/javascript "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"

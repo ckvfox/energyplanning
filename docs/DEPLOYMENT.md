@@ -80,6 +80,67 @@ docker run -p 8080:80 energyplanning
 
 ## 📦 Production Deployment
 
+### Automatisches FTPS-Deployment von main
+
+`.github/workflows/auto-deploy.yml` startet nach einem Push auf `main`, manuell
+oder nach einem erfolgreichen `Update subsidies.json`-Lauf auf `main`. Der
+letzte Trigger ist notwendig, weil Bot-Commits mit `GITHUB_TOKEN` keinen neuen
+Push-Workflow starten. Feature-Branches, Pull Requests und fehlgeschlagene
+Monatslaeufe erhalten keinen Produktionsupload.
+
+Der bestehende Schutz fuer Modell-/Preisannahmen bleibt erhalten: der
+Monatslauf aktualisiert Foerderprogramme, keine Modellpreise.
+
+Nach Erwerb der gemeinsamen Sperre `energyplanning-production` wird der aktuelle
+main-Stand ausgecheckt und vollstaendig geprueft: Ruff, Berechnungsmatrix,
+Updater-/Security-/Deployment-Tests, Service Worker, beide Daten-JSONs und FPF.
+`build_deployment.py --full-only` erzeugt dann das minifizierte Vollpaket in
+`builds/full-deployment/` und leert auch den Delta-Ordner. Dieser explizite Modus
+ist unabhaengig davon, ob der Commit produktive Dateien veraendert.
+
+Der Upload verwendet den getesteten gemeinsamen Transport aus RealityCheck,
+fest gebunden an `edd3e6a839d172de4163473492dd0e5593244a82`, mit einem sparsamen
+Checkout nur der beiden benoetigten Python-Dateien. EnergyPlanning validiert
+sein Paket selbst gegen die eigene produktive Positivliste. Eine zweite,
+auseinanderlaufende FTP-Implementierung wird dadurch vermieden.
+
+Festes Ziel: `/energyplanning.great-site.net/htdocs`; eigener Hash-Checkpoint:
+`.energyplanning-auto-deploy.json`. Die erste erfolgreiche Ausfuehrung uebertraegt
+das Vollpaket; spaeter werden nur neue, geaenderte oder auf dem Server fehlende
+Dateien uebertragen. SHA-256 und Groessen werden abgeglichen. TLS-Zertifikate
+werden geprueft, Datenverbindungen verschluesselt und Verbindungsabbrueche
+begrenzt mit neuer Verbindung wiederholt. Keine Serverdateien werden geloescht.
+
+Erforderliche Repository-Secrets unter Settings → Secrets and variables → Actions:
+
+| Name | Format |
+| --- | --- |
+| `FTP_SERVER` | Nur FTP-Hostname, ohne Protokoll, Benutzernamen oder Verzeichnispfad |
+| `FTP_USERNAME` | FTP-Kontoname fuer diese Hosting-Instanz |
+| `FTP_PASSWORD` | FTP-Passwort, ausschliesslich direkt in GitHub hinterlegen |
+
+`FTP_DIR` ist nicht erforderlich; der Zielpfad ist absichtlich fest im Adapter
+eingetragen. Keine lokalen Secret-Dateien werden geladen. Ein fehlendes Secret
+stoppt den Workflow mit dem fehlenden Variablennamen, ohne Werte auszugeben.
+
+Der GitHub-Lauf zeigt den getesteten Commit und Status. Ein erfolgreicher
+Beleg `builds/auto-deploy-receipt.json` wird 30 Tage als Actions-Artefakt
+aufbewahrt. Ein manuell gestarteter Lauf kann mit `force` das Vollpaket erneut
+synchronisieren. Bei Upload-Abbruch kann ein Teilstand vorliegen; ein erneuter
+Lauf gleicht ihn anhand des letzten erfolgreichen Checkpoints wieder ab.
+
+Damit Browser Aenderungen sehen, erzeugt der Build in HTML und Worker
+inhaltsbasierte Versionen fuer CSS/JavaScript und referenzierte Bilder. Der
+Offline-Cache erhaelt eine vom produktiven Paket abgeleitete Kennung. HTML und
+JSON muessen beim erneuten Abruf revalidiert werden; versionierte Assets
+behalten die lange Cache-Laufzeit. Quell-URLs und lokale Full-/Delta-Pfade
+werden nicht migriert.
+
+Framework-Kandidat: gepruefter gemeinsamer FTPS-Transport mit projekt-eigenen
+Positivlisten, getrennten Zielpfaden und Checkpoints, unveraenderlichen Pins
+und deterministischen Cache-Versionen.
+
+
 Die bestehenden Verzeichnisse `builds/full-deployment/` und
 `builds/delta-deployment/` sind lokale Übergabebereiche und kein produktiver
 Webroot. Sie werden nicht versioniert. Die bestehenden lokalen Pfade bleiben

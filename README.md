@@ -165,6 +165,23 @@ Referenzstand.
 
 ## 🛠️ Development & Deployment
 
+### Automatisches InfinityFree-Deployment
+
+Pushes auf `main` starten `EnergyPlanning Auto Deploy`: Ruff, Berechnungs- und
+Offline-Tests, DOM-Integration, Dokumentationsabgleich und FPF muessen bestehen,
+bevor das produktive Paket nach `/energyplanning.great-site.net/htdocs` ueber
+FTPS uebertragen wird. Nach dem ersten Vollabgleich werden unveraenderte
+Dateien uebersprungen; Serverdateien werden nicht geloescht. Die Ordner
+`builds/full-deployment/` und `builds/delta-deployment/` bleiben erhalten.
+
+Auch ein erfolgreicher monatlicher Foerderabruf auf `main` startet den
+Deployment-Workflow ueber `workflow_run`. Beide Workflows verwenden eine
+gemeinsame Produktionssperre. Die Sperre fuer automatische Modellpreis-
+aenderungen bleibt erhalten. Im Repository werden `FTP_SERVER`, `FTP_USERNAME`
+und `FTP_PASSWORD` als Actions-Secrets benoetigt; echte Werte gehoeren weder in
+Dateien noch in den Chat. Details: [Deployment](docs/DEPLOYMENT.md).
+
+
 Tests: siehe Quick Start und [Berechnungsgrundlagen](docs/CALCULATIONS.md).
 
 ### Cache-Performance monitoring

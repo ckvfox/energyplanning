@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import os
 import re
 import shutil
@@ -52,10 +53,35 @@ def build(output: Path, files: list[Path]) -> None:
             target.write_text(csscompressor.compress(source.read_text(encoding="utf-8")), encoding="utf-8")
         else:
             shutil.copy2(source, target)
+    # Content-derived URLs change only when their asset bytes change.
+    versions = {
+        p.as_posix(): hashlib.sha256((output / p).read_bytes()).hexdigest()[:12]
+        for p in files if p.suffix.lower() in {".js", ".css", ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico"}
+        and p.name != "service-worker.js"
+    }
+    for relative in files:
+        if relative.suffix != ".html" and relative.name != "service-worker.js":
+            continue
+        target = output / relative
+        text = target.read_text(encoding="utf-8")
+        for asset, version in versions.items():
+            pattern = r"([\"'])(\./)?" + re.escape(asset) + r"(?:\?v=[^\"'\s)]+)?([\"'])"
+            text = re.sub(pattern, lambda match: f"{match[1]}{match[2] or ''}{asset}?v={version}{match[3]}", text)
+        target.write_text(text, encoding="utf-8")
+    # Rotating the worker cache also refreshes offline fallbacks after data updates.
+    worker = output / "service-worker.js"
+    if worker.is_file():
+        digest = hashlib.sha256()
+        for relative in files:
+            digest.update(relative.as_posix().encode())
+            digest.update((output / relative).read_bytes())
+        text = re.sub(r"(const CACHE_NAME\s*=\s*)['\"][^'\"]+['\"]",
+                      rf"\g<1>'energyplanning-{digest.hexdigest()[:16]}'", worker.read_text(encoding="utf-8"))
+        worker.write_text(text, encoding="utf-8")
 
 
 def git(*args: str) -> str:
-    return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
+    return subprocess.check_output(["git", "--work-tree=" + str(ROOT), *args], cwd=ROOT, text=True).strip()
 
 
 def retry_readonly(function, path, exc_info):
@@ -66,10 +92,40 @@ def retry_readonly(function, path, exc_info):
     function(path)
 
 
+def refresh_packages(files: list[Path], delta: list[Path]) -> None:
+    builds = ROOT / "builds"
+    if builds.is_symlink() or (builds.exists() and builds.resolve() != ROOT / "builds"):
+        raise SystemExit("Unsafe builds directory.")
+    targets = [builds / "full-deployment", builds / "delta-deployment"]
+    for target in targets:
+        if target.is_symlink() or target.resolve() != ROOT / "builds" / target.name:
+            raise SystemExit("Unsafe package target.")
+    # Finish compilation first; failures leave the previous handover intact.
+    with tempfile.TemporaryDirectory(prefix="energyplanning-build-") as temporary:
+        staged = Path(temporary)
+        full, patch = staged / "full", staged / "delta"
+        build(full, files)
+        patch.mkdir()
+        for relative in delta:
+            target = patch / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(full / relative, target)
+        for target in targets:
+            if target.exists():
+                for child in target.iterdir():
+                    if child.is_dir() and not child.is_symlink():
+                        shutil.rmtree(child, onerror=retry_readonly)
+                    else:
+                        child.unlink()
+        shutil.copytree(full, targets[0], dirs_exist_ok=True)
+        shutil.copytree(patch, targets[1], dirs_exist_ok=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build a minified payload or refresh local Full/Delta FTP packages.")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--output-dir", type=Path, help="New external full-payload directory.")
+    mode.add_argument("--full-only", action="store_true", help="Refresh canonical full package for automation; clear delta.")
     mode.add_argument("--base-ref", help="Explicit Git baseline before the changes to deliver in the local delta.")
     args = parser.parse_args()
     files = payload_files()
@@ -81,6 +137,11 @@ def main() -> int:
             raise SystemExit("Output directory already exists.")
         build(output, files)
         print(output)
+        return 0
+
+    if args.full_only:
+        refresh_packages(files, [])
+        print(f"Full: {len(files)} productive files; Delta: 0 (explicit full-only mode)")
         return 0
 
     base = git("rev-parse", "--verify", args.base_ref + "^{commit}")
@@ -111,32 +172,7 @@ def main() -> int:
     ]
     if productive_deleted:
         raise SystemExit("Productive deletions require an explicit removal plan: " + ", ".join(productive_deleted))
-    builds = ROOT / "builds"
-    if builds.is_symlink() or (builds.exists() and builds.resolve() != ROOT / "builds"):
-        raise SystemExit("Unsafe builds directory.")
-    targets = [builds / "full-deployment", builds / "delta-deployment"]
-    for target in targets:
-        if target.is_symlink() or target.resolve() != ROOT / "builds" / target.name:
-            raise SystemExit("Unsafe package target.")
-    # Finish compilation first; failures leave the previous handover intact.
-    with tempfile.TemporaryDirectory(prefix="energyplanning-build-") as temporary:
-        staged = Path(temporary)
-        full, patch = staged / "full", staged / "delta"
-        build(full, files)
-        patch.mkdir()
-        for relative in delta:
-            target = patch / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(full / relative, target)
-        for target in targets:
-            if target.exists():
-                for child in target.iterdir():
-                    if child.is_dir() and not child.is_symlink():
-                        shutil.rmtree(child, onerror=retry_readonly)
-                    else:
-                        child.unlink()
-        shutil.copytree(full, targets[0], dirs_exist_ok=True)
-        shutil.copytree(patch, targets[1], dirs_exist_ok=True)
+    refresh_packages(files, delta)
     print(f"Baseline: {base}; HEAD: {git('rev-parse', 'HEAD')}")
     print(f"Full: {len(files)} files; Delta: {len(delta)} files")
     for relative in delta:

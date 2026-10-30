@@ -17,3 +17,6 @@ node_modules/
 # Deployment packaging (local-only, never commit)
 builds/
 deployment-delta-*/
+
+# Pinned CI-only FTPS transport checkout
+.deployment-tools/

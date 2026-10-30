@@ -4,6 +4,13 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 
 ## Unreleased
 
+### Deployment
+- Add automatic, test-gated FTPS deployment after main pushes and successful monthly subsidy updates, using a shared production lock and the fixed EnergyPlanning subdomain webroot.
+- Reuse the SHA-pinned, certificate-verified RealityCheck transport with an EnergyPlanning allowlist and isolated hash checkpoint; skip unchanged files, bound reconnects and never delete remote content.
+- Add full-only canonical packaging, deterministic asset/worker cache fingerprints, HTML/JSON revalidation and offline deployment regressions. Preserve upstream calculation governance, verbatim script.js packaging and built-payload DOM tests.
+- Pin LF checkout bytes for the three reviewed calculation sources so Windows and Linux validate the same unchanged review hashes.
+
+
 ### Calculation consistency (2026-10-24)
 - Replaced divergent annual/chart heuristics with a shared normalized synthetic hourly balance; account for PV charging, discharge losses, load limits and year-end battery inventory.
 - Removed forced autarky ranges; derive WP PV share from simultaneous energy supply rather than gas replacement. Charge investment for the same storage capacity used in the model.

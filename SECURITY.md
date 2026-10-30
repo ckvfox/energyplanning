@@ -56,6 +56,18 @@ Keine Zugangsdaten, Tokens, Sitzungsdaten oder produktiven Konfigurationen in Re
 
 HTTPS, restriktive Security-Header, aktuelle Abhaengigkeiten und eine gepruefte `.htaccess` sind fuer die produktive InfinityFree-Instanz verbindlich.
 
+## Automatische Veroeffentlichung
+
+Uploads laufen nur fuer den aktuellen main-Stand nach bestandenen Tests und
+FPF-Produktionspruefung. Monatsabruf und Deployment teilen eine Sperre.
+FTPS-Zugangsdaten stehen nur im Upload-/Konfigurationsschritt als GitHub-Secrets
+zur Verfuegung; lokale Secret-Dateien werden nicht geladen. Der Transport ist
+an einen unveraenderlichen Commit gebunden, prueft Zertifikate, verschluesselt
+Datenverbindungen und protokolliert keine Serverantworten oder Geheimniswerte.
+Nur die eigene produktive Positivliste wird uebertragen; es gibt keine
+Remote-Loeschungen. Der erfolgreiche Vergleichsstand wird erst nach allen
+Transfers und Groessenpruefungen aktualisiert.
+
 ## Backup Strategy
 
 Vor produktiven Aenderungen einen wiederherstellbaren Stand der veroeffentlichten Dateien sichern. Backups werden nicht im Repository oder im Webroot gespeichert.

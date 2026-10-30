@@ -1,0 +1,4 @@
+# Preserve the reviewed calculation bytes across Windows and Linux checkouts.
+scripts/script.js text eol=lf
+scripts/calculation-core.js text eol=lf
+scripts/chart-ui.js text eol=lf
