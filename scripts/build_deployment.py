@@ -19,6 +19,9 @@ ROOT_FILES = [
     "sitemap.xml", ".htaccess", "service-worker.js", "favicon.ico",
     "google60f6cdba136e03e9.html", ".well-known/security.txt",
 ]
+IMAGE_FILES = [
+    "images/logo.png", "images/modernisierung-technologien.png", "images/og-energyplanning.png",
+]
 BROWSER_SCRIPTS = [
     "script.js", "performance.js", "calculation-core.js",
     "chart-ui.js", "pdf-export.js", "subsidy-ui.js",
@@ -29,10 +32,7 @@ def payload_files() -> list[Path]:
     files = [Path(name) for name in ROOT_FILES + ["style.css"]]
     files += [Path("scripts") / name for name in BROWSER_SCRIPTS]
     files += [Path("data/data.json"), Path("data/subsidies.json")]
-    files += [
-        p.relative_to(ROOT) for p in (ROOT / "images").rglob("*")
-        if p.is_file() and p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".ico"}
-    ]
+    files += [Path(name) for name in IMAGE_FILES]
     for relative in files:
         source = ROOT / relative
         if not source.is_file() or source.is_symlink():

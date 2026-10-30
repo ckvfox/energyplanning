@@ -92,6 +92,8 @@ class DeploymentTests(unittest.TestCase):
         self.assertNotIn("scripts/deploy_site.py", files)
         self.assertNotIn("scripts/test_deployment.py", files)
         self.assertIn("service-worker.js", files)
+        self.assertEqual({name for name in files if name.startswith("images/")}, {
+            "images/logo.png", "images/modernisierung-technologien.png", "images/og-energyplanning.png"})
         self.assertIn("data/subsidies.json", files)
         self.assertIn(".well-known/security.txt", files)
         for name in ("data/data.json", "data/subsidies.json"):

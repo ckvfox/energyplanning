@@ -82,6 +82,16 @@ docker run -p 8080:80 energyplanning
 
 ### Automatisches FTPS-Deployment von main
 
+Positivlisten-Korrektur: Bilder werden ausschliesslich ueber `IMAGE_FILES`
+registriert (Logo, Technologie-Banner, Open-Graph-Bild). Der erste 24-Dateien-
+Upload enthielt wegen der frueheren generischen images/-Regel zwei unreferenzierte
+ChatGPT-Bildentwuerfe. Diese gehoeren nicht mehr zum Paket; der aktuelle
+Website-Payload umfasst 22 Dateien. Bereits vorhandene Serverdateien werden
+nicht automatisch entfernt. Die separate versteckte FTPS-Vergleichsdatei
+enthaelt nur Pfade, SHA-256, Groessen und Commit; die bestehende .htaccess
+sperrt versteckte Pfade gegen HTTP-Zugriff.
+
+
 Live-Abnahme am 30.10.2026: [GitHub-Lauf 41089525995](https://github.com/ckvfox/energyplanning/actions/runs/41089525995)
 war fuer Commit `7d48275d8e95380b21dfa48690235237e57f76e2` erfolgreich.
 Alle 24 produktiven Dateien wurden nach `/energyplanning.great-site.net/htdocs`

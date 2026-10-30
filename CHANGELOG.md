@@ -5,6 +5,7 @@ Alle wesentlichen Änderungen an diesem Projekt werden in dieser Datei dokumenti
 ## Unreleased
 
 ### Deployment
+- Restrict productive images to the three explicitly referenced assets; do not automatically publish draft files merely because they are in images/. Existing remote files remain untouched.
 - Add automatic, test-gated FTPS deployment after main pushes and successful monthly subsidy updates, using a shared production lock and the fixed EnergyPlanning subdomain webroot.
 - Reuse the SHA-pinned, certificate-verified RealityCheck transport with an EnergyPlanning allowlist and isolated hash checkpoint; skip unchanged files, bound reconnects and never delete remote content.
 - Add full-only canonical packaging, deterministic asset/worker cache fingerprints, HTML/JSON revalidation and offline deployment regressions. Preserve upstream calculation governance, verbatim script.js packaging and built-payload DOM tests.
