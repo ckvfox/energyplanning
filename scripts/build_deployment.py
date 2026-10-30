@@ -66,7 +66,7 @@ def build(output: Path, files: list[Path]) -> None:
         text = target.read_text(encoding="utf-8")
         for asset, version in versions.items():
             pattern = r"([\"'])(\./)?" + re.escape(asset) + r"(?:\?v=[^\"'\s)]+)?([\"'])"
-            text = re.sub(pattern, lambda match: f"{match[1]}{match[2] or ''}{asset}?v={version}{match[3]}", text)
+            text = re.sub(pattern, lambda match, asset=asset, version=version: f"{match[1]}{match[2] or ''}{asset}?v={version}{match[3]}", text)
         target.write_text(text, encoding="utf-8")
     # Rotating the worker cache also refreshes offline fallbacks after data updates.
     worker = output / "service-worker.js"

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import ftplib
 import hashlib
 import importlib.util
 import json
@@ -59,7 +60,7 @@ def main() -> int:
         RECEIPT.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         print(f"FTPS complete: {len(result['uploaded_files'])} uploaded, {result['skipped_files']} unchanged, 0 deleted")
         return 0
-    except Exception as exc:
+    except (OSError, ValueError, ImportError, RuntimeError, ftplib.Error, EOFError) as exc:
         print(f"EnergyPlanning deployment failed ({type(exc).__name__}); no successful deployment receipt written.")
         return 1
 
