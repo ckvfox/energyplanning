@@ -82,6 +82,16 @@ docker run -p 8080:80 energyplanning
 
 ### Automatisches FTPS-Deployment von main
 
+Live-Abnahme am 30.10.2026: [GitHub-Lauf 41089525995](https://github.com/ckvfox/energyplanning/actions/runs/41089525995)
+war fuer Commit `7d48275d8e95380b21dfa48690235237e57f76e2` erfolgreich.
+Alle 24 produktiven Dateien wurden nach `/energyplanning.great-site.net/htdocs`
+uebertragen, keine geloescht. CI, FPF und DOM-Integration des tatsaechlichen
+Builds waren gruen. Live-Browserpruefung: gehashte Assets geladen, Berechnung
+mit drei Szenarien erfolgreich, keine Konsolenfehler. Die bestehende
+Berechnungs-Review-Basis blieb bytegenau unveraendert. Es wurde kein zusaetzlicher
+Foerder-/KI-Abruf gestartet.
+
+
 `.github/workflows/auto-deploy.yml` startet nach einem Push auf `main`, manuell
 oder nach einem erfolgreichen `Update subsidies.json`-Lauf auf `main`. Der
 letzte Trigger ist notwendig, weil Bot-Commits mit `GITHUB_TOKEN` keinen neuen

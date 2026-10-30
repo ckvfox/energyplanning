@@ -37,7 +37,7 @@ Offene Aufgaben nach Priorität. Abgeschlossene Punkte in CHANGELOG.md dokumenti
 
 ## ✅ Erledigt (zuletzt)
 
-- [x] Automatischen main-/Monatslauf-FTPS-Workflow mit Test-/FPF-Gates und gemeinsamem, SHA-gepinntem Transport implementieren; erster Live-Upload noch zu pruefen.
+- [x] Automatischen main-/Monatslauf-FTPS-Workflow mit Test-/FPF-Gates und gemeinsamem, SHA-gepinntem Transport implementieren. Erster Live-Lauf 41089525995 erfolgreich: 24 produktive Dateien, korrektes Subdomain-Ziel, keine Loeschungen; aktuelle Berechnung und Assets im Browser geprueft.
 
 - [x] WCAG 2.1 Level AA – Accessibility vollständig implementiert (v1.3.0)
 - [x] robots.txt, sitemap.xml, .well-known/security.txt angelegt
