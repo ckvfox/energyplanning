@@ -88,6 +88,8 @@ mit neuer Verbindung wiederholt. Nur bereits groessengepruefte Uploads werden
 innerhalb des Laufs uebersprungen; bei dauerhaftem Fehler bleibt der bisherige
 Checkpoint erhalten. Das Protokoll nennt betroffene produktive Pfade und
 Bytezahlen, aber keine Serverantworten oder Zugangsdaten.
+Ein veraenderter Direkt-Upload wird zunaechst ueber eine versteckte temporaere
+Datei wiederholt, geprueft, an den Zielpfad umbenannt und dort erneut geprueft.
 
 Positivlisten-Korrektur: Bilder werden ausschliesslich ueber `IMAGE_FILES`
 registriert (Logo, Technologie-Banner, Open-Graph-Bild). Der erste 24-Dateien-

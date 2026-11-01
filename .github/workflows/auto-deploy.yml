@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ckvfox/realitycheck
-          ref: caabbb5e906d3e3a60efa6139a65190569597e34
+          ref: 7e01a1d46eaffd0e50c99f1afee270fc21a781f1
           path: .deployment-tools
           persist-credentials: false
           sparse-checkout-cone-mode: false
