@@ -369,36 +369,10 @@ async function determineSubsidies(houseAge, bundesland, userSelections) {
 
 
     const baseMessages = [
-
-        'Photovoltaik wird bundesweit über 0 % MwSt begünstigt, derzeit gibt es keine direkten Zuschüsse.',
-
-        'Batteriespeicher werden bundesweit derzeit nicht gefördert. Kommunale Programme sind möglich.'
-
+        'Förderkredite, direkte Zuschüsse und steuerliche Vergünstigungen sind getrennt zu prüfen. Kredite sind zurückzuzahlen.',
+        'Förderfähigkeit hängt unter anderem von Eigentum, Nutzung, Gebäudealter, Technik und Antragstermin ab. Vor Auftrag und Umsetzung die aktuelle Programmseite prüfen.',
+        'Förderbeträge und steuerliche Vorteile sind nicht in der Energieberechnung enthalten. Dieselben Kosten dürfen nicht ohne Prüfung mehrfach gefördert werden.'
     ];
-
-
-
-    if (userSelections.heatpump) {
-
-        if (!Number.isNaN(houseAge) && houseAge < 2024) {
-
-            baseMessages.push('Wärmepumpen sind über die BEG förderfähig, 30–70 % Zuschuss je nach Austausch und Einkommen.');
-
-        } else {
-
-            baseMessages.push('Wärmepumpen im Neubau sind nicht förderfähig.');
-
-        }
-
-    }
-
-
-
-    baseMessages.push('Heizungsoptimierung inklusive hydraulischem Abgleich ist mit ca. 15 % förderfähig.');
-
-    baseMessages.push('Dämmung, Fenster, Türen sind als Effizienzmaßnahmen mit ca. 15–20 % förderfähig.');
-
-
 
     const selectedPrograms = [];
 
@@ -427,7 +401,9 @@ async function determineSubsidies(houseAge, bundesland, userSelections) {
             if (items.length > 0) {
 
                 items.forEach((item) => {
-                    selectedPrograms.push(item);
+                    if (!selectedPrograms.some((existing) => item.program_id && existing.program_id === item.program_id)) {
+                        selectedPrograms.push(item);
+                    }
                 });
             }
         });

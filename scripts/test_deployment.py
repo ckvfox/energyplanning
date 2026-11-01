@@ -90,13 +90,12 @@ class DeploymentTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 deploy_site.manifest(package)
 
-    def test_workflow_gates_and_monthly_completion_trigger(self):
+    def test_workflow_gates_and_research_cannot_deploy(self):
         root = Path(__file__).resolve().parents[1]
         text = (root / ".github/workflows/auto-deploy.yml").read_text(encoding="utf-8")
         self.assertIn("branches: [main]", text)
-        self.assertIn('workflows: ["Update subsidies.json"]', text)
-        self.assertIn("github.event.workflow_run.conclusion == 'success'", text)
-        self.assertIn("github.event.workflow_run.head_repository.full_name == github.repository", text)
+        self.assertNotIn('workflow_run', text)
+        self.assertIn('python scripts/validate_subsidies.py', text)
         self.assertIn("ref: 7e01a1d46eaffd0e50c99f1afee270fc21a781f1", text)
         self.assertLess(text.index("python -m ruff check"), text.index("python scripts/deploy_site.py"))
         self.assertLess(text.index("fpf_project_compliance.py"), text.index("python scripts/deploy_site.py"))
@@ -104,6 +103,10 @@ class DeploymentTests(unittest.TestCase):
         monthly = (root / ".github/workflows/fetch_subsidies.yml").read_text(encoding="utf-8")
         self.assertIn("group: energyplanning-production", monthly)
         self.assertNotIn("OPENAI_API_KEY", text)
+        self.assertIn('contents: read', monthly)
+        self.assertIn('--proposal-output', monthly)
+        self.assertNotIn('git push', monthly)
+        self.assertNotIn('git commit', monthly)
 
     def test_productive_registry_excludes_automation_and_tests(self):
         files = {p.as_posix() for p in builder.payload_files()}

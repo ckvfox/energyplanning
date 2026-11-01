@@ -1,0 +1,82 @@
+{
+  "status": "unverified_withdrawn_do_not_apply",
+  "reviewed_on": "2026-11-01",
+  "reason": "Kein belastbarer Nachweis für die konkrete bisherige Bezeichnung, Förderart und Zugänglichkeit; keine Aussage, dass jedes ähnlich benannte Programm nicht existiert.",
+  "entries": {
+    "pv": [
+      {
+        "title": "NRW.BANK.Wohnraum.Bauen",
+        "type": "Land",
+        "description": "Förderprogramm der NRW.BANK zur Finanzierung von PV-Anlagen, Batteriespeichern und energetischer Sanierung wie Dämmung und Fenstern bei Wohngebäuden.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "KfW-Programm 271/272 – Erneuerbare Energien – Standard",
+        "type": "Bund",
+        "description": "KfW-Förderkredite und Zuschüsse für Photovoltaik-Anlagen, Batteriespeicher, Wärmepumpen und Heizungsoptimierungen bei Bestandswohngebäuden.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "BAFA Heizungsoptimierung und Erneuerbare Energien",
+        "type": "Bund",
+        "description": "Zuschüsse für Wärmepumpen, Heizungsoptimierung und Solarthermie im Wohngebäudebereich, steuerbare Zuschüsse auch für Batteriespeicher in Verbindung mit PV-Anlagen.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
+    "battery": [],
+    "heatpump": [
+      {
+        "title": "NRW.BANK Förderprogramm Energieeffizient Sanieren – Zuschuss",
+        "type": "Land",
+        "description": "Förderung für energieeffiziente Sanierungen von Wohngebäuden, einschließlich der Installation von Wärmepumpen als effiziente Heiztechnik.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "Marktanreizprogramm (MAP) – Bundesförderung für effiziente Gebäude",
+        "type": "Bund",
+        "description": "Bundesweites Förderprogramm zur Installation von Wärmepumpen und anderen effizienten Heizsystemen in Wohngebäuden, unterstützt durch Zuschüsse und Kredite.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "NRW.BANK Energieeffizienz- und Klimaschutzprogramm",
+        "type": "Land",
+        "description": "Darlehensprogramm der NRW.BANK zur Finanzierung energiesparender Maßnahmen in Wohngebäuden, mit Fokus auf Wärmepumpen und weitere Sanierungsmaßnahmen.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      }
+    ],
+    "heating_optimization": [
+      {
+        "title": "Wohngebäude-Programm NRW",
+        "type": "Land",
+        "description": "Förderung von Maßnahmen zur Heizungsoptimierung und energetischen Verbesserung von Wohngebäuden in Nordrhein-Westfalen. Unterstützt werden unter anderem der Einbau effizienter Heizsysteme und Wärmedämmung.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "Bundesförderung für effiziente Gebäude (BEG) – Einzelmaßnahmen",
+        "type": "Bund",
+        "description": "Fördert den Austausch und die Optimierung von Heizungsanlagen sowie Maßnahmen zur Wärmedämmung in Wohngebäuden. Das Programm umfasst Zuschüsse und Kredite zur Steigerung der Energieeffizienz.",
+        "link_portal": "https://www.energiewechsel.de"
+      }
+    ],
+    "building_envelope": [
+      {
+        "title": "Heizen mit Erneuerbaren Energien NRW",
+        "type": "Land",
+        "description": "Förderung von Wärmepumpen, Pelletheizungen und Solarthermieanlagen für private Wohngebäude in Nordrhein-Westfalen. Ziel ist die Reduktion fossiler Brennstoffe und Steigerung der Energieeffizienz.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      },
+      {
+        "title": "KfW-Programme – Energieeffizient Sanieren",
+        "type": "Bund",
+        "description": "Bundesweite Förderprogramme für energetische Sanierungen, darunter Dämmung, Fenstererneuerungen, Heizungsoptimierung und Einbau von Batteriespeichern. Kredite und Zuschüsse für Wohngebäude zur Energieeinsparung.",
+        "link_portal": "https://www.energiewechsel.de"
+      },
+      {
+        "title": "NRW.BANK.Bauen und Wohnen Plus",
+        "type": "Land",
+        "description": "Kredit- und Zuschussprogramme der NRW.BANK zur Förderung energiesparenden Wohnens, inklusive Investitionen in Wärmepumpen, Dämmung und Photovoltaik. Fokus auf nachhaltige und energieeffiziente Gebäudetechnik.",
+        "link_portal": "https://www.foerderdatenbank.de"
+      }
+    ]
+  }
+}

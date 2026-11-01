@@ -174,12 +174,12 @@ FTPS uebertragen wird. Nach dem ersten Vollabgleich werden unveraenderte
 Dateien uebersprungen; Serverdateien werden nicht geloescht. Die Ordner
 `builds/full-deployment/` und `builds/delta-deployment/` bleiben erhalten.
 
-Auch ein erfolgreicher monatlicher Foerderabruf auf `main` startet den
-Deployment-Workflow ueber `workflow_run`. Beide Workflows verwenden eine
-gemeinsame Produktionssperre. Die Sperre fuer automatische Modellpreis-
-aenderungen bleibt erhalten. Im Repository werden `FTP_SERVER`, `FTP_USERNAME`
-und `FTP_PASSWORD` als Actions-Secrets benoetigt; echte Werte gehoeren weder in
-Dateien noch in den Chat. Details: [Deployment](docs/DEPLOYMENT.md).
+Der monatliche Förderabruf erzeugt ausschließlich unveröffentlichte, unbestätigte
+Recherchevorschläge als Actions-Artefakt. Er hat keine Schreibberechtigung und
+startet kein Deployment. Quellenprüfung und Übernahme erfolgen per Pull Request:
+[Förderdatenprüfung](docs/SUBSIDIES_REVIEW.md). Die automatische Preisübernahme
+bleibt gesperrt. Für Deployments sind die bestehenden FTP-Secrets erforderlich;
+Details: [Deployment](docs/DEPLOYMENT.md).
 
 
 Tests: siehe Quick Start und [Berechnungsgrundlagen](docs/CALCULATIONS.md).

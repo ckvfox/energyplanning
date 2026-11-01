@@ -389,77 +389,285 @@
   "NW": {
     "pv": [
       {
-        "title": "NRW.BANK.Wohnraum.Bauen",
+        "program_id": "kfw-270",
+        "title": "KfW 270 – Erneuerbare Energien – Standard",
+        "type": "Bund",
+        "funding_type": "Förderkredit",
+        "description": "Finanziert PV und zugehörige Batteriespeicher; kein direkter Zuschuss und kein Tilgungszuschuss.",
+        "link_portal": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/Förderprodukte/Erneuerbare-Energien-Standard-(270)/",
+        "eligibility": "Privatpersonen müssen einen Teil des erzeugten Stroms einspeisen oder verkaufen. Antrag über Finanzierungspartner vor bindendem Kaufvertrag; Bonität und Bankentscheidung erforderlich.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/Förderprodukte/Erneuerbare-Energien-Standard-(270)/"
+        ]
+      },
+      {
+        "program_id": "nrw-gebaeudesanierung",
+        "title": "NRW.BANK.Gebäudesanierung",
         "type": "Land",
-        "description": "Förderprogramm der NRW.BANK zur Finanzierung von PV-Anlagen, Batteriespeichern und energetischer Sanierung wie Dämmung und Fenstern bei Wohngebäuden.",
-        "link_portal": "https://www.foerderdatenbank.de"
+        "funding_type": "Förderkredit",
+        "description": "Darlehen für PV, PV-Stromspeicher, Heizungserneuerung, Dämmung und Fenster; kein direkter Zuschuss.",
+        "link_portal": "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+        "eligibility": "Private Eigentümer selbstgenutzten Wohneigentums in NRW; gesicherte Gesamtfinanzierung, GEG-Vorgaben und Antrag über Hausbank vor Vorhabenbeginn. Bei PV gelten zusätzliche De-minimis-Regeln; Kombinationen vorab mit der Bank prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+          "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/NRW/nrw-bank-gebaeudesanierung.html"
+        ]
       },
       {
-        "title": "KfW-Programm 271/272 – Erneuerbare Energien – Standard",
+        "program_id": "ustg-12-3",
+        "title": "PV und Batteriespeicher – Nullsteuersatz (§ 12 Abs. 3 UStG)",
         "type": "Bund",
-        "description": "KfW-Förderkredite und Zuschüsse für Photovoltaik-Anlagen, Batteriespeicher, Wärmepumpen und Heizungsoptimierungen bei Bestandswohngebäuden.",
-        "link_portal": "https://www.energiewechsel.de"
-      },
-      {
-        "title": "BAFA Heizungsoptimierung und Erneuerbare Energien",
-        "type": "Bund",
-        "description": "Zuschüsse für Wärmepumpen, Heizungsoptimierung und Solarthermie im Wohngebäudebereich, steuerbare Zuschüsse auch für Batteriespeicher in Verbindung mit PV-Anlagen.",
-        "link_portal": "https://www.energiewechsel.de"
+        "funding_type": "Steuerliche Vergünstigung",
+        "description": "0 % Umsatzsteuer auf begünstigte Lieferung und Installation von PV sowie zugehörigen Speichern; keine Zuschusszahlung. Keine zusätzliche Ersparnis auf bereits mit 0 % kalkulierte Preise.",
+        "link_portal": "https://www.bundesfinanzministerium.de/Content/DE/FAQ/foerderung-photovoltaikanlagen.html",
+        "eligibility": "PV auf oder nahe Wohngebäuden; Speicher muss Strom aus begünstigten Solarmodulen speichern. Mietverträge sind nicht pauschal begünstigt.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.bundesfinanzministerium.de/Content/DE/FAQ/foerderung-photovoltaikanlagen.html"
+        ]
       }
     ],
-    "battery": [],
+    "battery": [
+      {
+        "program_id": "kfw-270",
+        "title": "KfW 270 – Erneuerbare Energien – Standard",
+        "type": "Bund",
+        "funding_type": "Förderkredit",
+        "description": "Finanziert PV und zugehörige Batteriespeicher; kein direkter Zuschuss und kein Tilgungszuschuss.",
+        "link_portal": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/Förderprodukte/Erneuerbare-Energien-Standard-(270)/",
+        "eligibility": "Privatpersonen müssen einen Teil des erzeugten Stroms einspeisen oder verkaufen. Antrag über Finanzierungspartner vor bindendem Kaufvertrag; Bonität und Bankentscheidung erforderlich.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/Förderprodukte/Erneuerbare-Energien-Standard-(270)/"
+        ]
+      },
+      {
+        "program_id": "nrw-gebaeudesanierung",
+        "title": "NRW.BANK.Gebäudesanierung",
+        "type": "Land",
+        "funding_type": "Förderkredit",
+        "description": "Darlehen für PV, PV-Stromspeicher, Heizungserneuerung, Dämmung und Fenster; kein direkter Zuschuss.",
+        "link_portal": "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+        "eligibility": "Private Eigentümer selbstgenutzten Wohneigentums in NRW; gesicherte Gesamtfinanzierung, GEG-Vorgaben und Antrag über Hausbank vor Vorhabenbeginn. Bei PV gelten zusätzliche De-minimis-Regeln; Kombinationen vorab mit der Bank prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+          "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/NRW/nrw-bank-gebaeudesanierung.html"
+        ]
+      },
+      {
+        "program_id": "ustg-12-3",
+        "title": "PV und Batteriespeicher – Nullsteuersatz (§ 12 Abs. 3 UStG)",
+        "type": "Bund",
+        "funding_type": "Steuerliche Vergünstigung",
+        "description": "0 % Umsatzsteuer auf begünstigte Lieferung und Installation von PV sowie zugehörigen Speichern; keine Zuschusszahlung. Keine zusätzliche Ersparnis auf bereits mit 0 % kalkulierte Preise.",
+        "link_portal": "https://www.bundesfinanzministerium.de/Content/DE/FAQ/foerderung-photovoltaikanlagen.html",
+        "eligibility": "PV auf oder nahe Wohngebäuden; Speicher muss Strom aus begünstigten Solarmodulen speichern. Mietverträge sind nicht pauschal begünstigt.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.bundesfinanzministerium.de/Content/DE/FAQ/foerderung-photovoltaikanlagen.html"
+        ]
+      }
+    ],
     "heatpump": [
       {
-        "title": "NRW.BANK Förderprogramm Energieeffizient Sanieren – Zuschuss",
-        "type": "Land",
-        "description": "Förderung für energieeffiziente Sanierungen von Wohngebäuden, einschließlich der Installation von Wärmepumpen als effiziente Heiztechnik.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "Marktanreizprogramm (MAP) – Bundesförderung für effiziente Gebäude",
+        "program_id": "kfw-458",
+        "title": "KfW 458 – Heizungsförderung für Privatpersonen – Wohngebäude",
         "type": "Bund",
-        "description": "Bundesweites Förderprogramm zur Installation von Wärmepumpen und anderen effizienten Heizsystemen in Wohngebäuden, unterstützt durch Zuschüsse und Kredite.",
-        "link_portal": "https://www.energiewechsel.de"
+        "funding_type": "Direkter Zuschuss",
+        "description": "Zuschuss für eine förderfähige neue Wärmepumpe im Bestandswohngebäude. Höhe und Boni richten sich nach den zum Antrag geltenden Bedingungen; kein pauschaler Höchstsatz für jeden Eigentümer.",
+        "link_portal": "https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/Förderprodukte/Heizungsförderung-für-Privatpersonen-Wohngebäude-(458)/",
+        "eligibility": "Private Eigentümer; Bauantrag/Bauanzeige mindestens fünf Jahre zurückliegend. Technische Mindestanforderungen und Optimierung des Verteilungssystems erforderlich. Vor Antrag BzA und Liefer-/Leistungsvertrag mit Fördervorbehalt und Umsetzungstermin; Antrag vor Umsetzung. Einkommens- und Austauschboni separat prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/Förderprodukte/Heizungsförderung-für-Privatpersonen-Wohngebäude-(458)/"
+        ]
       },
       {
-        "title": "NRW.BANK Energieeffizienz- und Klimaschutzprogramm",
+        "program_id": "kfw-358-359",
+        "title": "KfW 358/359 – Einzelmaßnahmen Ergänzungskredit – Wohngebäude",
+        "type": "Bund",
+        "funding_type": "Förderkredit",
+        "description": "Ergänzende Finanzierung bereits bezuschusster BEG-Einzelmaßnahmen; kein zusätzlicher direkter Zuschuss.",
+        "link_portal": "https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/Förderprodukte/Einzelmaßnahmen-Ergänzungskredit-Wohngebäude-(358-359)/",
+        "eligibility": "KfW-Zuschusszusage oder BAFA-Bescheid auf eigenen Namen, höchstens zwölf Monate alt und noch nicht ausgezahlt. Antrag über Finanzierungspartner; 358 nur bei zusätzlicher Selbstnutzungs- und Einkommensvoraussetzung, sonst 359 prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/Förderprodukte/Einzelmaßnahmen-Ergänzungskredit-Wohngebäude-(358-359)/"
+        ]
+      },
+      {
+        "program_id": "nrw-gebaeudesanierung",
+        "title": "NRW.BANK.Gebäudesanierung",
         "type": "Land",
-        "description": "Darlehensprogramm der NRW.BANK zur Finanzierung energiesparender Maßnahmen in Wohngebäuden, mit Fokus auf Wärmepumpen und weitere Sanierungsmaßnahmen.",
-        "link_portal": "https://www.foerderdatenbank.de"
+        "funding_type": "Förderkredit",
+        "description": "Darlehen für PV, PV-Stromspeicher, Heizungserneuerung, Dämmung und Fenster; kein direkter Zuschuss.",
+        "link_portal": "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+        "eligibility": "Private Eigentümer selbstgenutzten Wohneigentums in NRW; gesicherte Gesamtfinanzierung, GEG-Vorgaben und Antrag über Hausbank vor Vorhabenbeginn. Bei PV gelten zusätzliche De-minimis-Regeln; Kombinationen vorab mit der Bank prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+          "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/NRW/nrw-bank-gebaeudesanierung.html"
+        ]
+      },
+      {
+        "program_id": "estg-35c",
+        "title": "Energetische Sanierung – Steuerermäßigung (§ 35c EStG)",
+        "type": "Bund",
+        "funding_type": "Steuerliche Vergünstigung",
+        "description": "Alternative steuerliche Entlastung für qualifizierte energetische Maßnahmen; keine Kombination mit öffentlichen Zuschüssen oder zinsverbilligten Darlehen für dieselbe Maßnahme.",
+        "link_portal": "https://lsth.bundesfinanzministerium.de/esth/2025/B-Anhaenge/Anhang-27b/III-2/inhalt.html",
+        "eligibility": "Eigentum und Selbstnutzung, Gebäude älter als zehn Jahre, Fachunternehmerbescheinigung, Rechnung und unbare Zahlung. Nutzbarkeit hängt auch von der eigenen Einkommensteuer ab; kein PV-/Batteriezuschuss.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://lsth.bundesfinanzministerium.de/esth/2025/B-Anhaenge/Anhang-27b/III-2/inhalt.html"
+        ]
       }
     ],
     "heating_optimization": [
       {
-        "title": "Wohngebäude-Programm NRW",
-        "type": "Land",
-        "description": "Förderung von Maßnahmen zur Heizungsoptimierung und energetischen Verbesserung von Wohngebäuden in Nordrhein-Westfalen. Unterstützt werden unter anderem der Einbau effizienter Heizsysteme und Wärmedämmung.",
-        "link_portal": "https://www.foerderdatenbank.de"
+        "program_id": "bafa-beg-optimierung",
+        "title": "BAFA BEG EM – Heizungsoptimierung",
+        "type": "Bund",
+        "funding_type": "Direkter Zuschuss",
+        "description": "Fördert Optimierung bestehender Heizungen, etwa hydraulischen Abgleich und Pumpentausch; nicht den eigenständigen Wärmepumpen-Heizungstausch und keine PV-Stromspeicher.",
+        "link_portal": "https://www.bafa.de/DE/Energie/Effiziente_Gebaeude/Sanierung_Wohngebaeude/Heizungsoptimierung/heizungsoptimierung_node.html",
+        "eligibility": "Private Eigentümer: Bauantrag/Bauanzeige mindestens fünf Jahre zurückliegend, Wohngebäude mit höchstens fünf Wohneinheiten. Wärmeerzeuger mindestens zwei Jahre alt, bei fossiler Versorgung höchstens zwanzig Jahre. Technische Anforderungen und hydraulischen Abgleich beachten; Antrag vor Umsetzung mit bedingtem Fachunternehmervertrag. Details vor Antrag erneut prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.bafa.de/SharedDocs/Downloads/DE/Energie/beg_infoblatt_foerderfaehige_kosten.pdf?__blob=publicationFile",
+          "https://www.energiewechsel.de/KAENEF/Redaktion/DE/FAQ/FAQ-Uebersicht/BEG/faq-bundesfoerderung-fuer-effiziente-gebaeude.html"
+        ]
       },
       {
-        "title": "Bundesförderung für effiziente Gebäude (BEG) – Einzelmaßnahmen",
+        "program_id": "kfw-358-359",
+        "title": "KfW 358/359 – Einzelmaßnahmen Ergänzungskredit – Wohngebäude",
         "type": "Bund",
-        "description": "Fördert den Austausch und die Optimierung von Heizungsanlagen sowie Maßnahmen zur Wärmedämmung in Wohngebäuden. Das Programm umfasst Zuschüsse und Kredite zur Steigerung der Energieeffizienz.",
-        "link_portal": "https://www.energiewechsel.de"
+        "funding_type": "Förderkredit",
+        "description": "Ergänzende Finanzierung bereits bezuschusster BEG-Einzelmaßnahmen; kein zusätzlicher direkter Zuschuss.",
+        "link_portal": "https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/Förderprodukte/Einzelmaßnahmen-Ergänzungskredit-Wohngebäude-(358-359)/",
+        "eligibility": "KfW-Zuschusszusage oder BAFA-Bescheid auf eigenen Namen, höchstens zwölf Monate alt und noch nicht ausgezahlt. Antrag über Finanzierungspartner; 358 nur bei zusätzlicher Selbstnutzungs- und Einkommensvoraussetzung, sonst 359 prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/Förderprodukte/Einzelmaßnahmen-Ergänzungskredit-Wohngebäude-(358-359)/"
+        ]
+      },
+      {
+        "program_id": "nrw-gebaeudesanierung",
+        "title": "NRW.BANK.Gebäudesanierung",
+        "type": "Land",
+        "funding_type": "Förderkredit",
+        "description": "Darlehen für PV, PV-Stromspeicher, Heizungserneuerung, Dämmung und Fenster; kein direkter Zuschuss.",
+        "link_portal": "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+        "eligibility": "Private Eigentümer selbstgenutzten Wohneigentums in NRW; gesicherte Gesamtfinanzierung, GEG-Vorgaben und Antrag über Hausbank vor Vorhabenbeginn. Bei PV gelten zusätzliche De-minimis-Regeln; Kombinationen vorab mit der Bank prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+          "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/NRW/nrw-bank-gebaeudesanierung.html"
+        ]
+      },
+      {
+        "program_id": "estg-35c",
+        "title": "Energetische Sanierung – Steuerermäßigung (§ 35c EStG)",
+        "type": "Bund",
+        "funding_type": "Steuerliche Vergünstigung",
+        "description": "Alternative steuerliche Entlastung für qualifizierte energetische Maßnahmen; keine Kombination mit öffentlichen Zuschüssen oder zinsverbilligten Darlehen für dieselbe Maßnahme.",
+        "link_portal": "https://lsth.bundesfinanzministerium.de/esth/2025/B-Anhaenge/Anhang-27b/III-2/inhalt.html",
+        "eligibility": "Eigentum und Selbstnutzung, Gebäude älter als zehn Jahre, Fachunternehmerbescheinigung, Rechnung und unbare Zahlung. Nutzbarkeit hängt auch von der eigenen Einkommensteuer ab; kein PV-/Batteriezuschuss.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://lsth.bundesfinanzministerium.de/esth/2025/B-Anhaenge/Anhang-27b/III-2/inhalt.html"
+        ]
       }
     ],
     "building_envelope": [
       {
-        "title": "Heizen mit Erneuerbaren Energien NRW",
-        "type": "Land",
-        "description": "Förderung von Wärmepumpen, Pelletheizungen und Solarthermieanlagen für private Wohngebäude in Nordrhein-Westfalen. Ziel ist die Reduktion fossiler Brennstoffe und Steigerung der Energieeffizienz.",
-        "link_portal": "https://www.foerderdatenbank.de"
-      },
-      {
-        "title": "KfW-Programme – Energieeffizient Sanieren",
+        "program_id": "bafa-beg-huelle",
+        "title": "BAFA BEG EM – Einzelmaßnahmen an der Gebäudehülle",
         "type": "Bund",
-        "description": "Bundesweite Förderprogramme für energetische Sanierungen, darunter Dämmung, Fenstererneuerungen, Heizungsoptimierung und Einbau von Batteriespeichern. Kredite und Zuschüsse für Wohngebäude zur Energieeinsparung.",
-        "link_portal": "https://www.energiewechsel.de"
+        "funding_type": "Direkter Zuschuss",
+        "description": "Fördert unter anderem Dämmung, Fenster und Außentüren nach technischen Mindestanforderungen; keine allgemeine Förderung von PV und Batteriespeichern.",
+        "link_portal": "https://www.bafa.de/DE/Energie/Effiziente_Gebaeude/Sanierung_Wohngebaeude/Gebaeudehuelle/gebaeudehuelle_node.html",
+        "eligibility": "Private Eigentümer bestehender Wohngebäude; Bauantrag/Bauanzeige mindestens fünf Jahre zurückliegend. Energieeffizienz-Experten einbinden; bedingten Liefer-/Leistungsvertrag und Antrag vor Umsetzung vorsehen. Aktuelle Kostenobergrenzen und iSFP-Bedingungen prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.bafa.de/SharedDocs/Downloads/DE/Energie/beg_richtline_beg_em_20231221_PDF.pdf?__blob=publicationFile",
+          "https://www.energiewechsel.de/KAENEF/Redaktion/DE/FAQ/FAQ-Uebersicht/BEG/faq-bundesfoerderung-fuer-effiziente-gebaeude.html"
+        ]
       },
       {
-        "title": "NRW.BANK.Bauen und Wohnen Plus",
+        "program_id": "kfw-358-359",
+        "title": "KfW 358/359 – Einzelmaßnahmen Ergänzungskredit – Wohngebäude",
+        "type": "Bund",
+        "funding_type": "Förderkredit",
+        "description": "Ergänzende Finanzierung bereits bezuschusster BEG-Einzelmaßnahmen; kein zusätzlicher direkter Zuschuss.",
+        "link_portal": "https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/Förderprodukte/Einzelmaßnahmen-Ergänzungskredit-Wohngebäude-(358-359)/",
+        "eligibility": "KfW-Zuschusszusage oder BAFA-Bescheid auf eigenen Namen, höchstens zwölf Monate alt und noch nicht ausgezahlt. Antrag über Finanzierungspartner; 358 nur bei zusätzlicher Selbstnutzungs- und Einkommensvoraussetzung, sonst 359 prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/Förderprodukte/Einzelmaßnahmen-Ergänzungskredit-Wohngebäude-(358-359)/"
+        ]
+      },
+      {
+        "program_id": "kfw-261",
+        "title": "KfW 261 – Wohngebäude – Kredit",
+        "type": "Bund",
+        "funding_type": "Förderkredit mit Tilgungszuschuss",
+        "description": "Für Gesamtsanierung zum Effizienzhaus, kein allgemeiner Zuschuss für beliebige Einzelmaßnahmen. Netzeinspeisende PV gehört in Programm 270.",
+        "link_portal": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Wohnwirtschaft/Förderprodukte/Bundesförderung-für-effiziente-Gebäude-Wohngebäude-Kredit-(261-262)/",
+        "eligibility": "Bestandsgebäude mit mindestens fünf Jahre zurückliegendem Bauantrag/Bauanzeige; Effizienzhausstandard und Energieeffizienz-Experte erforderlich. Antrag über Finanzierungspartner vor Vorhabenbeginn; Kumulierungsregeln beachten.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.kfw.de/inlandsfoerderung/Unternehmen/Wohnwirtschaft/Förderprodukte/Bundesförderung-für-effiziente-Gebäude-Wohngebäude-Kredit-(261-262)/"
+        ]
+      },
+      {
+        "program_id": "nrw-gebaeudesanierung",
+        "title": "NRW.BANK.Gebäudesanierung",
         "type": "Land",
-        "description": "Kredit- und Zuschussprogramme der NRW.BANK zur Förderung energiesparenden Wohnens, inklusive Investitionen in Wärmepumpen, Dämmung und Photovoltaik. Fokus auf nachhaltige und energieeffiziente Gebäudetechnik.",
-        "link_portal": "https://www.foerderdatenbank.de"
+        "funding_type": "Förderkredit",
+        "description": "Darlehen für PV, PV-Stromspeicher, Heizungserneuerung, Dämmung und Fenster; kein direkter Zuschuss.",
+        "link_portal": "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+        "eligibility": "Private Eigentümer selbstgenutzten Wohneigentums in NRW; gesicherte Gesamtfinanzierung, GEG-Vorgaben und Antrag über Hausbank vor Vorhabenbeginn. Bei PV gelten zusätzliche De-minimis-Regeln; Kombinationen vorab mit der Bank prüfen.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://www.nrwbank.de/de/foerderung/foerderprodukte/15603/nrwbank-gebaeudesanierung.html",
+          "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/NRW/nrw-bank-gebaeudesanierung.html"
+        ]
+      },
+      {
+        "program_id": "estg-35c",
+        "title": "Energetische Sanierung – Steuerermäßigung (§ 35c EStG)",
+        "type": "Bund",
+        "funding_type": "Steuerliche Vergünstigung",
+        "description": "Alternative steuerliche Entlastung für qualifizierte energetische Maßnahmen; keine Kombination mit öffentlichen Zuschüssen oder zinsverbilligten Darlehen für dieselbe Maßnahme.",
+        "link_portal": "https://lsth.bundesfinanzministerium.de/esth/2025/B-Anhaenge/Anhang-27b/III-2/inhalt.html",
+        "eligibility": "Eigentum und Selbstnutzung, Gebäude älter als zehn Jahre, Fachunternehmerbescheinigung, Rechnung und unbare Zahlung. Nutzbarkeit hängt auch von der eigenen Einkommensteuer ab; kein PV-/Batteriezuschuss.",
+        "verification_status": "reviewed",
+        "last_checked": "2026-11-01",
+        "sources": [
+          "https://lsth.bundesfinanzministerium.de/esth/2025/B-Anhaenge/Anhang-27b/III-2/inhalt.html"
+        ]
       }
     ]
   },

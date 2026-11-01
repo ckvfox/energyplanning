@@ -18,7 +18,7 @@
         fragment.appendChild(national);
 
         const state = element('div', '', 'subsidy-dynamic');
-        state.appendChild(element('h4', `Programme im Bundesland ${bundesland}`));
+        state.appendChild(element('h4', `Förderhinweise für ${bundesland}`));
         if (result.statePrograms.length === 0) {
             state.appendChild(element('p', `Für ${bundesland} sind derzeit keine spezifischen Landesprogramme gespeichert.`));
         } else {
@@ -27,9 +27,19 @@
                 const title = element('strong', String(program.title || 'Förderprogramm'));
                 entry.appendChild(title);
                 if (program.type) entry.appendChild(document.createTextNode(` (${program.type})`));
-                entry.appendChild(element('p', String(program.description || '')));
+                const reviewed = program.verification_status === 'reviewed' && program.last_checked;
+                entry.appendChild(element('p', reviewed
+                    ? `${program.funding_type} · Quellenprüfung: ${program.last_checked}; vor Antrag erneut prüfen.`
+                    : 'Unbestätigt: Aktualität und Förderfähigkeit sind nicht ausreichend geprüft. Nicht als Förderzusage verwenden.'));
+                if (reviewed && (Date.now() - Date.parse(program.last_checked)) > 180 * 86400000) {
+                    entry.appendChild(element('p', 'Quellenprüfung älter als 180 Tage: Aktualität erneut bestätigen.'));
+                }
+                if (reviewed) {
+                    entry.appendChild(element('p', String(program.description || '')));
+                    entry.appendChild(element('p', `Voraussetzungen: ${program.eligibility || ''}`));
+                }
                 if (program.link_portal) {
-                    const link = element('a', 'Zum Förderportal');
+                    const link = element('a', reviewed ? 'Zur offiziellen Programmseite' : 'Zur weiteren Recherche');
                     link.href = String(program.link_portal);
                     link.target = '_blank';
                     link.rel = 'noopener noreferrer';

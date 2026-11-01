@@ -5,7 +5,8 @@ SUBSIDY_SYSTEM_PROMPT = (
     "Wenn du dir unsicher bist, gib ein leeres Array [] zurueck. "
     "Formatiere die Ausgabe exakt als JSON-Array mit Objekten: "
     "title, type (Bund/Land/Kommune), description (max. 2 Saetze), "
-    "link (offizielle Seite), last_checked (heutiges Datum, ISO-Format)."
+    "link (offizielle Programmseite), eligibility (Zugang fuer private Eigentuemer). "
+    "Du fuehrst keine aktuelle Quellenpruefung durch; behaupte keinen Pruefstatus oder Prueftag."
 )
 
 PRICE_SYSTEM_PROMPT = (
