@@ -97,7 +97,7 @@ class DeploymentTests(unittest.TestCase):
         self.assertIn('workflows: ["Update subsidies.json"]', text)
         self.assertIn("github.event.workflow_run.conclusion == 'success'", text)
         self.assertIn("github.event.workflow_run.head_repository.full_name == github.repository", text)
-        self.assertIn("ref: edd3e6a839d172de4163473492dd0e5593244a82", text)
+        self.assertIn("ref: c376dc2daae09a5a343902acfaca9815cfae5002", text)
         self.assertLess(text.index("python -m ruff check"), text.index("python scripts/deploy_site.py"))
         self.assertLess(text.index("fpf_project_compliance.py"), text.index("python scripts/deploy_site.py"))
         self.assertIn("group: energyplanning-production", text)

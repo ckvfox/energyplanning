@@ -82,6 +82,12 @@ docker run -p 8080:80 energyplanning
 
 ### Automatisches FTPS-Deployment von main
 
+FTPS-Groessenabweichungen werden wie unterbrochene Verbindungen maximal dreimal
+mit neuer Verbindung wiederholt. Nur bereits groessengepruefte Uploads werden
+innerhalb des Laufs uebersprungen; bei dauerhaftem Fehler bleibt der bisherige
+Checkpoint erhalten. Das Protokoll nennt betroffene produktive Pfade und
+Bytezahlen, aber keine Serverantworten oder Zugangsdaten.
+
 Positivlisten-Korrektur: Bilder werden ausschliesslich ueber `IMAGE_FILES`
 registriert (Logo, Technologie-Banner, Open-Graph-Bild). Der erste 24-Dateien-
 Upload enthielt wegen der frueheren generischen images/-Regel zwei unreferenzierte
