@@ -1,9 +1,12 @@
 """Offline acceptance for automatic EnergyPlanning packaging and deployment."""
 from __future__ import annotations
 
+import ftplib
+import io
 import json
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -12,6 +15,21 @@ import deploy_site
 
 
 class DeploymentTests(unittest.TestCase):
+    def test_failure_diagnostics_never_print_remote_messages_or_traceback_locals(self):
+        for exception in (ValueError, ftplib.error_perm):
+            with self.subTest(exception=exception), io.StringIO() as output, redirect_stdout(output):
+                try:
+                    raise exception("private-runtime-value")
+                except exception as exc:
+                    deploy_site.report_failure(exc)
+                self.assertNotIn("private-runtime-value", output.getvalue())
+                self.assertIn(exception.__name__, output.getvalue())
+
+    def test_failure_diagnostics_identify_fixed_size_validation(self):
+        with io.StringIO() as output, redirect_stdout(output):
+            deploy_site.report_failure(ValueError("Uploaded size differs from production package"))
+            self.assertIn("Uploaded file size does not match the package.", output.getvalue())
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)

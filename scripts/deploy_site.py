@@ -7,6 +7,7 @@ import hashlib
 import importlib.util
 import json
 import sys
+import traceback
 from pathlib import Path
 
 from build_deployment import ROOT, payload_files
@@ -15,6 +16,22 @@ PACKAGE = ROOT / "builds/full-deployment"
 REMOTE_ROOT = "/energyplanning.great-site.net/htdocs"
 STATE_NAME = ".energyplanning-auto-deploy.json"
 RECEIPT = ROOT / "builds/auto-deploy-receipt.json"
+
+
+def report_failure(exc: Exception) -> None:
+    """Report code locations and fixed validation messages, never remote replies or locals."""
+    print(f"EnergyPlanning deployment failed ({type(exc).__name__}); no successful deployment receipt written.")
+    safe_reasons = {
+        "Uploaded size differs from production package": "Uploaded file size does not match the package.",
+        "Remote deployment state exceeds size limit": "Remote deployment checkpoint exceeds the size limit.",
+        "Package differs from the complete productive allowlist": "Local package differs from the productive allowlist.",
+    }
+    if type(exc) is ValueError and str(exc) in safe_reasons:
+        print(safe_reasons[str(exc)])
+    for frame in traceback.extract_tb(exc.__traceback__):
+        name = Path(frame.filename).name
+        if name in {"deploy_site.py", "deploy_ftps.py", "ftplib.py", "ssl.py"}:
+            print(f"Failure location: {name}:{frame.lineno}")
 
 
 def manifest(package: Path) -> dict:
@@ -61,7 +78,7 @@ def main() -> int:
         print(f"FTPS complete: {len(result['uploaded_files'])} uploaded, {result['skipped_files']} unchanged, 0 deleted")
         return 0
     except (OSError, ValueError, ImportError, RuntimeError, ftplib.Error, EOFError) as exc:
-        print(f"EnergyPlanning deployment failed ({type(exc).__name__}); no successful deployment receipt written.")
+        report_failure(exc)
         return 1
 
 
