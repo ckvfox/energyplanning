@@ -82,7 +82,8 @@ docker run -p 8080:80 energyplanning
 
 ### Automatisches FTPS-Deployment von main
 
-FTPS-Groessenabweichungen werden wie unterbrochene Verbindungen maximal dreimal
+Bei abweichender FTP-SIZE-Angabe muss ein Ruecklesen exakt die erwartete
+Bytezahl und SHA-256 ergeben. Tatsaechliche Abweichungen werden wie unterbrochene Verbindungen maximal dreimal
 mit neuer Verbindung wiederholt. Nur bereits groessengepruefte Uploads werden
 innerhalb des Laufs uebersprungen; bei dauerhaftem Fehler bleibt der bisherige
 Checkpoint erhalten. Das Protokoll nennt betroffene produktive Pfade und
