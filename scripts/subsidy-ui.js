@@ -26,7 +26,7 @@
             result.statePrograms.forEach((program) => {
                 // Legacy entries have no ID; their hidden descriptions must not create duplicate cards.
                 const key = program.program_id || JSON.stringify([
-                    String(program.title || '').trim().toLocaleLowerCase('de'),
+                    String(program.title || '').replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim().toLocaleLowerCase('de'),
                     program.type || '', program.link_portal || ''
                 ]);
                 if (seen.has(key)) return;

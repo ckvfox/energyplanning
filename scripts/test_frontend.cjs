@@ -148,7 +148,8 @@ test('unconfirmed legacy programs are shown once across categories', async () =>
             const box = w.document.createElement('div');
             w.EnergySubsidyUI.renderSubsidies(box, result, state);
             const titles = [...box.querySelectorAll('.subsidy-entry strong')].map(p => p.textContent);
-            assert.equal(titles.length, new Set(titles).size);
+            assert.equal(titles.length, new Set(titles.map(t => t.replace(/[–—]/g, '-'))).size);
+            assert.equal(titles.filter(t => t.startsWith('Bundesförderung für effiziente Gebäude (BEG)')).length, 1);
             assert.ok(box.textContent.includes('Unbestätigt:'));
             assert.equal(box.querySelectorAll('a').length, titles.length);
             for (const program of result.statePrograms) {
