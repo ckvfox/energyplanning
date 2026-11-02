@@ -9,10 +9,6 @@ on:
         description: Upload all productive files again
         type: boolean
         default: false
-  workflow_run:
-    workflows: ["Update subsidies.json"]
-    types: [completed]
-    branches: [main]
 
 permissions:
   contents: read
@@ -26,12 +22,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: >-
-      github.ref == 'refs/heads/main' &&
-      (github.event_name != 'workflow_run' ||
-       (github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.head_branch == 'main' &&
-        github.event.workflow_run.head_repository.full_name == github.repository))
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -67,6 +58,7 @@ jobs:
         run: |
           python -m ruff check scripts/
           python scripts/modernisierung_tests.py
+          python scripts/validate_subsidies.py
           python scripts/check_calculation_docs.py
           python -m unittest discover -s scripts -p "test_*.py"
           npm test

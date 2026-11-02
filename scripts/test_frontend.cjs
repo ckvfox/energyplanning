@@ -118,3 +118,42 @@ test('no saving is disclosed instead of a fictitious payback; overrides remain c
         assert.ok(wp.storageKwh < 15);
     } finally {dom.window.close();}
 });
+
+test('NRW subsidies distinguish funding, show evidence/eligibility and deduplicate categories', async () => {
+    const {dom, w} = await app();
+    try {
+        const result = await w.determineSubsidies(1995, 'NW', {heatpump: true});
+        assert.equal(result.statePrograms.filter(p => p.program_id === 'kfw-270').length, 1);
+        const box = w.document.createElement('div');
+        w.EnergySubsidyUI.renderSubsidies(box, result, 'NW');
+        assert.match(box.textContent, /KfW 458/);
+        assert.match(box.textContent, /Förderkredit/);
+        assert.match(box.textContent, /Direkter Zuschuss/);
+        assert.match(box.textContent, /Steuerliche Vergünstigung/);
+        assert.match(box.textContent, /Voraussetzungen/);
+        assert.match(box.textContent, /2026-11-01/);
+        w.EnergySubsidyUI.renderSubsidies(box, {baseMessages: [], statePrograms: [
+            {title: 'Legacy', description: 'unbelegte Förderzusage', type: 'Bund'}]}, 'BW');
+        assert.match(box.textContent, /Unbestätigt/);
+        assert.ok(!box.textContent.includes('unbelegte Förderzusage'));
+    } finally {dom.window.close();}
+});
+
+
+test('unconfirmed legacy programs are shown once across categories', async () => {
+    const {dom, w} = await app();
+    try {
+        for (const state of ['BY', 'BB']) {
+            const result = await w.determineSubsidies(1995, state, {});
+            const box = w.document.createElement('div');
+            w.EnergySubsidyUI.renderSubsidies(box, result, state);
+            const titles = [...box.querySelectorAll('.subsidy-entry strong')].map(p => p.textContent);
+            assert.equal(titles.length, new Set(titles).size);
+            assert.ok(box.textContent.includes('Unbestätigt:'));
+            assert.equal(box.querySelectorAll('a').length, titles.length);
+            for (const program of result.statePrograms) {
+                assert.ok(!box.textContent.includes(program.description));
+            }
+        }
+    } finally {dom.window.close();}
+});

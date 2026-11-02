@@ -94,4 +94,4 @@ jobs:
         run: python -c "import json; json.load(open('data/data.json'))"
 
       - name: Validate subsidies.json
-        run: python -c "import json; json.load(open('data/subsidies.json'))"
+        run: python scripts/validate_subsidies.py

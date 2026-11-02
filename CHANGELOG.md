@@ -210,3 +210,10 @@ Dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 - 🔧 **Technical** – Technische Änderungen
 - 📖 **Docs** – Dokumentation
 
+
+## 2026-11-01 – Quellengebundene NRW-Förderhinweise
+
+- NRW-Programme korrigiert, Förderarten und private Zugangsvoraussetzungen getrennt.
+- Unbelegte Altangaben archiviert; unbestätigte Bestände sichtbar gekennzeichnet.
+- Monatsabruf auf unveröffentlichte Vorschläge ohne Schreibrecht oder Upload umgestellt.
+- Quellen-/Strukturgate und Regressionsprüfungen ergänzt; Energieberechnung unverändert.

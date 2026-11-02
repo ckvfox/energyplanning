@@ -24,3 +24,5 @@ Bei SDK-Aenderungen immer die verwendete Schnittstelle testen, nicht nur Version
 ## Strukturhinweis
 
 Die produktive Bestandsstruktur nutzt Root-Dateien, `scripts/`, `data/` und `images/`. Diese Pfade werden nicht ohne separaten Migrationsplan nach `assets/` oder `build/deployment/` verschoben.
+
+- [Förderdatenprüfung NRW und Veröffentlichungsregeln](SUBSIDIES_REVIEW.md)

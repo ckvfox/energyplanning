@@ -1,6 +1,6 @@
 """
 Fetch subsidies per Bundesland and measure type using OpenAI API.
-Requires OPENAI_API_KEY to be set. Updates data/subsidies.json in-place.
+Requires OPENAI_API_KEY. Writes unverified proposals outside the repository only.
 """
 
 from __future__ import annotations
@@ -50,6 +50,8 @@ def validate_entries(raw: Any) -> list[dict[str, Any]]:
                 "type": item.get("type", ""),
                 "description": item.get("description", ""),
                 "source_level": item.get("source_level", ""),
+                "link": item.get("link", ""),
+                "eligibility": item.get("eligibility", ""),
             }
         )
     return valid
@@ -79,8 +81,8 @@ def fetch_for(client: OpenAI, bundesland: str, measure: str) -> list[dict[str, A
         f"und die Massnahme {measure} (z.B. Photovoltaik, Waermepumpe, Batteriespeicher, "
         f"Heizungsoptimierung, Daemmung/Fenster) im Bereich Wohngebaeude.\n"
         "Antworte als JSON-Array von Objekten mit Feldern: title, type (Bund/Land/Kommune), "
-        "description (max. 2 Saetze), source_level (bund/land/kommune). "
-        "Erstelle KEINE Links oder Deep-Links. "
+        "description (max. 2 Saetze), source_level (bund/land/kommune), link, eligibility. "
+        "Nenne konkrete offizielle Programmseiten nur wenn bekannt. Die Ausgabe ist ungeprueft. "
         "Wenn du keine sicheren Programme kennst, antworte mit []."
     )
     try:
@@ -99,43 +101,28 @@ def fetch_for(client: OpenAI, bundesland: str, measure: str) -> list[dict[str, A
         return []
 
 
-def main() -> None:
+def propose_subsidies() -> dict[str, Any]:
+    """Model output is research input, never approved publication data."""
     client = ensure_client()
-    data = load_existing()
-
+    candidates = {}
     for state in BUNDESLAENDER:
-        print(f"[INFO] Aktualisiere {state} ...")
-        if state not in data:
-            data[state] = {m: [] for m in MEASURES}
-        for measure in MEASURES:
-            entries = fetch_for(client, state, measure)
-            cleaned_entries: list[dict[str, Any]] = []
-            for entry in entries:
-                entry_type = (entry.get("type") or "").strip()
-                type_lower = entry_type.lower()
-                if type_lower == "bund":
-                    link_portal = "https://www.energiewechsel.de"
-                elif type_lower == "land":
-                    link_portal = "https://www.foerderdatenbank.de"
-                else:
-                    link_portal = "https://www.co2online.de/foerdermittel/foerdermittel-check/"
+        candidates[state] = {measure: fetch_for(client, state, measure) for measure in MEASURES}
+    return {"status": "unverified_model_proposal_do_not_apply", "candidates": candidates}
 
-                cleaned_entries.append(
-                    {
-                        "title": entry.get("title", ""),
-                        "type": entry_type,
-                        "description": entry.get("description", ""),
-                        "link_portal": link_portal,
-                    }
-                )
 
-            data[state][measure] = cleaned_entries
-            status = f"{len(entries)} Eintraege" if entries else "keine Eintraege"
-            print(f"  - {measure}: {status}")
+def main() -> None:
+    import argparse
 
-    SUBSIDY_PATH.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"[DONE] subsidies.json aktualisiert: {SUBSIDY_PATH}")
-
+    parser = argparse.ArgumentParser(description="Generate unverified research proposals only")
+    parser.add_argument("--proposal-output", type=Path, required=True)
+    args = parser.parse_args()
+    output = args.proposal_output.resolve()
+    # Refuse all repository paths, including symlinks to productive data.
+    if output == ROOT or ROOT in output.parents:
+        parser.error("Proposal output must be outside the repository")
+    proposal = propose_subsidies()
+    output.write_text(json.dumps(proposal, indent=2, ensure_ascii=False), encoding="utf-8")
+    print("Unverified proposal saved; published subsidies unchanged.")
 
 
 if __name__ == "__main__":

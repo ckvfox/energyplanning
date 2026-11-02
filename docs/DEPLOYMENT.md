@@ -111,14 +111,10 @@ Berechnungs-Review-Basis blieb bytegenau unveraendert. Es wurde kein zusaetzlich
 Foerder-/KI-Abruf gestartet.
 
 
-`.github/workflows/auto-deploy.yml` startet nach einem Push auf `main`, manuell
-oder nach einem erfolgreichen `Update subsidies.json`-Lauf auf `main`. Der
-letzte Trigger ist notwendig, weil Bot-Commits mit `GITHUB_TOKEN` keinen neuen
-Push-Workflow starten. Feature-Branches, Pull Requests und fehlgeschlagene
-Monatslaeufe erhalten keinen Produktionsupload.
-
-Der bestehende Schutz fuer Modell-/Preisannahmen bleibt erhalten: der
-Monatslauf aktualisiert Foerderprogramme, keine Modellpreise.
+`.github/workflows/auto-deploy.yml` startet nach Push auf `main` oder manuell.
+Der monatliche Förderabruf erzeugt nur ein unveröffentlichtes Recherche-Artefakt,
+hat Leserechte und startet keinen Upload. Übernahme nach Quellenprüfung per PR:
+[Förderdatenprüfung](SUBSIDIES_REVIEW.md). Modellpreise bleiben unverändert.
 
 Nach Erwerb der gemeinsamen Sperre `energyplanning-production` wird der aktuelle
 main-Stand ausgecheckt und vollstaendig geprueft: Ruff, Berechnungsmatrix,
