@@ -631,9 +631,9 @@
         "title": "KfW 261 – Wohngebäude – Kredit",
         "type": "Bund",
         "funding_type": "Förderkredit mit Tilgungszuschuss",
-        "description": "Für Gesamtsanierung zum Effizienzhaus, kein allgemeiner Zuschuss für beliebige Einzelmaßnahmen. Netzeinspeisende PV gehört in Programm 270.",
+        "description": "Für Gesamtsanierung zum Effizienzhaus, kein allgemeiner Zuschuss für beliebige Einzelmaßnahmen. Ein Tilgungszuschuss hängt von Effizienzhausstufe und Boni ab; nicht jede förderfähige Stufe erhält einen Basis-Tilgungszuschuss. Netzeinspeisende PV gehört in Programm 270.",
         "link_portal": "https://www.kfw.de/inlandsfoerderung/Unternehmen/Wohnwirtschaft/Förderprodukte/Bundesförderung-für-effiziente-Gebäude-Wohngebäude-Kredit-(261-262)/",
-        "eligibility": "Bestandsgebäude mit mindestens fünf Jahre zurückliegendem Bauantrag/Bauanzeige; Effizienzhausstandard und Energieeffizienz-Experte erforderlich. Antrag über Finanzierungspartner vor Vorhabenbeginn; Kumulierungsregeln beachten.",
+        "eligibility": "Bestandsgebäude mit mindestens fünf Jahre zurückliegendem Bauantrag/Bauanzeige; Effizienzhausstandard, mindestens 65 % erneuerbare Energien oder unvermeidbare Abwärme für Wärme/Kälte und Energieeffizienz-Experte erforderlich. Antrag über Finanzierungspartner vor Vorhabenbeginn; Kumulierungsregeln beachten.",
         "verification_status": "reviewed",
         "last_checked": "2026-11-01",
         "sources": [

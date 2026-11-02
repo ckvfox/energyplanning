@@ -138,3 +138,22 @@ test('NRW subsidies distinguish funding, show evidence/eligibility and deduplica
         assert.ok(!box.textContent.includes('unbelegte Förderzusage'));
     } finally {dom.window.close();}
 });
+
+
+test('unconfirmed legacy programs are shown once across categories', async () => {
+    const {dom, w} = await app();
+    try {
+        for (const state of ['BY', 'BB']) {
+            const result = await w.determineSubsidies(1995, state, {});
+            const box = w.document.createElement('div');
+            w.EnergySubsidyUI.renderSubsidies(box, result, state);
+            const titles = [...box.querySelectorAll('.subsidy-entry strong')].map(p => p.textContent);
+            assert.equal(titles.length, new Set(titles).size);
+            assert.ok(box.textContent.includes('Unbestätigt:'));
+            assert.equal(box.querySelectorAll('a').length, titles.length);
+            for (const program of result.statePrograms) {
+                assert.ok(!box.textContent.includes(program.description));
+            }
+        }
+    } finally {dom.window.close();}
+});

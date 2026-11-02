@@ -22,7 +22,15 @@
         if (result.statePrograms.length === 0) {
             state.appendChild(element('p', `Für ${bundesland} sind derzeit keine spezifischen Landesprogramme gespeichert.`));
         } else {
+            const seen = new Set();
             result.statePrograms.forEach((program) => {
+                // Legacy entries have no ID; their hidden descriptions must not create duplicate cards.
+                const key = program.program_id || JSON.stringify([
+                    String(program.title || '').trim().toLocaleLowerCase('de'),
+                    program.type || '', program.link_portal || ''
+                ]);
+                if (seen.has(key)) return;
+                seen.add(key);
                 const entry = element('div', '', 'subsidy-entry');
                 const title = element('strong', String(program.title || 'Förderprogramm'));
                 entry.appendChild(title);

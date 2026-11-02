@@ -88,3 +88,23 @@ Gesamthash; `docs/calculation-review.json` wurde nach Diffprüfung nachgeführt.
 Lokale Installation des gesamten Python-3.11-Manifests scheiterte unter Python
 3.12 am alten Pandas-Pin; für diese Prüfungen wurden die exakt gepinnten
 Updater-/Build-Abhängigkeiten separat installiert, die Repository-Pins blieben bestehen.
+
+
+## Abschlussprüfung 02.11.2026
+
+Offizielle KfW-Produktseiten 270, 458, 358/359 und 261, NRW.BANK.Gebäudesanierung,
+BMF-PV-FAQ und § 35c sowie amtliche BEG-FAQ/BAFA-Belege erneut abgeglichen.
+KfW 261 präzisiert: 65-%-Anforderung für Wärme/Kälte und kein pauschaler
+Basis-Tilgungszuschuss für jede förderfähige Effizienzhausstufe.
+BAFA-HTML weiterhin mit 403 nicht abrufbar; aktuelle Detailkonditionen bleiben
+vor Antrag zu prüfen. Keine festen Fördersätze aus älteren Belegen übernommen.
+
+Nachgewiesene UI-Dubletten ohne Programm-ID in BY und BB werden jetzt anhand
+von Titel, Förderebene und Link nur einmal angezeigt; ungeprüfte Beschreibungen
+bleiben ausgeblendet. NRW-Identitäten werden weiterhin nach Programm-ID dedupliziert.
+Zusätzlicher DOM-Regressionstest deckt die tatsächlichen BY-/BB-Bestände ab.
+
+Visuelle Desktop-/Mobilabnahme des PR-Stands nicht möglich: Der verfügbare
+Cloud-Browser erreicht den lokalen Testserver nicht (Port 8000 liefert eine
+fremde Bearer-Token-Fehlerseite). DOM- und Produktionspaketprüfungen ersetzen
+keine visuelle Layoutabnahme. Diese Einschränkung ist bei der Freigabe offengelegt.
